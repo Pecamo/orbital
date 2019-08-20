@@ -7,6 +7,10 @@ export class Color {
         return ~~(Math.random() * 256);
     }
 
+    public static invert(color: Color): Color {
+        return new Color(255 - color.r, 255 - color.g, 255 - color.b);
+    }
+
     public static overlap(color1: Color, color2: Color, ratio: number = 0.5): Color {
         return new Color(
             Math.round(color1.r * (1 - ratio) + color2.r * ratio),
