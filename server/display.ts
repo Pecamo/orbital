@@ -1,31 +1,50 @@
 import { Color } from "./color";
+import { HtmlColors } from "./htmlColors";
 
 export class Display {
+    constructor(public size: number) {}
+
+    private currentFrame: Color[] = [];
+    private nextFrame: Color[] = [];
+
+    public render(): void {
+        // TODO play with LEDs
+
+        // Keep at the end
+        this.currentFrame = this.nextFrame;
+        this.nextFrame = [];
+    }
+
     public drawDot(index: number, color: Color): void {
-        // TODO implement
+        this.nextFrame[index] = color;
     }
 
     public drawLine(from: number, to: number, color: Color): void {
-        // TODO implement
+        for (let i = from; i <= to; i++) {
+            this.nextFrame[i] = color;
+        }
     }
 
     public drawGradient(from: number, to: number, colorFrom: Color, colorTo: Color): void {
-        // TODO implement
+        for (let i = from; i <= to; i++) {
+            const ratio = (i - from) / to;
+            this.nextFrame[i] = Color.overlap(colorFrom, colorTo, ratio);
+        }
     }
 
     public drawAll(color: Color): void {
-        // TODO implement
+        this.drawLine(0, this.size, color);
     }
 
     public get(index: number): Color {
-        // TODO implement
+        return this.currentFrame[index];
     }
 
     public screenshot(): Color[] {
-        // TODO implement
+        return this.currentFrame;
     }
 
     public clear(): void {
-        // TODO implement
+        this.drawLine(0, this.size, HtmlColors.black);
     }
 }
