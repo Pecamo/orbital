@@ -1,6 +1,6 @@
 import { Color } from "./color";
 
-export class Player {
+export class Character {
     constructor(
         public color: Color,
         public x: number,
