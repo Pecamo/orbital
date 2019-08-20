@@ -1,16 +1,16 @@
-import { Player } from "./player";
+import { Character } from "./character";
 import { Color } from "./color";
 import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
 
 export class Game {
-    public players: Player[] = [];
+    public players: Character[] = [];
     public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow];
     public display: Display = new Display(300);
 
     constructor(public numberOfPlayer: number) {
         for (let i = 0; i < numberOfPlayer; i++) {
-            this.players.push(new Player(Color.getRandom(), 0));
+            this.players.push(new Character(Color.getRandom(), 0));
         }
     }
 
