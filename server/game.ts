@@ -4,6 +4,7 @@ import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
 
 export class Game {
+    public fps: number = 60;
     public players: Character[] = [];
     public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow];
     public display: Display = new Display(300);
@@ -23,6 +24,7 @@ export class Game {
         // Loop timing, keep at the end
         const tickEnd: Date = new Date();
         const diff = tickStart.getTime() - tickEnd.getTime();
-        setTimeout(() => this.tick, diff);
+        const waitingTime = this.fps - diff / 1000;
+        setTimeout(() => this.tick, waitingTime);
     }
 }
