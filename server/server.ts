@@ -17,6 +17,7 @@ app.get('/', function(req, res, next){
   res.end();
 });
 
+// @ts-ignore
 app.ws('/', function(ws, req) {
   ws.on('message', function(msg) {
     console.log(msg);
