@@ -4,6 +4,9 @@
   "description": "Orbital =======",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "cd dist && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,6 +20,8 @@
   },
   "homepage": "https://github.com/Pecamo/orbital#readme",
   "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/express-ws": "^3.0.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {
