@@ -1,6 +1,7 @@
 import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { Message } from './types/Message';
+import * as path from "path";
 
 let app = express();
 const expressWs = expressWsWrapper(app);
@@ -14,7 +15,7 @@ app.use((req, res, next) => {
 app.use('/static', express.static('public'));
 
 app.get('/', (req, res, next)=> {
-    res.end();
+    res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
 });
 
 expressWs.app.ws('/', (ws, req) => {
