@@ -1,6 +1,12 @@
 import { Color } from "./color";
 import { HtmlColors } from "./htmlColors";
 
+type LEDLight = {
+    r: number,
+    g: number,
+    b:
+}
+
 export class Display {
     constructor(public size: number) {}
 

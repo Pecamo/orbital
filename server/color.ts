@@ -19,5 +19,7 @@ export class Color {
         );
     }
 
-    constructor(public r: number, public g: number, public b: number) {}    
+    constructor(public r: number, public g: number, public b: number, public w?: number) {}
 }
+
+export type LEDStrip = Color[];
