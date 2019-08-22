@@ -7,6 +7,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "start": "cd dist && node server.js",
+    "start-debug": "cd dist && node --inspect server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

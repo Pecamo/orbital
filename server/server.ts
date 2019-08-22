@@ -2,6 +2,7 @@ import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { Message } from './types/Message';
 import * as path from "path";
+import {Game} from "./game";
 
 let app = express();
 const expressWs = expressWsWrapper(app);
@@ -31,6 +32,9 @@ expressWs.app.ws('/', (ws, req) => {
 
 app.listen(3000);
 console.log(`Server listening on port 3000`);
+
+const game = new Game(4);
+
 
 
 function handleMessage(msg: Message) {
