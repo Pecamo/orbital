@@ -23,11 +23,13 @@
   "devDependencies": {
     "@types/express": "^4.17.1",
     "@types/express-ws": "^3.0.0",
+    "@types/lodash": "^4.14.137",
     "typescript": "^3.5.3"
   },
   "dependencies": {
     "@types/node": "^12.7.2",
     "express": "^4.17.1",
-    "express-ws": "^4.0.0"
+    "express-ws": "^4.0.0",
+    "lodash": "^4.17.15"
   }
 }

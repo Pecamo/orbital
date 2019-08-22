@@ -1,10 +1,11 @@
 import { Color } from "./color";
 import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
+import _ from 'lodash';
 
 interface GameState {
     players: {
-        [player: number]: {
+        [player: string]: {
             x: number,
             color: Color
             shotCooldown: number,
@@ -13,11 +14,12 @@ interface GameState {
         }
     }
     shots: {
-        owner: number,
+        owner: string,
         x: number,
         facesRight: boolean,
         age: number
     }[],
+    winner?: string
 }
 
 type inputKeys = 'right' | 'left' | 'fire'
@@ -85,6 +87,9 @@ export class Game {
 
     public toString() {
         let world = '';
+        if (this.gameState.winner) {
+            return `Winner : ${this.gameState.winner}`;
+        }
         for (let x = 0; x < this.stageSize; x++) {
             let char = '_';
             for (let playerId in this.gameState.players) {
@@ -117,16 +122,16 @@ export class Game {
         this.display.render();
         const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
         const newInputs = {
-            0: {
+            '0': {
                 [pressedKey]: !!Math.round(Math.random())
             },
-            1: {
+            '1': {
                 [pressedKey]: !!Math.round(Math.random())
             },
-            2: {
+            '2': {
                 [pressedKey]: !!Math.round(Math.random())
             },
-            3: {
+            '3': {
                 [pressedKey]: !!Math.round(Math.random())
             }
         };
@@ -143,8 +148,6 @@ export class Game {
 
     public frame = (newInputs: Partial<InputsState>) => {
         this.heldInputs = Game.nextInputs(this.heldInputs, newInputs);
-        // console.log('NEWINPUTS');
-        // console.log(this.heldInputs);
         this.gameState = this.nextState(this.gameState, this.heldInputs);
     };
 
@@ -158,37 +161,56 @@ export class Game {
 
     public nextState = (gameState: GameState, heldInputs: InputsState): GameState => {
         // End condition
-        if (Object.values(gameState.players).filter(p => p.alive) === 1) {
-
+        let alive = 0;
+        let lastAlive = '';
+        for (const playerId in this.gameState.players) {
+            const player = this.gameState.players[playerId];
+            if (player.alive) {
+                alive += 1;
+                lastAlive = playerId;
+            }
+        }
+        if (alive === 1) {
+            return Object.assign({}, gameState, {winner: lastAlive}) as GameState;
         }
 
-        const nextState = Object.assign({}, gameState) as GameState;
+        // Usual handle
+        const nextState = _.cloneDeep(gameState) as GameState;
 
         // Frame Players
         for (let key in nextState.players) {
             const player = nextState.players[key];
-            if (player.alive) {
-                if (player.shotCooldown > 0) {
-                    player.shotCooldown -= 1;
+            // Skip if player is dead
+            if (!player.alive) {
+                continue;
+            }
+            // Decrease show cooldown
+            player.shotCooldown = Math.max(0, player.shotCooldown - 1);
+            // Update movement or direction if any move key is pressed
+            if (heldInputs[key].left || heldInputs[key].right) {
+                const wantedMove = (heldInputs[key].left ? -1 : 0) + (heldInputs[key].right ? 1 : 0);
+                player.facesRight = wantedMove > 0;
+                const wantedPos = this.move(player.x, wantedMove);
+                // Check if any other player is already here
+                let free = true;
+                for (let pkey in nextState.players) {
+                    if (nextState.players[pkey].x === wantedPos) {
+                        free = false;
+                    }
                 }
-                if (heldInputs[key].left) {
-                    player.x = this.move(player.x, -1);
-                    player.facesRight = false;
+                if (free) {
+                    player.x = this.move(player.x, wantedMove);
                 }
-                if (heldInputs[key].right) {
-                    player.x = this.move(player.x, 1);
-                    player.facesRight = true;
-                }
-                if (heldInputs[key].fire && player.shotCooldown == 0) {
-                    const newShot = {
-                        owner: parseInt(key),
-                        x: player.x + (player.facesRight ? 2 : -2),
-                        facesRight: player.facesRight,
-                        age: 0
-                    };
-                    nextState.shots.push(newShot);
-                    nextState.players[key].shotCooldown = 8;
-                }
+            }
+            if (heldInputs[key].fire && player.shotCooldown == 0) {
+                const newShot = {
+                    owner: key,
+                    x: player.x + (player.facesRight ? 2 : -2),
+                    facesRight: player.facesRight,
+                    age: 0
+                };
+                nextState.shots.push(newShot);
+                nextState.players[key].shotCooldown = 8;
             }
         }
 
@@ -204,18 +226,18 @@ export class Game {
                 if (!player.alive) {
                     continue;
                 }
-                if (player.x === shot.x || player.x === this.move(shot.x, shot.facesRight ? -1 : 1) && `${shot.owner}` !== `${pkey}`) {
+                if (player.x === shot.x || player.x === this.move(shot.x, shot.facesRight ? -1 : 1) && shot.owner !== pkey) {
                     player.alive = false;
                     hit = true;
                 }
             }
             // Loop on other shots
-            /*for (let skey in nextState.shots) {
-                const other = nextState.shots[skey];
+            for (let skey in gameState.shots) {
+                const other = gameState.shots[skey];
                 if (other.x === shot.x || other.x === shot.x + (shot.facesRight ? -1 : 1) && shot.owner !== other.owner) {
                     hit = true;
                 }
-            }*/
+            }
             if (!hit && shot.age <= 14) {
                 const newShot = {
                     ...shot,
