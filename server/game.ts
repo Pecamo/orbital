@@ -17,7 +17,8 @@ interface GameState {
         owner: string,
         x: number,
         facesRight: boolean,
-        age: number
+        age: number,
+
     }[],
     winner?: string
 }
@@ -249,15 +250,36 @@ export class Game {
                 }
             }
             // Loop on other shots
-            /*
-            for (let skey in gameState.shots) {
-                const other = gameState.shots[skey];
-                if (other.x === shot.x || other.x === shot.x + (shot.facesRight ? -1 : 1) && shot.owner !== other.owner) {
-                    hit = true;
+            for (let skey in nextState.shots) {
+                const other = nextState.shots[skey];
+
+                const shot_0 = shot.x;
+                const shot_1 = this.move(shot.x, shot.facesRight ? 1 : -1);
+                const shot_2 = this.move(shot.x, shot.facesRight ? 2 : -2);
+
+                const other_0 = other.x;
+                const other_1 = this.move(other.x, other.facesRight ? 1 : -1);
+                const other_2 = this.move(other.x, other.facesRight ? 2 : -2);
+
+                if ((
+                  shot_0 === other_0 ||
+                  shot_0 === other_1 ||
+                  shot_0 === other_2 ||
+                  shot_1 === other_0 ||
+                  shot_1 === other_1 ||
+                  shot_1 === other_2 ||
+                  shot_2 === other_0 ||
+                  shot_2 === other_1 ||
+                  shot_2 === other_2
+                ) && other.owner !== shot.owner) {
+                    shot.age = 1000;
+                    other.age = 1000;
                 }
             }
-            */
-            if (!hit && shot.age <= 14) {
+        }
+        for (let key in nextState.shots) {
+            const shot = nextState.shots[key];
+            if (shot.age <= 14) {
                 const newShot = {
                     ...shot,
                     x: this.move(shot.x, shot.facesRight ? 2 : -2),
