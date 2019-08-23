@@ -4,10 +4,15 @@ import { CSMessage } from './types/Message';
 import * as path from "path";
 import { Game } from "./game";
 import { Display } from './display';
+import { fork } from 'child_process';
 
 let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
+const MINIMUM_PLAYERS = 2;
+const WAITING_TIME = 15 * 1000;
+let clients = [];
+let game = null;
 
 enum State {
     IDLE,
@@ -16,11 +21,9 @@ enum State {
     END,
 }
 
-let state: State = State.GAME;
+let state: State = State.IDLE;
 
 app.use((req, res, next) => {
-    console.log('middleware');
-
     return next();
 });
 
@@ -31,11 +34,26 @@ app.get('/', (req, res, next)=> {
 });
 
 expressWs.app.ws('/', (ws, req) => {
+    if (state === State.IDLE) {
+        clients.push(ws);
+
+        if (clients.length > MINIMUM_PLAYERS - 1) {
+            startWaiting();
+        }
+    } else if (state === State.WAITING) {
+        clients.push(ws);
+    }
+
     ws.on('message', (data) => {
         console.log(data);
         const msg: CSMessage = JSON.parse(data.toString());
         console.log(msg);
-        handleMessage(msg as CSMessage);
+        handleMessage(msg as CSMessage, ws);
+    });
+
+    ws.on('close', () => {
+        console.log('client close');
+        clients.splice(clients.indexOf(ws));
     });
 
     console.log('socket');
@@ -53,39 +71,43 @@ if (process.argv[2] === '--no-display') {
 
 const display: Display = new Display(NB_LED, isDisplay);
 
-nextState();
+// States of the Art
+function startWaiting() {
+    state = State.WAITING;
 
-function nextState() {
-    switch (state) {
-        case State.IDLE:
-            state = State.WAITING;
-            nextState();
-            break;
-        case State.WAITING:
-            state = State.GAME;
-            nextState();
-            break;
-            case State.GAME:
-                const game = new Game(4, display);
-                game.start().then(winner => {
-                    state = State.END;
-                    nextState();
-                });
-
-            break;
-        case State.END:
-            setInterval(() => {
-                state = State.IDLE;
-            }, 10000);
-
-            break;
-    }
+    setInterval(() => {
+        if (clients.length === 0) {
+            state = State.IDLE;
+        } else {
+            startGame();
+        }
+    }, WAITING_TIME);
 }
 
-function handleMessage(msg: CSMessage) {
+function startGame() {
+    state = State.GAME;
+
+    game = new Game(clients.length, display);
+    game.start().then(winner => {
+        endGame(winner);
+    });   
+}
+
+function endGame(winner: string) {
+    state = State.END;
+
+    setInterval(() => {
+        state = State.IDLE;
+    }, 10000);
+}
+
+function handleMessage(msg: CSMessage, ws) {
+    // game.gameState.players[clients.indexOf(ws)].color;
+
     // TODO this.game.newInputs = ???
+    /*
     switch (msg.cmd) {
-        case 'move':
+        case :
             break;
         case 'shoot':
             break;
@@ -95,4 +117,5 @@ function handleMessage(msg: CSMessage) {
             console.warn(`Unknown ws command: ${msg.cmd}`);
             break;
     }
+    */
 }
