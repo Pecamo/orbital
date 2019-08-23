@@ -1,17 +1,28 @@
-export interface Message {
+export interface BaseMessage {
     cmd: string;
-    data?: any,
+    data?: any;
 }
 
-export class MoveMessage implements Message {
-    public cmd = 'move';
-    public data = { directionRight: true };
+// Client -> Server
+export type CSMessage = KeyMessage | JoinMessage;
+
+export interface KeyMessage extends BaseMessage {
+    cmd: 'press' | 'release';
+    data: 'left' | 'right' | 'fire';
 }
 
-export class ShootMessage implements Message {
-    public cmd = 'shoot';
+export interface JoinMessage extends BaseMessage {
+    cmd: 'join';
 }
 
-export class ClearMessage implements Message {
-    public cmd = 'clear';
+// Server -> Server
+export type SCMessage = StateMessage | WaitMessage;
+
+export interface StateMessage extends BaseMessage {
+    cmd: 'welcome' | 'wait' | 'play' | 'won' | 'lost' | 'gameInProgress'
+}
+
+export interface WaitMessage extends BaseMessage {
+    cmd: 'getReady';
+    data: number;
 }
