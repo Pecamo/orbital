@@ -33,9 +33,14 @@ expressWs.app.ws('/', (ws, req) => {
 app.listen(3000);
 console.log(`Server listening on port 3000`);
 
-const game = new Game(4);
+let isDisplay: boolean = true;
+console.log(process.argv[2]);
 
+if (process.argv[2] === '--no-display') {
+    isDisplay = false;
+}
 
+const game = new Game(4, isDisplay);
 
 function handleMessage(msg: Message) {
     switch (msg.cmd) {

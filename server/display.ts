@@ -3,14 +3,16 @@ import { HtmlColors } from "./htmlColors";
 import { DisplayAPI } from "./display-api";
 
 export class Display {
-    constructor(public size: number) {}
+    constructor(public size: number, public isDisplay: boolean = true) {}
 
     private currentFrame: Color[] = this.newBlackArray(this.size);
     private nextFrame: Color[] = this.newBlackArray(this.size);
 
     public render(): void {
         // TODO play with LEDs
-        DisplayAPI.set(this.currentFrame);
+        if (this.isDisplay) {
+            DisplayAPI.set(this.currentFrame);
+        }
 
         // Keep at the end
         this.currentFrame = this.nextFrame;

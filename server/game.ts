@@ -35,10 +35,18 @@ interface InputsState {
 export class Game {
     public fps: number = 15;
     public stageSize: number = 300;
-    public display: Display = new Display(this.stageSize);
+    public display: Display;
     public gameState: GameState;
     public heldInputs: InputsState;
     public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow];
+
+    constructor(public numberOfPlayers: number, public isDisplay: boolean = true) {
+        this.display = new Display(this.stageSize, isDisplay);
+        this.gameState = this.startingGameState(numberOfPlayers);
+        this.heldInputs = Game.startingInputsState(numberOfPlayers);
+        // console.log(this.gameState);
+        this.tick();
+    }
 
     public move = (from, toAdd) => {
         return ((from + toAdd) + this.stageSize) % this.stageSize;
@@ -76,13 +84,6 @@ export class Game {
                 };
                 return acc;
             }, {});
-    }
-
-    constructor(public numberOfPlayers: number) {
-        this.gameState = this.startingGameState(numberOfPlayers);
-        this.heldInputs = Game.startingInputsState(numberOfPlayers);
-        // console.log(this.gameState);
-        this.tick();
     }
 
     public toString() {
@@ -148,9 +149,12 @@ export class Game {
                 [pressedKey]: !!Math.round(Math.random())
             }
         };
+
         this.frame(newInputs);
         // console.log(this.gameState);
-        console.log(this.toString());
+        if (!this.isDisplay) {
+            console.log(this.toString());
+        }
 
         // Loop timing, keep at the end
         const tickEnd: Date = new Date();
