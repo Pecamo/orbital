@@ -3,9 +3,20 @@ import expressWsWrapper from 'express-ws';
 import { Message } from './types/Message';
 import * as path from "path";
 import {Game} from "./game";
+import { Display } from './display';
 
 let app = express();
 const expressWs = expressWsWrapper(app);
+const NB_LED = 300;
+
+enum State {
+    IDLE,
+    WAITING,
+    GAME,
+    END,
+};
+
+let state: State = State.GAME;
 
 app.use((req, res, next) => {
     console.log('middleware');
@@ -40,9 +51,39 @@ if (process.argv[2] === '--no-display') {
     isDisplay = false;
 }
 
-const game = new Game(4, isDisplay);
+const display: Display = new Display(NB_LED, isDisplay);
+
+nextState();
+
+function nextState() {
+    switch (state) {
+        case State.IDLE:
+            state = State.WAITING;
+            nextState();
+            break;
+        case State.WAITING:
+            state = State.GAME;
+            nextState();
+            break;
+            case State.GAME:
+                const game = new Game(4, display);
+                game.start().then(winner => {
+                    state = State.END;
+                    nextState();
+                });
+    
+            break;
+        case State.END:
+            setInterval(() => {
+                state = State.IDLE;
+            }, 10000);
+
+            break;
+    }
+}
 
 function handleMessage(msg: Message) {
+    // TODO this.game.newInputs = ???
     switch (msg.cmd) {
         case 'move':
             break;

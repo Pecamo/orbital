@@ -36,17 +36,20 @@ interface InputsState {
 export class Game {
     public fps: number = 15;
     public stageSize: number = 300;
-    public display: Display;
     public gameState: GameState;
     public heldInputs: InputsState;
     public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow];
+    public newInputs: Partial<InputsState>;
 
-    constructor(public numberOfPlayers: number, public isDisplay: boolean = true) {
-        this.display = new Display(this.stageSize, isDisplay);
+    constructor(public numberOfPlayers: number, public display: Display) {
+        this.display = display;
         this.gameState = this.startingGameState(numberOfPlayers);
         this.heldInputs = Game.startingInputsState(numberOfPlayers);
         // console.log(this.gameState);
-        this.tick();
+    }
+
+    public start(): Promise<string> {
+        return this.tick();
     }
 
     public move = (from, toAdd) => {
@@ -92,6 +95,7 @@ export class Game {
         if (this.gameState.winner) {
             return `Winner : ${this.gameState.winner}`;
         }
+
         for (let x = 0; x < this.stageSize; x++) {
             let char = '_';
             for (let playerId in this.gameState.players) {
@@ -117,58 +121,63 @@ export class Game {
         return world;
     }
 
-    public tick() {
-        // Loop timing, keep at the beginning
-        const tickStart: Date = new Date();
+    public tick(): Promise<string> {
+        return new Promise<string>((resolve, ) => {
+            // Loop timing, keep at the beginning
+            const tickStart: Date = new Date();
 
-        // draw players
-        Object.keys(this.gameState.players).forEach(key => {
-            const player = this.gameState.players[key];
-            if (player.alive) {
-                this.display.drawDot(player.x, player.color);
+            // draw players
+            Object.keys(this.gameState.players).forEach(key => {
+                const player = this.gameState.players[key];
+                if (player.alive) {
+                    this.display.drawDot(player.x, player.color);
+                }
+            });
+
+            // draw shots
+            this.gameState.shots.forEach(shot => {
+                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 15));
+            });
+
+            this.display.render();
+
+            const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
+            
+            // demo mode
+            this.newInputs = {
+                '0': {
+                    [pressedKey]: !!Math.round(Math.random())
+                },
+                '1': {
+                    [pressedKey]: !!Math.round(Math.random())
+                },
+                '2': {
+                    [pressedKey]: !!Math.round(Math.random())
+                },
+                '3': {
+                    [pressedKey]: !!Math.round(Math.random())
+                }
+            };
+
+            this.heldInputs = Game.nextInputs(this.heldInputs, this.newInputs);
+            this.gameState = this.nextState(this.gameState, this.heldInputs);
+
+            if (this.gameState.winner) {
+                resolve(this.gameState.winner);
             }
-        });
 
-        // draw shots
-        this.gameState.shots.forEach(shot => {
-            this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 15));
-        });
-
-        this.display.render();
-
-        const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
-        const newInputs = {
-            '0': {
-                [pressedKey]: !!Math.round(Math.random())
-            },
-            '1': {
-                [pressedKey]: !!Math.round(Math.random())
-            },
-            '2': {
-                [pressedKey]: !!Math.round(Math.random())
-            },
-            '3': {
-                [pressedKey]: !!Math.round(Math.random())
+            // console.log(this.gameState);
+            if (!this.display.isDisplay) {
+                console.log(this.toString());
             }
-        };
 
-        this.frame(newInputs);
-        // console.log(this.gameState);
-        if (!this.isDisplay) {
-            console.log(this.toString());
-        }
-
-        // Loop timing, keep at the end
-        const tickEnd: Date = new Date();
-        const diff = tickStart.getTime() - tickEnd.getTime();
-        const waitingTime = 1 / this.fps * 1000 + diff;
-        setTimeout(() => this.tick(), waitingTime);
+            // Loop timing, keep at the end
+            const tickEnd: Date = new Date();
+            const diff = tickStart.getTime() - tickEnd.getTime();
+            const waitingTime = 1 / this.fps * 1000 + diff;
+            setTimeout(() => this.tick(), waitingTime);
+        });
     }
-
-    public frame = (newInputs: Partial<InputsState>) => {
-        this.heldInputs = Game.nextInputs(this.heldInputs, newInputs);
-        this.gameState = this.nextState(this.gameState, this.heldInputs);
-    };
 
     public static nextInputs(heldInputs: InputsState, newInputs: Partial<InputsState>): InputsState {
         const result = Object.assign({}, heldInputs);
