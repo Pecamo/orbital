@@ -1,7 +1,25 @@
 import axios from 'axios';
 
 export class DisplayAPI {
-    public static set(colors): Promise<any> {
+    private static lastFrameRendered: boolean = true;
+
+    public static set(colors): void {
+        if (this.lastFrameRendered) {
+            this.lastFrameRendered = false;
+
+            this.sendColors(colors)
+            .then(response => {
+                this.lastFrameRendered = true;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        } else {
+            console.warn('Frame dopped! Bad connection.');
+        }
+    }
+
+    public static sendColors(colors): Promise<any> {
         const sendData = { colors };
 
         const options = {
