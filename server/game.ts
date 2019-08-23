@@ -33,8 +33,8 @@ interface InputsState {
 }
 
 export class Game {
-    public fps: number = 14;
-    public stageSize: number = 180;
+    public fps: number = 15;
+    public stageSize: number = 300;
     public display: Display = new Display(this.stageSize);
     public gameState: GameState;
     public heldInputs: InputsState;
@@ -52,7 +52,7 @@ export class Game {
           .reduce((acc, curr, i) => {
               acc[curr] = {
                   x: Math.floor((this.stageSize / nbPlayers) * i),
-                  color: Color.getRandom(),
+                  color: this.playerColors.shift(),
                   shotCooldown: 0,
                   facesRight: 1,
                   alive: true
@@ -118,6 +118,19 @@ export class Game {
     public tick() {
         // Loop timing, keep at the beginning
         const tickStart: Date = new Date();
+
+        // draw players
+        Object.keys(this.gameState.players).forEach(key => {
+            const player = this.gameState.players[key];
+            if (player.alive) {
+                this.display.drawDot(player.x, player.color);
+            }
+        });
+
+        // draw shots
+        this.gameState.shots.forEach(shot => {
+            this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 15));
+        });
 
         this.display.render();
         const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
