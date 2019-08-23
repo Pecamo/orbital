@@ -14,8 +14,6 @@ export class DisplayAPI {
             .catch(error => {
                 console.error(error);
             });
-        } else {
-            console.warn('Frame dopped! Bad connection.');
         }
     }
 
