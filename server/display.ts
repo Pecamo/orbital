@@ -10,7 +10,7 @@ export class Display {
 
     public render(): void {
         // TODO play with LEDs
-        DisplayAPI.set(this.currentFrame);
+        // DisplayAPI.set(this.currentFrame);
 
         // Keep at the end
         this.currentFrame = this.nextFrame;
