@@ -178,23 +178,23 @@ export class Game {
         const nextState = _.cloneDeep(gameState) as GameState;
 
         // Frame Players
-        for (let key in nextState.players) {
-            const player = nextState.players[key];
+        for (let playerId in nextState.players) {
+            const player = nextState.players[playerId];
             // Skip if player is dead
             if (!player.alive) {
                 continue;
             }
             // Decrease show cooldown
             player.shotCooldown = Math.max(0, player.shotCooldown - 1);
-            // Update movement or direction if any move key is pressed
-            if (heldInputs[key].left || heldInputs[key].right) {
-                const wantedMove = (heldInputs[key].left ? -1 : 0) + (heldInputs[key].right ? 1 : 0);
+            // Update movement or direction if any move playerId is pressed
+            if (heldInputs[playerId].left || heldInputs[playerId].right) {
+                const wantedMove = (heldInputs[playerId].left ? -1 : 0) + (heldInputs[playerId].right ? 1 : 0);
                 player.facesRight = wantedMove > 0;
                 const wantedPos = this.move(player.x, wantedMove);
                 // Check if any other player is already here
                 let free = true;
-                for (let pkey in nextState.players) {
-                    if (nextState.players[pkey].x === wantedPos) {
+                for (let otherId in nextState.players) {
+                    if (nextState.players[otherId].x === wantedPos) {
                         free = false;
                     }
                 }
@@ -202,52 +202,54 @@ export class Game {
                     player.x = this.move(player.x, wantedMove);
                 }
             }
-            if (heldInputs[key].fire && player.shotCooldown == 0) {
+            if (heldInputs[playerId].fire && player.shotCooldown == 0) {
                 const newShot = {
-                    owner: key,
-                    x: player.x + (player.facesRight ? 2 : -2),
+                    owner: playerId,
+                    x: player.x + (player.facesRight ? 0 : -0),
                     facesRight: player.facesRight,
                     age: 0
                 };
                 nextState.shots.push(newShot);
-                nextState.players[key].shotCooldown = 8;
+                nextState.players[playerId].shotCooldown = 8;
             }
         }
 
         // Frame Shots
-        const newShots = [];
-        for (let key in gameState.shots) {
-            const shot = gameState.shots[key];
+        const nextShots = [];
+        for (let key in nextState.shots) {
+            const shot = nextState.shots[key];
             // Detect if it hits anything
             let hit = false;
             // Loop on players
-            for (let pkey in nextState.players) {
-                const player = nextState.players[pkey];
+            for (let playerId in nextState.players) {
+                const player = nextState.players[playerId];
                 if (!player.alive) {
                     continue;
                 }
-                if (player.x === shot.x || player.x === this.move(shot.x, shot.facesRight ? -1 : 1) && shot.owner !== pkey) {
+                if ((player.x === shot.x || player.x === this.move(shot.x, shot.facesRight ? -1 : 1)) && shot.owner !== playerId) {
                     player.alive = false;
                     hit = true;
                 }
             }
             // Loop on other shots
+            /*
             for (let skey in gameState.shots) {
                 const other = gameState.shots[skey];
                 if (other.x === shot.x || other.x === shot.x + (shot.facesRight ? -1 : 1) && shot.owner !== other.owner) {
                     hit = true;
                 }
             }
+            */
             if (!hit && shot.age <= 14) {
                 const newShot = {
                     ...shot,
                     x: this.move(shot.x, shot.facesRight ? 2 : -2),
                     age: shot.age + 1
                 };
-                newShots.push(newShot);
+                nextShots.push(newShot);
             }
         }
-        nextState.shots = newShots;
+        nextState.shots = nextShots;
         return nextState;
     }
 }
