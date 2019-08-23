@@ -1,5 +1,6 @@
 import { Color } from "./color";
 import { HtmlColors } from "./htmlColors";
+import { DisplayAPI } from "./display-api";
 
 export class Display {
     constructor(public size: number) {}
@@ -9,6 +10,7 @@ export class Display {
 
     public render(): void {
         // TODO play with LEDs
+        DisplayAPI.set(this.currentFrame);
 
         // Keep at the end
         this.currentFrame = this.nextFrame;
