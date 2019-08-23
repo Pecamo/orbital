@@ -68,6 +68,10 @@
             padding: 2vw;
         }
 
+        #welcome .button:disabled {
+            opacity: 0.4;
+        }
+
         #welcome .orbital {
             font-size: 4vw;
             margin-bottom: 2vw;
@@ -85,7 +89,7 @@
             max-width: 32%;
         }
 
-        #wait1, #wait2, #won, #lost, #gameInProgress {
+        #wait, #getReady, #won, #lost, #gameInProgress {
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -123,6 +127,10 @@
 </head>
 <body>
     <script>
+        state = {
+            activeScene: 'welcome'
+        };
+
         changeBaseColorFG = (color) => {
             root.style.setProperty('--base-color-fg', color);
         };
@@ -132,11 +140,12 @@
         };
 
         activateScene = (scene) => {
-            if (!['welcome', 'wait1', 'wait2', 'play', 'won', 'lost', 'gameInProgress']
+            if (!['welcome', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
                 .includes(scene)) {
                 console.error("This scene doesn't exist");
                 return;
             }
+            state.activeScene = scene;
             document
               .querySelectorAll('.scene')
               .forEach(e => e.classList.remove('active'));
@@ -144,10 +153,93 @@
               .querySelector('#' + scene).classList.add('active');
         };
 
-        state = {
-            view: 'welcome',
-            colorFG: '000000',
-            colorBG: '9e9e9e',
+        baseGray = 'bbb';
+        waitTime = 60;
+
+        ws = new WebSocket("ws://" + location.host + "/");
+
+        sendJSON = (message) => () => {
+            ws.send(JSON.stringify(message));
+        };
+
+        onJoinRelease = () => {
+            document.querySelector('#joinButton').setAttribute('disabled', true);
+            onJoin();
+        };
+
+        onJoinDisappear = () => {
+            document.querySelector('#joinButton').removeAttribute('disabled');
+        };
+
+        onJoin = sendJSON({cmd: 'join'});
+        onLeftPress = sendJSON({cmd: 'press', data: 'left'});
+        onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
+        onRightPress = sendJSON({cmd: 'press', data: 'right'});
+        onRightRelease = sendJSON({cmd: 'release', data: 'right'});
+        onFirePress = sendJSON({cmd: 'press', data: 'fire'});
+        onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
+
+        setWaitTime = (newTime) => {
+            waitTime = newTime;
+            document.querySelector('#startsIn').innerHTML = newTime;
+        };
+
+        decreaseWaitDaemon = () => {
+            if (state.activeScene === 'getReady') {
+                waitTime = Math.max(waitTime - 1, 0);
+                document.querySelector('#startsIn').innerHTML = waitTime;
+            }
+        };
+
+        setInterval(decreaseWaitDaemon, 1000);
+
+        onRecieve = (message) => {
+            var json = JSON.parse(message);
+            if (!json.cmd) {
+                console.error("Invalid message recieved");
+                return;
+            }
+            joinPressed = false;
+            switch (json.cmd) {
+                case 'welcome': {
+                    activateScene('welcome');
+                    changeBaseColorBG(baseGray);
+                    break;
+                }
+
+                case 'wait': {
+                    activateScene('wait');
+                    break;
+                }
+
+                case 'getReady': {
+                    activateScene('getReady');
+                    setWaitTime(json.data);
+                    changeBaseColorBG(message.color);
+                    break;
+                }
+
+                case 'play': {
+                    activateScene('play');
+                    changeBaseColorBG(message.color);
+                    break;
+                }
+
+                case 'won': {
+                    activateScene('won');
+                    break;
+                }
+
+                case 'lost': {
+                    activateScene('lost');
+                    break;
+                }
+
+                case 'gameInProgress': {
+                    activateScene('gameInProgress');
+                    break;
+                }
+            }
         }
     </script>
     <div id="container">
@@ -155,34 +247,34 @@
             <div class="background"></div>
             Welcome to
             <div class="orbital">ORBITAL</div>
-            <button class="button">
+            <button class="button" id="joinButton" onmouseup="onJoinRelease()">
                 Join a game
             </button>
         </div>
-        <div class="scene" id="wait1">
+        <div class="scene" id="wait">
             <div class="background"></div>
             Waiting for an opponent to connect...
         </div>
-        <div class="scene" id="wait2">
+        <div class="scene" id="getReady">
             <div class="background"></div>
             <p>Waiting for the game to start...</p>
-            <p>Starting in <span id="startsIn"></span> sec</p>
+            <p>Starting in ~ <span id="startsIn"></span> sec</p>
         </div>
         <div class="scene" id="play">
             <div class="background"></div>
-            <button class="left button">
+            <button class="left button" onmousedown="onLeftPress()" onmouseup="onLeftRelease()">
                 🢀
             </button>
-            <button class="fire button">
+            <button class="fire button" onmousedown="onFirePress()" onmouseup="onFireRelease()">
                 ⯌
             </button>
-            <button class="right button">
+            <button class="right button" onmousedown="onRightPress()" onmouseup="onRightRelease()">
                 🢂
             </button>
         </div>
         <div class="scene" id="won">
             <div class="background"></div>
-            <p>CONGRATULATIONS !</p>
+            <p>CONGRATULATIONS</p>
             <p>You won !</p>
         </div>
         <div class="scene" id="lost">

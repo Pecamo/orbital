@@ -1,8 +1,8 @@
 import express from 'express';
 import expressWsWrapper from 'express-ws';
-import { Message } from './types/Message';
+import { CSMessage } from './types/Message';
 import * as path from "path";
-import {Game} from "./game";
+import { Game } from "./game";
 import { Display } from './display';
 
 let app = express();
@@ -14,7 +14,7 @@ enum State {
     WAITING,
     GAME,
     END,
-};
+}
 
 let state: State = State.GAME;
 
@@ -33,9 +33,9 @@ app.get('/', (req, res, next)=> {
 expressWs.app.ws('/', (ws, req) => {
     ws.on('message', (data) => {
         console.log(data);
-        const msg: Message = JSON.parse(data.toString());
+        const msg: CSMessage = JSON.parse(data.toString());
         console.log(msg);
-        handleMessage(msg as Message);
+        handleMessage(msg as CSMessage);
     });
 
     console.log('socket');
@@ -71,7 +71,7 @@ function nextState() {
                     state = State.END;
                     nextState();
                 });
-    
+
             break;
         case State.END:
             setInterval(() => {
@@ -82,7 +82,7 @@ function nextState() {
     }
 }
 
-function handleMessage(msg: Message) {
+function handleMessage(msg: CSMessage) {
     // TODO this.game.newInputs = ???
     switch (msg.cmd) {
         case 'move':

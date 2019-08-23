@@ -7,7 +7,7 @@ interface GameState {
     players: {
         [player: string]: {
             x: number,
-            color: Color
+            color: Color,
             shotCooldown: number,
             facesRight: boolean,
             alive: boolean,
@@ -142,7 +142,7 @@ export class Game {
             this.display.render();
 
             const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
-            
+
             // demo mode
             this.newInputs = {
                 '0': {

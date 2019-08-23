@@ -16,13 +16,19 @@ export interface JoinMessage extends BaseMessage {
 }
 
 // Server -> Server
-export type SCMessage = StateMessage | WaitMessage;
+export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage;
 
-export interface StateMessage extends BaseMessage {
-    cmd: 'welcome' | 'wait' | 'play' | 'won' | 'lost' | 'gameInProgress'
+export interface SimpleStateMessage  extends BaseMessage {
+    cmd: 'welcome' | 'wait' | 'won' | 'lost' | 'gameInProgress'
 }
 
-export interface WaitMessage extends BaseMessage {
+export interface PlayMessage {
+    cmd: 'play';
+    color: string;
+}
+
+export interface GetReadyMessage extends BaseMessage {
     cmd: 'getReady';
     data: number;
+    color: string;
 }
