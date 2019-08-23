@@ -5,8 +5,8 @@ import { DisplayAPI } from "./display-api";
 export class Display {
     constructor(public size: number) {}
 
-    private currentFrame: Color[] = [];
-    private nextFrame: Color[] = [];
+    private currentFrame: Color[] = this.newBlackArray(this.size);
+    private nextFrame: Color[] = this.newBlackArray(this.size);
 
     public render(): void {
         // TODO play with LEDs
@@ -14,7 +14,7 @@ export class Display {
 
         // Keep at the end
         this.currentFrame = this.nextFrame;
-        this.nextFrame = [];
+        this.nextFrame = this.newBlackArray(this.size);
     }
 
     public drawDot(index: number, color: Color): void {
@@ -48,5 +48,15 @@ export class Display {
 
     public clear(): void {
         this.drawLine(0, this.size, HtmlColors.black);
+    }
+
+    private newBlackArray(length: number): Color[] {
+        const arr: Color[] = [];
+
+        for (let i = 0; i < length; i++) {
+            arr[i] = HtmlColors.black;
+        }
+
+        return arr;
     }
 }
