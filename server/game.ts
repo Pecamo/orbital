@@ -14,7 +14,7 @@ export type Player = {
 
 interface GameState {
     players: Player[];
-    
+
     shots: {
         owner: string,
         x: number,
@@ -58,11 +58,13 @@ export class Game {
     public startingGameState = (nbPlayers: number) => {
         const players = [];
 
+        const colors = Color.getRange(nbPlayers);
+
         for (let i = 0; i < nbPlayers; i++) {
             players.push({
                 id: i,
                 x: Math.floor((this.stageSize / nbPlayers) * i),
-                color: this.playerColors.shift(),
+                color: colors[i],
                 shotCooldown: 0,
                 facesRight: true,
                 alive: true
@@ -140,7 +142,7 @@ export class Game {
 
             this.display.render();
 
-            
+
             // demo mode
             // const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
             // this.newInputs = {

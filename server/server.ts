@@ -4,15 +4,16 @@ import { CSMessage, SCMessage } from './types/Message';
 import * as path from "path";
 import { Game } from "./game";
 import { Display } from './display';
+import { Color } from './color';
 
 let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const WAITING_TIME = 3 * 1000;
-const END_SCREEN_TIME = 5 * 1000;
+const WAITING_TIME = 20 * 1000;
 let clients: WebSocket[] = [];
 let game: Game = null;
+let startTime = (new Date()).getTime();
 
 enum State {
     IDLE,
@@ -63,38 +64,37 @@ if (process.argv.includes('--no-display')) {
 const invertOrientation = process.argv.includes('--invert');
 const display: Display = new Display(NB_LED, isDisplay, invertOrientation);
 
-// States of the Art
 function startWaiting() {
+// States of the Art
+    startTime = (new Date()).getTime();
     state = State.WAITING;
-    const startTime = (new Date()).getTime();
-
-    game = new Game(clients.length, display);
 
     const cooldown = setInterval(() => {
         if (clients.length === 0) {
             state = State.IDLE;
             clients = [];
-            clearInterval(wait);
         }
+        const colors = Color.getRange(clients.length);
+        const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
+        clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: Math.round(diffTime), color: colors[i].toString() }));
 
-        const diffTime = Math.round((WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000);
-        clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: diffTime, color: game.gameState.players[i].color.toString() }));
-    }, 500);
-
-    const wait = setTimeout(() => {
-        clearInterval(cooldown);
 
         if (clients.length === 0) {
             state = State.IDLE;
             clients = [];
         } else {
-            startGame();
+            if (diffTime <= 0) {
+                clearInterval(cooldown);
+                startGame();
+            }
         }
-    }, WAITING_TIME);
+    }, 500);
 }
 
 function startGame() {
     state = State.GAME;
+
+    game = new Game(clients.length, display);
 
     clients.forEach((c, i) => sendMsg(c, { cmd: 'play', color: game.gameState.players[i].color.toString() }));
 
@@ -129,6 +129,7 @@ function handleMessage(msg: CSMessage, ws) {
                 }
             } else if (state === State.WAITING) {
                 clients.push(ws);
+                startTime = (new Date()).getTime();
             } else {
                 sendMsg(ws, { cmd: 'gameInProgress' });
             }
