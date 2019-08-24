@@ -115,7 +115,7 @@ function endGame(winnerIndex: number) {
 }
 
 function handleMessage(msg: CSMessage, ws) {
-    // game.gameState.players[clients.indexOf(ws)].color;
+    console.log(JSON.stringify(msg));
     // TODO this.game.newInputs = ???
     switch (msg.cmd) {
         case 'join':

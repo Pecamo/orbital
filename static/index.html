@@ -168,6 +168,11 @@
             border: 0;
         }
 
+        .button.retry {
+            padding: 10px;
+            font-size: 2vw;
+        }
+
         .button:active {
             filter: brightness(1.2);
         }
@@ -226,19 +231,19 @@
             <div class="background"></div>
             <p style="color: var(--base-color-bg);">CONGRATULATIONS</p>
             <p>You won !</p>
-            <button class="button" onclick="activateScene('welcome')">Play again</button>
+            <button class="button retry" onclick="activateScene('welcome')">Play again</button>
         </div>
         <div class="scene" id="lost">
             <div class="background"></div>
             <p>GAME OVER</p>
             <p>You died.</p>
-            <button class="button" onclick="activateScene('welcome')">Play again</button>
+            <button class="button retry" onclick="activateScene('welcome')">Play again</button>
         </div>
         <div class="scene" id="gameInProgress">
             <div class="background"></div>
             <p>A game is currently in progress.</p>
             <p>Spectate and be ready for the next game !</p>
-            <button class="button" onclick="activateScene('welcome')">Try again</button>
+            <button class="button retry" onclick="activateScene('welcome')">Try again</button>
         </div>
     </div>
     <script>
@@ -280,6 +285,9 @@
           .includes(scene)) {
           console.error("This scene doesn't exist");
           return;
+        }
+        if (scene === 'lost' || scene === 'won') {
+          window.navigator.vibrate(200);
         }
         if (scene === 'welcome') {
           changeBaseColorBG(baseGray);
