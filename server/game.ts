@@ -137,7 +137,7 @@ export class Game {
 
             // draw shots
             this.gameState.shots.forEach(shot => {
-                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 15));
+                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 25));
             });
 
             this.display.render();
@@ -196,7 +196,7 @@ export class Game {
             if (!player.alive) {
                 continue;
             }
-            // Decrease show cooldown
+            // Decrease shot cooldown
             player.shotCooldown = Math.max(0, player.shotCooldown - 1);
             // Update movement or direction if any move playerId is pressed
             if (heldInputs[playerId].left || heldInputs[playerId].right) {
@@ -205,9 +205,11 @@ export class Game {
                 const wantedPos = this.move(player.x, wantedMove);
                 // Check if any other player is already here
                 let free = true;
-                for (let otherId in nextState.players.filter(p => p.alive)) {
-                    if (nextState.players[otherId].x === wantedPos) {
+                const alives = nextState.players.filter(p => p.alive);
+                for (let otherId in alives) {
+                    if (alives[otherId].x === wantedPos) {
                         free = false;
+                        console.log(otherId, ' BLOCKS ', player.id);
                     }
                 }
                 if (free) {
@@ -217,7 +219,7 @@ export class Game {
             if (heldInputs[playerId].fire && player.shotCooldown == 0) {
                 const newShot = {
                     owner: playerId,
-                    x: player.x + (player.facesRight ? 0 : -0),
+                    x: player.x,
                     facesRight: player.facesRight,
                     age: 0
                 };
