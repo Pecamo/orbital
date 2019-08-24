@@ -19,6 +19,10 @@ export class Color {
         );
     }
 
+    public toString(): string {
+        return `rgb(${this.r},${this.g},${this.b})`;
+    }
+
     constructor(public r: number, public g: number, public b: number, public w?: number) {}
 }
 

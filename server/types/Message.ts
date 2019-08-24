@@ -15,7 +15,7 @@ export interface JoinMessage extends BaseMessage {
     cmd: 'join';
 }
 
-// Server -> Server
+// Server -> Client
 export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage;
 
 export interface SimpleStateMessage  extends BaseMessage {
