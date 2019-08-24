@@ -40,16 +40,14 @@ expressWs.app.ws('/', (ws, req) => {
     });
 
     ws.on('close', () => {
-        console.log('client close');
         clients.splice(clients.indexOf(ws as any as string as any as number as any as boolean as any as WebSocket));
 
         if (clients.length === 0) {
             state = State.IDLE;
+            clients = [];
             game = null;
         }
     });
-
-    console.log('socket');
 });
 
 app.listen(3000);
@@ -74,6 +72,7 @@ function startWaiting() {
     const cooldown = setInterval(() => {
         if (clients.length === 0) {
             state = State.IDLE;
+            clients = [];
             clearInterval(wait);
         }
 
@@ -86,6 +85,7 @@ function startWaiting() {
 
         if (clients.length === 0) {
             state = State.IDLE;
+            clients = [];
         } else {
             startGame();
         }
@@ -110,7 +110,7 @@ function endGame(winnerIndex: number) {
     clients.filter(c => c !== winner).forEach(c => sendMsg(c, { cmd: 'lost' }));
 
 
-    setInterval(() => {
+    setTimeout(() => {
         state = State.IDLE;
         broadcastMsg({ cmd: 'welcome' });
         clients = [];

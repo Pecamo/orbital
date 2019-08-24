@@ -45,7 +45,6 @@ export class Game {
         this.newInputs = [];
         this.gameState = this.startingGameState(numberOfPlayers);
         this.heldInputs = Game.startingInputsState(numberOfPlayers);
-        // console.log(this.gameState);
     }
 
     public start(): Promise<number> {
@@ -57,8 +56,6 @@ export class Game {
     };
 
     public startingGameState = (nbPlayers: number) => {
-        console.log(nbPlayers);
-        console.log([...Array(nbPlayers).keys()]);
         const players = [];
 
         for (let i = 0; i < nbPlayers; i++) {
@@ -169,7 +166,6 @@ export class Game {
                 return;
             }
 
-            // console.log(this.gameState);
             if (!this.display.isDisplay) {
                 console.log(this.toString());
             }
