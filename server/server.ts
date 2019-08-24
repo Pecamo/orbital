@@ -137,9 +137,17 @@ function handleMessage(msg: CSMessage, ws) {
             }
             break;
         case 'press':
+            if (!game.newInputs[clients.indexOf(ws)]) {
+                game.newInputs[clients.indexOf(ws)] = {};
+            }
+
             game.newInputs[clients.indexOf(ws)][msg.data] = true;
             break;
         case 'release':
+            if (!game.newInputs[clients.indexOf(ws)]) {
+                game.newInputs[clients.indexOf(ws)] = {};
+            }
+
             game.newInputs[clients.indexOf(ws)][msg.data] = false;
             break;
         default:

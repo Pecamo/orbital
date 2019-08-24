@@ -3,16 +3,18 @@ import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
 import _ from 'lodash';
 
+export type Player = {
+    id: number,
+    x: number,
+    color: Color,
+    shotCooldown: number,
+    facesRight: boolean,
+    alive: boolean,
+}
+
 interface GameState {
-    players: {
-        [player: string]: {
-            x: number,
-            color: Color,
-            shotCooldown: number,
-            facesRight: boolean,
-            alive: boolean,
-        }
-    }
+    players: Player[];
+    
     shots: {
         owner: string,
         x: number,
@@ -28,9 +30,7 @@ type Inputs = {
     [key in inputKeys]: boolean
 }
 
-interface InputsState {
-    [player: number]: Partial<Inputs>
-}
+type InputsState = Array<Partial<Inputs>>;
 
 export class Game {
     public fps: number = 15;
@@ -58,18 +58,19 @@ export class Game {
     public startingGameState = (nbPlayers: number) => {
         console.log(nbPlayers);
         console.log([...Array(nbPlayers).keys()]);
-        const players = [...Array(nbPlayers).keys()]
-          .map((e, i) => i)
-          .reduce((acc, curr, i) => {
-              acc[curr] = {
-                  x: Math.floor((this.stageSize / nbPlayers) * i),
-                  color: this.playerColors.shift(),
-                  shotCooldown: 0,
-                  facesRight: 1,
-                  alive: true
-              };
-              return acc;
-          }, {});
+        const players = [];
+
+        for (let i = 0; i < nbPlayers; i++) {
+            players.push({
+                id: i,
+                x: Math.floor((this.stageSize / nbPlayers) * i),
+                color: this.playerColors.shift(),
+                shotCooldown: 0,
+                facesRight: true,
+                alive: true
+            });
+        }
+
         return {
             players,
             shots: []
@@ -77,16 +78,17 @@ export class Game {
     };
 
     public static startingInputsState(nbPlayers: number) {
-        return [...Array(nbPlayers).keys()]
-            .map((e, i) => i)
-            .reduce((acc, curr) => {
-                acc[curr] = {
-                    left: false,
-                    right: false,
-                    fire: false,
-                };
-                return acc;
-            }, {});
+        const inputs = [];
+
+        for (let i = 0; i < nbPlayers; i++) {
+            inputs.push({
+                left: false,
+                right: false,
+                fire: false,
+            });
+        }
+
+        return inputs;
     }
 
     public toString() {
@@ -124,6 +126,7 @@ export class Game {
         return new Promise<string>((resolve, ) => {
             // Loop timing, keep at the beginning
             const tickStart: Date = new Date();
+            this.newInputs = [];
 
             // draw players
             Object.keys(this.gameState.players).forEach(key => {
@@ -140,23 +143,23 @@ export class Game {
 
             this.display.render();
 
-            const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
-
+            
             // demo mode
-            this.newInputs = {
-                '0': {
-                    [pressedKey]: !!Math.round(Math.random())
-                },
-                '1': {
-                    [pressedKey]: !!Math.round(Math.random())
-                },
-                '2': {
-                    [pressedKey]: !!Math.round(Math.random())
-                },
-                '3': {
-                    [pressedKey]: !!Math.round(Math.random())
-                }
-            };
+            // const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
+            // this.newInputs = {
+            //     '0': {
+            //         [pressedKey]: !!Math.round(Math.random())
+            //     },
+            //     '1': {
+            //         [pressedKey]: !!Math.round(Math.random())
+            //     },
+            //     '2': {
+            //         [pressedKey]: !!Math.round(Math.random())
+            //     },
+            //     '3': {
+            //         [pressedKey]: !!Math.round(Math.random())
+            //     }
+            // };
 
             this.heldInputs = Game.nextInputs(this.heldInputs, this.newInputs);
             this.gameState = this.nextState(this.gameState, this.heldInputs);
