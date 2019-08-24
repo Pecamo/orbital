@@ -186,7 +186,7 @@
             <div class="background"></div>
             Welcome to
             <div class="orbital">ORBITAL</div>
-            <button class="button" id="joinButton" onmouseup="onJoinRelease()()">
+            <button class="button" id="joinButton" onmouseup="onJoinRelease()">
                 Join a game
             </button>
         </div>
@@ -404,7 +404,6 @@
       };
 
       ws.onmessage = (evt) => {
-        console.log(evt);
         onRecieve(evt.data);
       };
 
