@@ -33,7 +33,7 @@ export type Inputs = {
 type InputsState = Array<Partial<Inputs>>;
 
 export class Game {
-    public fps: number = 60;
+    public fps: number = 20;
     public stageSize: number = 300;
     public gameState: GameState;
     public heldInputs: InputsState;
@@ -137,7 +137,7 @@ export class Game {
 
             // draw shots
             this.gameState.shots.forEach(shot => {
-                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 25));
+                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 17));
             });
 
             this.display.render();
