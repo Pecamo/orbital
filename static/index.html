@@ -212,13 +212,13 @@
         </div>
         <div class="scene" id="play">
             <div class="background"></div>
-            <button class="left button" id="leftButton" onmousedown="onLeftPress()">
+            <button class="left button" id="leftButton">
                 🢀
             </button>
-            <button class="fire button" id="fireButton" onmousedown="onFirePress()">
+            <button class="fire button" id="fireButton">
                 ⯌
             </button>
-            <button class="right button" id="rightButton" onmousedown="onRightPress()">
+            <button class="right button" id="rightButton">
                 🢂
             </button>
         </div>
@@ -309,20 +309,47 @@
       onFirePress = sendJSON({cmd: 'press', data: 'fire'});
       onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
 
-      document.querySelector('#leftButton').addEventListener("mouseup", (e) => {
+      var leftDown = (e) => {
+        return onLeftPress(e);
+      };
+      var rightDown = (e) => {
+        return onRightPress(e);
+      };
+      var fireDown = (e) => {
+        return onFirePress(e);
+      };
+
+      var leftUp = (e) => {
         e.target.blur();
         return onLeftRelease(e);
-      });
-
-      document.querySelector('#fireButton').addEventListener("mouseup", (e) => {
-        e.target.blur();
-        return onFireRelease(e);
-      });
-
-      document.querySelector('#rightButton').addEventListener("mouseup", (e) => {
+      };
+      var rightUp = (e) => {
         e.target.blur();
         return onRightRelease(e);
-      });
+      };
+      var fireUp = (e) => {
+        e.target.blur();
+        return onFireRelease(e);
+      };
+      document.querySelector('#leftButton').addEventListener("mousedown", leftDown);
+      document.querySelector('#leftButton').addEventListener("touchstart", leftDown);
+
+      document.querySelector('#fireButton').addEventListener("mousedown", fireDown);
+      document.querySelector('#fireButton').addEventListener("touchstart", fireDown);
+
+      document.querySelector('#rightButton').addEventListener("mousedown", rightDown);
+      document.querySelector('#rightButton').addEventListener("touchstart", rightDown);
+
+
+      document.querySelector('#leftButton').addEventListener("mouseup", leftUp);
+      document.querySelector('#leftButton').addEventListener("touchend", leftUp);
+
+      document.querySelector('#fireButton').addEventListener("mouseup", fireUp);
+      document.querySelector('#fireButton').addEventListener("touchend", fireUp);
+
+      document.querySelector('#rightButton').addEventListener("mouseup", rightUp);
+      document.querySelector('#rightButton').addEventListener("touchend", rightUp);
+
 
       setWaitTime = (newTime) => {
         waitTime = newTime;

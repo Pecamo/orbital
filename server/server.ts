@@ -100,7 +100,7 @@ function startGame() {
 
     game.start().then(winner => {
         endGame(winner);
-    });   
+    });
 }
 
 function endGame(winnerIndex: number) {
@@ -120,7 +120,6 @@ function endGame(winnerIndex: number) {
 
 function handleMessage(msg: CSMessage, ws) {
     // game.gameState.players[clients.indexOf(ws)].color;
-
     // TODO this.game.newInputs = ???
     switch (msg.cmd) {
         case 'join':
