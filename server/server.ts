@@ -78,7 +78,7 @@ function startWaiting() {
             clearInterval(wait);
         }
 
-        const diffTime = (new Date()).getTime() - startTime;
+        const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
         clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: diffTime, color: game.gameState.players[i].color.toString() }));
     }, 500)
 
