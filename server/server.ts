@@ -41,7 +41,7 @@ expressWs.app.ws('/', (ws, req) => {
     });
 
     ws.on('close', () => {
-        clients.splice(clients.indexOf(ws as any as string as any as number as any as boolean as any as WebSocket));
+        clients.splice(clients.indexOf(ws as any as string as any as number as any as boolean as any as WebSocket), 1);
 
         if (clients.length === 0) {
             state = State.IDLE;
