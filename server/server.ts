@@ -14,6 +14,7 @@ const WAITING_TIME = 20 * 1000;
 let clients: WebSocket[] = [];
 let game: Game = null;
 let startTime = (new Date()).getTime();
+let currentDisplayAnim;
 
 enum State {
     IDLE,
@@ -64,20 +65,23 @@ if (process.argv.includes('--no-display')) {
 const invertOrientation = process.argv.includes('--invert');
 const display: Display = new Display(NB_LED, isDisplay, invertOrientation);
 
-function startWaiting() {
 // States of the Art
+function startWaiting() {
     startTime = (new Date()).getTime();
     state = State.WAITING;
+    stopCurrentAnimation();
 
     const cooldown = setInterval(() => {
         if (clients.length === 0) {
             state = State.IDLE;
             clients = [];
         }
+
         const colors = Color.getRange(clients.length);
         const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
         clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: Math.round(diffTime), color: colors[i].toString() }));
 
+        displayWaitingColor(1 - diffTime / (WAITING_TIME / 1000));
 
         if (clients.length === 0) {
             state = State.IDLE;
@@ -88,7 +92,7 @@ function startWaiting() {
                 startGame();
             }
         }
-    }, 500);
+    }, 15);
 }
 
 function startGame() {
@@ -107,6 +111,8 @@ function endGame(winnerIndex: number) {
     state = State.END;
 
     const winner: WebSocket = clients[winnerIndex];
+    displayWinnerColor(game.gameState.players[winnerIndex].color);
+
     sendMsg(winner, { cmd: 'won' });
     clients.filter(c => c !== winner).forEach(c => sendMsg(c, { cmd: 'lost' }));
     clients = [];
@@ -160,4 +166,38 @@ function broadcastMsg(msg: SCMessage) {
 
 function sendMsg(client: WebSocket, msg: SCMessage) {
     client.send(JSON.stringify(msg));
+}
+
+function displayWinnerColor(color: Color) {
+    stopCurrentAnimation();
+
+    let it = 0;
+    currentDisplayAnim = setInterval(() => {
+        if (it <= 255) {
+            display.drawAll(color.withOpactiy(1 - it / 255));
+            display.render();
+        } else {
+            display.drawAll(color.withOpactiy((it - 255) / 255));
+            display.render();
+        }
+        if (it > 512) {
+            it = 0;
+        }
+        it += 5;
+    }, 20);
+}
+
+function displayWaitingColor(percentage: number) {
+    stopCurrentAnimation();
+
+    const color: Color = new Color(percentage * 255, 0, (1 - percentage) * 255);
+
+    display.drawLine(0, Math.floor(NB_LED * percentage), color);
+    display.render();
+}
+
+function stopCurrentAnimation() {
+    if (currentDisplayAnim) {
+        clearInterval(currentDisplayAnim);
+    }
 }

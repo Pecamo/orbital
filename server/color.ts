@@ -23,6 +23,22 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
+    public withOpactiy(opacity): Color {
+        return new Color(
+            Math.round(this.r * opacity),
+            Math.round(this.g * opacity),
+            Math.round(this.b * opacity),
+            Math.round(this.w * opacity),
+        );
+    }
+
+    public safe() {
+        this.r = Math.max(0, Math.min(this.r, 255));
+        this.g = Math.max(0, Math.min(this.g, 255));
+        this.b = Math.max(0, Math.min(this.b, 255));
+        this.w = Math.max(0, Math.min(this.w, 255));
+    }
+
     public static getRange(nb: number): Color[] {
         const tintIncrement = 256 * 6 / nb;
         return [...Array(nb).keys()].map(c => {
@@ -47,7 +63,7 @@ export class Color {
         });
     }
 
-    constructor(public r: number, public g: number, public b: number, public w?: number) {}
+    constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
 }
 
 export type LEDStrip = Color[];
