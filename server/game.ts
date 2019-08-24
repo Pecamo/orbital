@@ -38,7 +38,7 @@ export class Game {
     public stageSize: number = 300;
     public gameState: GameState;
     public heldInputs: InputsState;
-    public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow];
+    public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
     public newInputs: Partial<InputsState>;
 
     constructor(public numberOfPlayers: number, public display: Display) {
