@@ -186,7 +186,7 @@
             <div class="background"></div>
             Welcome to
             <div class="orbital">ORBITAL</div>
-            <button class="button" id="joinButton" onmouseup="onJoinRelease()">
+            <button class="button" id="joinButton" onmouseup="onJoinRelease()()">
                 Join a game
             </button>
         </div>
@@ -201,13 +201,13 @@
         </div>
         <div class="scene" id="play">
             <div class="background"></div>
-            <button class="left button" onmousedown="onLeftPress()" onmouseup="onLeftRelease()">
+            <button class="left button" id="leftButton" onmousedown="onLeftPress()">
                 🢀
             </button>
-            <button class="fire button" onmousedown="onFirePress()" onmouseup="onFireRelease()">
+            <button class="fire button" id="fireButton" onmousedown="onFirePress()">
                 ⯌
             </button>
-            <button class="right button" onmousedown="onRightPress()" onmouseup="onRightRelease()">
+            <button class="right button" id="rightButton" onmousedown="onRightPress()">
                 🢂
             </button>
         </div>
@@ -271,7 +271,7 @@
           return;
         }
         if (scene === 'welcome') {
-          changeBaseColorFG(baseGray);
+          changeBaseColorBG(baseGray);
         }
         state.activeScene = scene;
         document
@@ -281,7 +281,7 @@
           .querySelector('#' + scene).classList.add('active');
       };
 
-      baseGray = '#bbb';
+      baseGray = '#8e8e8e';
       waitTime = 60;
 
       ws = new WebSocket("ws://" + location.host + "/");
@@ -297,6 +297,21 @@
       onRightRelease = sendJSON({cmd: 'release', data: 'right'});
       onFirePress = sendJSON({cmd: 'press', data: 'fire'});
       onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
+
+      document.querySelector('#leftButton').addEventListener("mouseup", (e) => {
+        e.target.blur();
+        return onLeftRelease(e);
+      });
+
+      document.querySelector('#fireButton').addEventListener("mouseup", (e) => {
+        e.target.blur();
+        return onFireRelease(e);
+      });
+
+      document.querySelector('#rightButton').addEventListener("mouseup", (e) => {
+        e.target.blur();
+        return onRightRelease(e);
+      });
 
       setWaitTime = (newTime) => {
         waitTime = newTime;
@@ -318,7 +333,7 @@
       };
 
       onKeyDown = (e) => {
-        if (!state.activeScene === 'play') {
+        if (state.activeScene !== 'play') {
           return;
         }
         if (e.key in bindings) {
@@ -327,7 +342,7 @@
       };
 
       onKeyUp = (e) => {
-        if (!state.activeScene === 'play') {
+        if (state.activeScene !== 'play') {
           return;
         }
         if (e.key in bindings) {
