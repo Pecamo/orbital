@@ -4,6 +4,7 @@ import { CSMessage, SCMessage } from './types/Message';
 import * as path from "path";
 import { Game } from "./game";
 import { Display } from './display';
+import { Color } from './color';
 
 let app = express();
 const expressWs = expressWsWrapper(app);
@@ -68,33 +69,32 @@ function startWaiting() {
     startTime = (new Date()).getTime();
     state = State.WAITING;
 
-    game = new Game(clients.length, display);
-
     const cooldown = setInterval(() => {
         if (clients.length === 0) {
             state = State.IDLE;
             clients = [];
-            clearInterval(wait);
         }
+        const colors = Color.getRange(clients.length);
+        const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
+        clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: Math.round(diffTime), color: colors[i].toString() }));
 
-        const diffTime = Math.round((WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000);
-        clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: diffTime, color: game.gameState.players[i].color.toString() }));
-    }, 500);
-
-    const wait = setTimeout(() => {
-        clearInterval(cooldown);
 
         if (clients.length === 0) {
             state = State.IDLE;
             clients = [];
         } else {
-            startGame();
+            if (diffTime <= 0) {
+                clearInterval(cooldown);
+                startGame();
+            }
         }
-    }, WAITING_TIME);
+    }, 500);
 }
 
 function startGame() {
     state = State.GAME;
+
+    game = new Game(clients.length, display);
 
     clients.forEach((c, i) => sendMsg(c, { cmd: 'play', color: game.gameState.players[i].color.toString() }));
 

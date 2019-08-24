@@ -23,7 +23,7 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
-    public getRange(nb: number): Color[] {
+    public static getRange(nb: number): Color[] {
         const tintIncrement = 256 * 6 / nb;
         return [...Array(nb).keys()].map(c => {
             const tint = tintIncrement * c;
