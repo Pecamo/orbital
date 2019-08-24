@@ -23,6 +23,30 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
+    public getRange(nb: number): Color[] {
+        const tintIncrement = 256 * 6 / nb;
+        return [...Array(nb).keys()].map(c => {
+            const tint = tintIncrement * c;
+            const phase = tint % 256;
+            if (tint < 256) {
+                return new Color(255, phase, 0);
+            }
+            if (tint < 256 * 2) {
+                return new Color(255 - phase, 255, 0);
+            }
+            if (tint < 256 * 3) {
+                return new Color(0, 255, phase);
+            }
+            if (tint < 256 * 4) {
+                return new Color(0, 255 - phase, 255);
+            }
+            if (tint < 256 * 5) {
+                return new Color(phase, 0, 255);
+            }
+            return new Color(255, 0, 255 -phase);
+        });
+    }
+
     constructor(public r: number, public g: number, public b: number, public w?: number) {}
 }
 
