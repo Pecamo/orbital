@@ -254,7 +254,17 @@
         document.documentElement.style.setProperty('--base-color-bg', color);
       };
 
+      onJoinRelease = () => {
+        document.querySelector('#joinButton').setAttribute('disabled', true);
+        onJoin();
+      };
+
+      onJoinDisappear = () => {
+        document.querySelector('#joinButton').removeAttribute('disabled');
+      };
+
       activateScene = (scene) => {
+        onJoinDisappear();
         if (!['welcome', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
           .includes(scene)) {
           console.error("This scene doesn't exist");
@@ -278,15 +288,6 @@
 
       sendJSON = (message) => () => {
         ws.send(JSON.stringify(message));
-      };
-
-      onJoinRelease = () => {
-        document.querySelector('#joinButton').setAttribute('disabled', true);
-        onJoin();
-      };
-
-      onJoinDisappear = () => {
-        document.querySelector('#joinButton').removeAttribute('disabled');
       };
 
       onJoin = sendJSON({cmd: 'join'});
