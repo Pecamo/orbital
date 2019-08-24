@@ -3,7 +3,7 @@ import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
 import _ from 'lodash';
 
-export type Player = {
+export type Character = {
     id: number,
     x: number,
     color: Color,
@@ -13,7 +13,7 @@ export type Player = {
 }
 
 interface GameState {
-    players: Player[];
+    players: Character[];
 
     shots: {
         owner: string,
@@ -26,7 +26,7 @@ interface GameState {
 
 type inputKeys = 'right' | 'left' | 'fire'
 
-type Inputs = {
+export type Inputs = {
     [key in inputKeys]: boolean
 }
 
@@ -141,24 +141,6 @@ export class Game {
             });
 
             this.display.render();
-
-
-            // demo mode
-            // const pressedKey = ['right', 'left', 'fire'][Math.floor(Math.random()*3)];
-            // this.newInputs = {
-            //     '0': {
-            //         [pressedKey]: !!Math.round(Math.random())
-            //     },
-            //     '1': {
-            //         [pressedKey]: !!Math.round(Math.random())
-            //     },
-            //     '2': {
-            //         [pressedKey]: !!Math.round(Math.random())
-            //     },
-            //     '3': {
-            //         [pressedKey]: !!Math.round(Math.random())
-            //     }
-            // };
 
             this.heldInputs = Game.nextInputs(this.heldInputs, this.newInputs);
             this.gameState = this.nextState(this.gameState, this.heldInputs);
