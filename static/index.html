@@ -215,16 +215,19 @@
             <div class="background"></div>
             <p style="color: var(--base-color-bg);">CONGRATULATIONS</p>
             <p>You won !</p>
+            <button class="button" onclick="activateScene('welcome')">Play again</button>
         </div>
         <div class="scene" id="lost">
             <div class="background"></div>
             <p>GAME OVER</p>
             <p>You died.</p>
+            <button class="button" onclick="activateScene('welcome')">Play again</button>
         </div>
         <div class="scene" id="gameInProgress">
             <div class="background"></div>
             <p>A game is currently in progress.</p>
             <p>Spectate and be ready for the next game !</p>
+            <button class="button" onclick="activateScene('welcome')">Try again</button>
         </div>
     </div>
     <script>
@@ -257,6 +260,9 @@
           console.error("This scene doesn't exist");
           return;
         }
+        if (scene === 'welcome') {
+          changeBaseColorFG(baseGray);
+        }
         state.activeScene = scene;
         document
           .querySelectorAll('.scene')
@@ -265,7 +271,7 @@
           .querySelector('#' + scene).classList.add('active');
       };
 
-      baseGray = 'bbb';
+      baseGray = '#bbb';
       waitTime = 60;
 
       ws = new WebSocket("ws://" + location.host + "/");
@@ -295,6 +301,42 @@
         waitTime = newTime;
         document.querySelector('#startsIn').innerHTML = newTime;
       };
+
+      var bindings = {
+        'ArrowLeft': [onLeftPress, onLeftRelease],
+        'a': [onLeftPress, onLeftRelease],
+
+        'ArrowRight': [onRightPress, onRightRelease],
+        'd': [onRightPress, onRightRelease],
+
+        ' ': [onFirePress, onFireRelease],
+        'Control': [onFirePress, onFireRelease],
+        'Shift': [onFirePress, onFireRelease],
+        'Alt': [onFirePress, onFireRelease],
+        'y': [onFirePress, onFireRelease],
+      };
+
+      onKeyDown = (e) => {
+        if (!state.activeScene === 'play') {
+          return;
+        }
+        if (e.key in bindings) {
+          bindings[e.key][0]();
+        }
+      };
+
+      onKeyUp = (e) => {
+        if (!state.activeScene === 'play') {
+          return;
+        }
+        if (e.key in bindings) {
+          bindings[e.key][1]();
+        }
+      };
+
+
+      document.addEventListener('keydown', onKeyDown);
+      document.addEventListener('keyup', onKeyUp);
 
       onRecieve = (message) => {
         var json = JSON.parse(message);
