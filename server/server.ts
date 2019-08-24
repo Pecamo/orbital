@@ -60,7 +60,6 @@ if (process.argv.includes('--no-display')) {
     isDisplay = false;
 }
 
-console.log(process.argv);
 const invertOrientation = process.argv.includes('--invert');
 const display: Display = new Display(NB_LED, isDisplay, invertOrientation);
 
