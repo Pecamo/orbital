@@ -223,7 +223,7 @@ export class Game {
                 const wantedPos = this.move(player.x, wantedMove);
                 // Check if any other player is already here
                 let free = true;
-                for (let otherId in nextState.players) {
+                for (let otherId in nextState.players.filter(p => p.alive)) {
                     if (nextState.players[otherId].x === wantedPos) {
                         free = false;
                     }
