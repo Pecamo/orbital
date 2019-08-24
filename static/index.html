@@ -271,7 +271,7 @@
           return;
         }
         if (scene === 'welcome') {
-          changeBaseColorFG(baseGray);
+          changeBaseColorBG(baseGray);
         }
         state.activeScene = scene;
         document
@@ -281,7 +281,7 @@
           .querySelector('#' + scene).classList.add('active');
       };
 
-      baseGray = '#bbb';
+      baseGray = '#8e8e8e';
       waitTime = 60;
 
       ws = new WebSocket("ws://" + location.host + "/");
