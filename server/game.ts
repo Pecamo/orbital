@@ -21,7 +21,7 @@ interface GameState {
         facesRight: boolean,
         age: number,
     }[],
-    winner?: string
+    winner?: number
 }
 
 type inputKeys = 'right' | 'left' | 'fire'
@@ -42,12 +42,13 @@ export class Game {
 
     constructor(public numberOfPlayers: number, public display: Display) {
         this.display = display;
+        this.newInputs = [];
         this.gameState = this.startingGameState(numberOfPlayers);
         this.heldInputs = Game.startingInputsState(numberOfPlayers);
         // console.log(this.gameState);
     }
 
-    public start(): Promise<string> {
+    public start(): Promise<number> {
         return this.tick();
     }
 
@@ -93,7 +94,7 @@ export class Game {
 
     public toString() {
         let world = '';
-        if (this.gameState.winner) {
+        if (this.gameState.winner >= 0) {
             return `Winner : ${this.gameState.winner}`;
         }
 
@@ -122,11 +123,10 @@ export class Game {
         return world;
     }
 
-    public tick(): Promise<string> {
-        return new Promise<string>((resolve, ) => {
+    public tick(): Promise<number> {
+        return new Promise<number>((resolve, ) => {
             // Loop timing, keep at the beginning
             const tickStart: Date = new Date();
-            this.newInputs = [];
 
             // draw players
             Object.keys(this.gameState.players).forEach(key => {
@@ -164,8 +164,9 @@ export class Game {
             this.heldInputs = Game.nextInputs(this.heldInputs, this.newInputs);
             this.gameState = this.nextState(this.gameState, this.heldInputs);
 
-            if (this.gameState.winner) {
+            if (this.gameState.winner >= 0) {
                 resolve(this.gameState.winner);
+                return;
             }
 
             // console.log(this.gameState);
@@ -177,7 +178,7 @@ export class Game {
             const tickEnd: Date = new Date();
             const diff = tickStart.getTime() - tickEnd.getTime();
             const waitingTime = 1 / this.fps * 1000 + diff;
-            setTimeout(() => this.tick(), waitingTime);
+            setTimeout(() => resolve(this.tick()), waitingTime);
         });
     }
 
@@ -192,14 +193,15 @@ export class Game {
     public nextState = (gameState: GameState, heldInputs: InputsState): GameState => {
         // End condition
         let alive = 0;
-        let lastAlive = '';
-        for (const playerId in this.gameState.players) {
-            const player = this.gameState.players[playerId];
+        let lastAlive: number = -1;
+        for (let i = 0; i < this.gameState.players.length; i++) {
+            const player = this.gameState.players[i];
             if (player.alive) {
                 alive += 1;
-                lastAlive = playerId;
+                lastAlive = i;
             }
         }
+
         if (alive === 1) {
             return Object.assign({}, gameState, {winner: lastAlive}) as GameState;
         }

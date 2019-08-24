@@ -9,7 +9,8 @@ let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const WAITING_TIME = 15 * 1000;
+const WAITING_TIME = 3 * 1000;
+const END_SCREEN_TIME = 5 * 1000;
 let clients: WebSocket[] = [];
 let game: Game = null;
 
@@ -34,9 +35,7 @@ app.get('/', (req, res, next)=> {
 
 expressWs.app.ws('/', (ws, req) => {
     ws.on('message', (data) => {
-        console.log(data);
         const msg: CSMessage = JSON.parse(data.toString());
-        console.log(msg);
         handleMessage(msg as CSMessage, ws);
     });
 
@@ -103,17 +102,19 @@ function startGame() {
     });   
 }
 
-function endGame(winnerIndex: string) {
+function endGame(winnerIndex: number) {
     state = State.END;
 
     const winner: WebSocket = clients[winnerIndex];
     sendMsg(winner, { cmd: 'won' });
     clients.filter(c => c !== winner).forEach(c => sendMsg(c, { cmd: 'lost' }));
 
+
     setInterval(() => {
         state = State.IDLE;
         broadcastMsg({ cmd: 'welcome' });
-    }, 10000);
+        clients = [];
+    }, END_SCREEN_TIME);
 }
 
 function handleMessage(msg: CSMessage, ws) {
