@@ -9,10 +9,10 @@ let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const WAITING_TIME = 3 * 1000;
-const END_SCREEN_TIME = 5 * 1000;
+const WAITING_TIME = 20 * 1000;
 let clients: WebSocket[] = [];
 let game: Game = null;
+let startTime = (new Date()).getTime();
 
 enum State {
     IDLE,
@@ -63,10 +63,10 @@ if (process.argv.includes('--no-display')) {
 const invertOrientation = process.argv.includes('--invert');
 const display: Display = new Display(NB_LED, isDisplay, invertOrientation);
 
-// States of the Art
 function startWaiting() {
+// States of the Art
+    startTime = (new Date()).getTime();
     state = State.WAITING;
-    const startTime = (new Date()).getTime();
 
     game = new Game(clients.length, display);
 
@@ -129,6 +129,7 @@ function handleMessage(msg: CSMessage, ws) {
                 }
             } else if (state === State.WAITING) {
                 clients.push(ws);
+                startTime = (new Date()).getTime();
             } else {
                 sendMsg(ws, { cmd: 'gameInProgress' });
             }
