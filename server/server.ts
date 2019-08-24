@@ -10,7 +10,7 @@ let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const WAITING_TIME = 5 * 1000;
+const WAITING_TIME = 2 * 1000;
 let clients: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let game: Game = null;
 let startTime = (new Date()).getTime();
@@ -45,13 +45,14 @@ expressWs.app.ws('/', (ws, req) => {
         const index = clients.map(c => c.ws).indexOf(ws as any as WebSocket);
         const client = clients[index];
 
-        if (client.character) {
+        /*
+        if (client && 'character' in client && client.character) {
             return;
-        }
+        }*/
 
         clients.splice(index, 1);
 
-        if (clients.length === 0) {
+        if (clients.length === 0 || clients.filter(c => c.ws.readyState === 1).length === 0) {
             state = State.IDLE;
             clients = [];
             game = null;
@@ -63,7 +64,6 @@ app.listen(3000);
 console.log(`Server listening on port 3000`);
 
 let isDisplay: boolean = true;
-console.log(process.argv[2]);
 
 if (process.argv.includes('--no-display')) {
     isDisplay = false;
@@ -123,21 +123,31 @@ function startGame() {
     });
 }
 
-function endGame(winnerIndex: number) {
+function endGame(winner: Character) {
     state = State.END;
 
-    displayWinnerColor(clients[winnerIndex].character.color);
+    const winnerClient = clients.find(c => c.character.id === winner.id);
 
-    const winner: WebSocket = clients[winnerIndex].ws;
-    sendMsg(winner, { cmd: 'won' });
-    clients.filter(c => c.ws !== winner).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
+    displayWinnerColor(winner.color);
+
+    if (!winnerClient) {
+        console.log('NOT FOUND');
+        state = State.IDLE;
+        broadcastMsg({ cmd: 'lost' });
+        clients = [];
+        return;
+    }
+    console.log('FOUND');
+
+    sendMsg(winnerClient.ws, { cmd: 'won' });
+
+    clients.filter(c => c.character.id !== winner.id).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
     clients = [];
 
     state = State.IDLE;
 }
 
 function handleMessage(msg: CSMessage, ws: WebSocket) {
-    console.log(JSON.stringify(msg));
     // TODO this.game.newInputs = ???
     switch (msg.cmd) {
         case 'join':
@@ -155,14 +165,20 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
                 sendMsg(ws, { cmd: 'gameInProgress' });
             }
             break;
-        case 'press':
-            console.log(game.newInputs);
-            clients.find(c => c.ws === ws).inputs[msg.data] = true;
-            console.log(game.newInputs);
-            break;
-        case 'release':
-            clients.find(c => c.ws === ws).inputs[msg.data] = false;
-            break;
+        case 'press': {
+            const client = clients.find(c => c.ws === ws);
+            if (!client) {
+                return;
+            }
+            client.inputs[msg.data] = true;
+            break;}
+        case 'release':{
+            const client = clients.find(c => c.ws === ws);
+            if (!client) {
+                return;
+            }
+            client.inputs[msg.data] = false;
+            break;}
         default:
             console.warn(`Unknown ws command: ${msg}`);
             break;
@@ -174,7 +190,9 @@ function broadcastMsg(msg: SCMessage) {
 }
 
 function sendMsg(client: WebSocket, msg: SCMessage) {
-    client.send(JSON.stringify(msg));
+    if (client.readyState === 1) {
+        client.send(JSON.stringify(msg));
+    }
 }
 
 function displayWinnerColor(color: Color) {

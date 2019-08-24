@@ -21,7 +21,7 @@ interface GameState {
         facesRight: boolean,
         age: number,
     }[],
-    winner?: number
+    winner?: Character
 }
 
 type inputKeys = 'right' | 'left' | 'fire'
@@ -33,7 +33,7 @@ export type Inputs = {
 type InputsState = Array<Partial<Inputs>>;
 
 export class Game {
-    public fps: number = 15;
+    public fps: number = 60;
     public stageSize: number = 300;
     public gameState: GameState;
     public heldInputs: InputsState;
@@ -47,7 +47,7 @@ export class Game {
         this.heldInputs = Game.startingInputsState(numberOfPlayers);
     }
 
-    public start(): Promise<number> {
+    public start(): Promise<Character> {
         return this.tick();
     }
 
@@ -93,7 +93,7 @@ export class Game {
 
     public toString() {
         let world = '';
-        if (this.gameState.winner >= 0) {
+        if (this.gameState.winner) {
             return `Winner : ${this.gameState.winner}`;
         }
 
@@ -122,8 +122,8 @@ export class Game {
         return world;
     }
 
-    public tick(): Promise<number> {
-        return new Promise<number>((resolve, ) => {
+    public tick(): Promise<Character> {
+        return new Promise<Character>((resolve) => {
             // Loop timing, keep at the beginning
             const tickStart: Date = new Date();
 
@@ -145,7 +145,7 @@ export class Game {
             this.heldInputs = Game.nextInputs(this.heldInputs, this.newInputs);
             this.gameState = this.nextState(this.gameState, this.heldInputs);
 
-            if (this.gameState.winner >= 0) {
+            if (this.gameState.winner) {
                 resolve(this.gameState.winner);
                 return;
             }
@@ -173,12 +173,12 @@ export class Game {
     public nextState = (gameState: GameState, heldInputs: InputsState): GameState => {
         // End condition
         let alive = 0;
-        let lastAlive: number = -1;
+        let lastAlive: Character = null;
         for (let i = 0; i < this.gameState.players.length; i++) {
             const player = this.gameState.players[i];
             if (player.alive) {
                 alive += 1;
-                lastAlive = i;
+                lastAlive = player;
             }
         }
 
