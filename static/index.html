@@ -137,6 +137,10 @@
             max-width: 32%;
         }
 
+        #play .button:active {
+            filter: contrast(0.5);
+        }
+
         #wait, #getReady, #won, #lost, #gameInProgress {
             flex-direction: column;
             justify-content: center;
@@ -209,7 +213,7 @@
         </div>
         <div class="scene" id="won">
             <div class="background"></div>
-            <p>CONGRATULATIONS</p>
+            <p style="color: var(--base-color-bg);">CONGRATULATIONS</p>
             <p>You won !</p>
         </div>
         <div class="scene" id="lost">
@@ -314,13 +318,13 @@
           case 'getReady': {
             activateScene('getReady');
             setWaitTime(json.data);
-            changeBaseColorBG(message.color);
+            changeBaseColorBG(json.color);
             break;
           }
 
           case 'play': {
             activateScene('play');
-            changeBaseColorBG(message.color);
+            changeBaseColorBG(json.color);
             break;
           }
 
@@ -339,7 +343,7 @@
             break;
           }
         }
-      }
+      };
 
       ws.onmessage = (evt) => {
         console.log(evt);
