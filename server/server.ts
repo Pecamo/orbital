@@ -78,9 +78,9 @@ function startWaiting() {
             clearInterval(wait);
         }
 
-        const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
+        const diffTime = Math.round((WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000);
         clients.forEach((c, i) => sendMsg(c, { cmd: 'getReady', data: diffTime, color: game.gameState.players[i].color.toString() }));
-    }, 500)
+    }, 500);
 
     const wait = setTimeout(() => {
         clearInterval(cooldown);
