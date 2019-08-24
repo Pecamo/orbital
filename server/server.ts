@@ -109,13 +109,12 @@ function endGame(winnerIndex: number) {
     const winner: WebSocket = clients[winnerIndex];
     sendMsg(winner, { cmd: 'won' });
     clients.filter(c => c !== winner).forEach(c => sendMsg(c, { cmd: 'lost' }));
+    clients = [];
 
-
-    setTimeout(() => {
-        state = State.IDLE;
-        broadcastMsg({ cmd: 'welcome' });
-        clients = [];
-    }, END_SCREEN_TIME);
+    // setTimeout(() => {
+    //     state = State.IDLE;
+    //     broadcastMsg({ cmd: 'welcome' });
+    // }, END_SCREEN_TIME);
 }
 
 function handleMessage(msg: CSMessage, ws) {
