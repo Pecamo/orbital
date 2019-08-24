@@ -111,10 +111,7 @@ function endGame(winnerIndex: number) {
     clients.filter(c => c !== winner).forEach(c => sendMsg(c, { cmd: 'lost' }));
     clients = [];
 
-    // setTimeout(() => {
-    //     state = State.IDLE;
-    //     broadcastMsg({ cmd: 'welcome' });
-    // }, END_SCREEN_TIME);
+    state = State.IDLE;
 }
 
 function handleMessage(msg: CSMessage, ws) {
