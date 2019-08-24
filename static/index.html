@@ -292,15 +292,6 @@
         document.querySelector('#startsIn').innerHTML = newTime;
       };
 
-      decreaseWaitDaemon = () => {
-        if (state.activeScene === 'getReady') {
-          waitTime = Math.max(waitTime - 1, 0);
-          document.querySelector('#startsIn').innerHTML = waitTime;
-        }
-      };
-
-      setInterval(decreaseWaitDaemon, 1000);
-
       onRecieve = (message) => {
         var json = JSON.parse(message);
         if (!json.cmd) {
@@ -349,7 +340,6 @@
           }
         }
       }
-
 
       ws.onmessage = (evt) => {
         console.log(evt);
