@@ -43,7 +43,7 @@ export class Color {
             if (tint < 256 * 5) {
                 return new Color(phase, 0, 255);
             }
-            return new Color(255, 0, 255 -phase);
+            return new Color(255, 0, 255 - phase);
         });
     }
 

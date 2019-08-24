@@ -287,7 +287,10 @@
           return;
         }
         if (scene === 'lost' || scene === 'won') {
-          window.navigator.vibrate(200);
+          if ("vibrate" in window.navigator)
+          {
+            navigator.vibrate(200);
+          }
         }
         if (scene === 'welcome') {
           changeBaseColorBG(baseGray);
