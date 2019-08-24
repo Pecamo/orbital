@@ -3,7 +3,7 @@ import { HtmlColors } from "./htmlColors";
 import { DisplayAPI } from "./display-api";
 
 export class Display {
-    constructor(public size: number, public isDisplay: boolean = true) {}
+    constructor(public size: number, public isDisplay: boolean = true, public invertOrientation: boolean = false) {}
 
     private currentFrame: Color[] = this.newBlackArray(this.size);
     private nextFrame: Color[] = this.newBlackArray(this.size);
@@ -11,6 +11,10 @@ export class Display {
     public render(): void {
         // TODO play with LEDs
         if (this.isDisplay) {
+            if (this.invertOrientation) {
+                this.currentFrame.reverse();
+            }
+
             DisplayAPI.set(this.currentFrame);
         }
 

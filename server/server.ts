@@ -56,11 +56,13 @@ console.log(`Server listening on port 3000`);
 let isDisplay: boolean = true;
 console.log(process.argv[2]);
 
-if (process.argv[2] === '--no-display') {
+if (process.argv.includes('--no-display')) {
     isDisplay = false;
 }
 
-const display: Display = new Display(NB_LED, isDisplay);
+console.log(process.argv);
+const invertOrientation = process.argv.includes('--invert');
+const display: Display = new Display(NB_LED, isDisplay, invertOrientation);
 
 // States of the Art
 function startWaiting() {
