@@ -12,6 +12,53 @@
             unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
         }
 
+        @keyframes slowMove {
+            0% {
+                transform: translate(0%, 0%);
+            }
+            100% {
+                transform: translate(10%, 0%);
+            }
+        }
+
+        #allBackground {
+            position: absolute;
+            width: 120%;
+            margin-left: -20%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: space-around;
+            opacity: 0.2;
+            overflow: hidden;
+        }
+
+        #allBackground * {
+            overflow: hidden;
+        }
+
+        #allBackground .strip {
+            width: 100%;
+            height: 5vh;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            animation: slowMove 4s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        #allBackground .led {
+            height: 2.5vh;
+            width: 1.5vw;
+            background-color: var(--base-color-bg);
+            box-shadow: 0 0 10px 5px var(--base-color-bg);
+            transition: all 1s;
+        }
+
         :root {
             --base-color-bg: #8e8e8e;
             --base-color-fg: #ffffff;
@@ -53,6 +100,7 @@
         #container {
             width: 100%;
             height: 100%;
+            overflow: hidden;
         }
 
         #welcome {
@@ -69,7 +117,7 @@
         }
 
         #welcome .button:disabled {
-            opacity: 0.4;
+            filter: brightness(0.4);
         }
 
         #welcome .orbital {
@@ -106,7 +154,7 @@
         }
 
         .button:active {
-            opacity: 0.6;
+            filter: brightness(1.2);
         }
 
         .button:focus {
@@ -126,123 +174,10 @@
     </style>
 </head>
 <body>
-    <script>
-        state = {
-            activeScene: 'welcome'
-        };
-
-        changeBaseColorFG = (color) => {
-            root.style.setProperty('--base-color-fg', color);
-        };
-
-        changeBaseColorBG = (color) => {
-            root.style.setProperty('--base-color-bg', color);
-        };
-
-        activateScene = (scene) => {
-            if (!['welcome', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
-                .includes(scene)) {
-                console.error("This scene doesn't exist");
-                return;
-            }
-            state.activeScene = scene;
-            document
-              .querySelectorAll('.scene')
-              .forEach(e => e.classList.remove('active'));
-            document
-              .querySelector('#' + scene).classList.add('active');
-        };
-
-        baseGray = 'bbb';
-        waitTime = 60;
-
-        ws = new WebSocket("ws://" + location.host + "/");
-
-        sendJSON = (message) => () => {
-            ws.send(JSON.stringify(message));
-        };
-
-        onJoinRelease = () => {
-            document.querySelector('#joinButton').setAttribute('disabled', true);
-            onJoin();
-        };
-
-        onJoinDisappear = () => {
-            document.querySelector('#joinButton').removeAttribute('disabled');
-        };
-
-        onJoin = sendJSON({cmd: 'join'});
-        onLeftPress = sendJSON({cmd: 'press', data: 'left'});
-        onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
-        onRightPress = sendJSON({cmd: 'press', data: 'right'});
-        onRightRelease = sendJSON({cmd: 'release', data: 'right'});
-        onFirePress = sendJSON({cmd: 'press', data: 'fire'});
-        onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
-
-        setWaitTime = (newTime) => {
-            waitTime = newTime;
-            document.querySelector('#startsIn').innerHTML = newTime;
-        };
-
-        decreaseWaitDaemon = () => {
-            if (state.activeScene === 'getReady') {
-                waitTime = Math.max(waitTime - 1, 0);
-                document.querySelector('#startsIn').innerHTML = waitTime;
-            }
-        };
-
-        setInterval(decreaseWaitDaemon, 1000);
-
-        onRecieve = (message) => {
-            var json = JSON.parse(message);
-            if (!json.cmd) {
-                console.error("Invalid message recieved");
-                return;
-            }
-            joinPressed = false;
-            switch (json.cmd) {
-                case 'welcome': {
-                    activateScene('welcome');
-                    changeBaseColorBG(baseGray);
-                    break;
-                }
-
-                case 'wait': {
-                    activateScene('wait');
-                    break;
-                }
-
-                case 'getReady': {
-                    activateScene('getReady');
-                    setWaitTime(json.data);
-                    changeBaseColorBG(message.color);
-                    break;
-                }
-
-                case 'play': {
-                    activateScene('play');
-                    changeBaseColorBG(message.color);
-                    break;
-                }
-
-                case 'won': {
-                    activateScene('won');
-                    break;
-                }
-
-                case 'lost': {
-                    activateScene('lost');
-                    break;
-                }
-
-                case 'gameInProgress': {
-                    activateScene('gameInProgress');
-                    break;
-                }
-            }
-        }
-    </script>
     <div id="container">
+        <div id="allBackground">
+
+        </div>
         <div class="scene active" id="welcome">
             <div class="background"></div>
             Welcome to
@@ -288,5 +223,132 @@
             <p>Spectate and be ready for the next game !</p>
         </div>
     </div>
+    <script>
+
+      for (var s = 0; s < 10; s++) {
+        var strip = document.createElement('div');
+        strip.classList.add('strip');
+        for (var l = 0; l < 30; l++) {
+          var led = document.createElement('div');
+          led.classList.add('led');
+          strip.appendChild(led);
+        }
+        document.querySelector('#allBackground').appendChild(strip);
+      }
+
+      state = {
+        activeScene: 'welcome'
+      };
+
+      changeBaseColorFG = (color) => {
+        document.documentElement.style.setProperty('--base-color-fg', color);
+      };
+      changeBaseColorBG = (color) => {
+        document.documentElement.style.setProperty('--base-color-bg', color);
+      };
+
+      activateScene = (scene) => {
+        if (!['welcome', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
+          .includes(scene)) {
+          console.error("This scene doesn't exist");
+          return;
+        }
+        state.activeScene = scene;
+        document
+          .querySelectorAll('.scene')
+          .forEach(e => e.classList.remove('active'));
+        document
+          .querySelector('#' + scene).classList.add('active');
+      };
+
+      baseGray = 'bbb';
+      waitTime = 60;
+
+      ws = new WebSocket("ws://" + location.host + "/");
+
+      sendJSON = (message) => () => {
+        ws.send(JSON.stringify(message));
+      };
+
+      onJoinRelease = () => {
+        document.querySelector('#joinButton').setAttribute('disabled', true);
+        onJoin();
+      };
+
+      onJoinDisappear = () => {
+        document.querySelector('#joinButton').removeAttribute('disabled');
+      };
+
+      onJoin = sendJSON({cmd: 'join'});
+      onLeftPress = sendJSON({cmd: 'press', data: 'left'});
+      onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
+      onRightPress = sendJSON({cmd: 'press', data: 'right'});
+      onRightRelease = sendJSON({cmd: 'release', data: 'right'});
+      onFirePress = sendJSON({cmd: 'press', data: 'fire'});
+      onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
+
+      setWaitTime = (newTime) => {
+        waitTime = newTime;
+        document.querySelector('#startsIn').innerHTML = newTime;
+      };
+
+      decreaseWaitDaemon = () => {
+        if (state.activeScene === 'getReady') {
+          waitTime = Math.max(waitTime - 1, 0);
+          document.querySelector('#startsIn').innerHTML = waitTime;
+        }
+      };
+
+      setInterval(decreaseWaitDaemon, 1000);
+
+      onRecieve = (message) => {
+        var json = JSON.parse(message);
+        if (!json.cmd) {
+          console.error("Invalid message recieved");
+          return;
+        }
+        joinPressed = false;
+        switch (json.cmd) {
+          case 'welcome': {
+            activateScene('welcome');
+            changeBaseColorBG(baseGray);
+            break;
+          }
+
+          case 'wait': {
+            activateScene('wait');
+            break;
+          }
+
+          case 'getReady': {
+            activateScene('getReady');
+            setWaitTime(json.data);
+            changeBaseColorBG(message.color);
+            break;
+          }
+
+          case 'play': {
+            activateScene('play');
+            changeBaseColorBG(message.color);
+            break;
+          }
+
+          case 'won': {
+            activateScene('won');
+            break;
+          }
+
+          case 'lost': {
+            activateScene('lost');
+            break;
+          }
+
+          case 'gameInProgress': {
+            activateScene('gameInProgress');
+            break;
+          }
+        }
+      }
+    </script>
 </body>
 </html>

@@ -18,7 +18,6 @@ interface GameState {
         x: number,
         facesRight: boolean,
         age: number,
-
     }[],
     winner?: string
 }
