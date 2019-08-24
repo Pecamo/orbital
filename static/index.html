@@ -314,13 +314,13 @@
           case 'getReady': {
             activateScene('getReady');
             setWaitTime(json.data);
-            changeBaseColorBG(message.color);
+            changeBaseColorBG(json.color);
             break;
           }
 
           case 'play': {
             activateScene('play');
-            changeBaseColorBG(message.color);
+            changeBaseColorBG(json.color);
             break;
           }
 
