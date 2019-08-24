@@ -27,7 +27,7 @@ app.use((req, res, next) => {
     return next();
 });
 
-app.use('/static', express.static('public'));
+app.use('/static', express.static(__dirname + '/../static'));
 
 app.get('/', (req, res, next)=> {
     res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
