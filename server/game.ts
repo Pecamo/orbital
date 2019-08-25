@@ -41,7 +41,7 @@ type InputsState = Array<Partial<Inputs>>;
 
 export class Game {
     public fps: number = 20;
-    public stageSize: number = 300;
+    public stageSize: number;
     public gameState: GameState;
     public heldInputs: InputsState;
     public characterColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
@@ -49,6 +49,7 @@ export class Game {
 
     constructor(public numberOfplayers: number, public display: Display, public onCharacterDeathCallback?: (character: Character) => void) {
         this.display = display;
+        this.stageSize = display.size;
         this.newInputs = [];
         this.gameState = this.startingGameState(numberOfplayers);
         this.heldInputs = Game.startingInputsState(numberOfplayers);
