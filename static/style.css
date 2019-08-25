@@ -191,3 +191,28 @@ body {
 
 .right {
 }
+
+.credits {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 10px;
+    opacity: 0.3;
+}
+
+.opensource {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    opacity: 0.3;
+}
+
+.names a {
+    color: inherit;
+}
+
+.opensource a {
+    color: inherit;
+}
+
