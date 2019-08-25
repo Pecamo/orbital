@@ -163,7 +163,7 @@ body {
     filter: contrast(0.5);
 }
 
-#wait, #getReady, #won, #lost, #gameInProgress, #how {
+#wait, #getReady, #won, #lost, #gameInProgress, #how, #spectate {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -227,3 +227,30 @@ body {
     color: inherit;
 }
 
+#spectateResult {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.s-strip {
+    height: 20px;
+}
+
+.s-led {
+    position: absolute;
+    padding-top: 100px;
+    height: calc(40% - 20px);
+    width: 20px;
+    transform-origin: top;
+    display: flex;
+    align-items: flex-end;
+}
+
+.s-led .light {
+    height: 20px;
+    width: 100%;
+    background-color: black;
+}

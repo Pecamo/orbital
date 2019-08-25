@@ -4,7 +4,7 @@ export interface BaseMessage {
 }
 
 // Client -> Server
-export type CSMessage = KeyMessage | JoinMessage;
+export type CSMessage = KeyMessage | JoinMessage | SpectateMessage;
 
 export interface KeyMessage extends BaseMessage {
     cmd: 'press' | 'release';
@@ -15,11 +15,20 @@ export interface JoinMessage extends BaseMessage {
     cmd: 'join';
 }
 
+export interface SpectateMessage extends BaseMessage {
+    cmd: 'spectate';
+}
+
 // Server -> Client
-export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage;
+export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage | SpectateDataMessage;
 
 export interface SimpleStateMessage  extends BaseMessage {
     cmd: 'welcome' | 'wait' | 'won' | 'lost' | 'gameInProgress'
+}
+
+export interface SpectateDataMessage extends BaseMessage {
+    cmd: 'spectateData';
+    data: Object;
 }
 
 export interface PlayMessage {

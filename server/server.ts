@@ -2,7 +2,7 @@ import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { CSMessage, SCMessage } from './types/Message';
 import * as path from "path";
-import {Character, Game, Inputs} from "./game";
+import {Character, Game, GameState, Inputs} from "./game";
 import { Display } from './display';
 import { Color } from './color';
 
@@ -12,6 +12,7 @@ const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
 const WAITING_TIME = 20 * 1000;
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
+let spectators: WebSocket[] = [];
 let game: Game = null;
 let startTime = (new Date()).getTime();
 let currentDisplayAnim;
@@ -112,10 +113,25 @@ function onDeath(player: Character) {
     }
 }
 
+function onNewState(newState: GameState) {
+    // Send to all clients
+    spectators.forEach(ws => {
+        if (ws.readyState === 1) {
+            sendMsg(ws, {
+                cmd: 'spectateData',
+                data: {
+                    stageSize: this.stageSize,
+                    ...newState
+                }
+            });
+        }
+    })
+}
+
 function startGame() {
     state = State.GAME;
 
-    game = new Game(players.length, display, onDeath);
+    game = new Game(players.length, display, onDeath, onNewState);
 
     players.forEach((c, i) => {c.character = game.gameState.characters[i];});
     players.forEach((c, i) => {
@@ -187,6 +203,10 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             }
             player.inputs[msg.data] = false;
             break;}
+        case 'spectate': {
+            spectators.push(ws);
+            break;
+        }
         default:
             console.warn(`Unknown ws command: ${msg}`);
             break;
