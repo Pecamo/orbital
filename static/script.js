@@ -9,10 +9,26 @@ for (var s = 0; s < 10; s++) {
   document.querySelector('#allBackground').appendChild(strip);
 }
 
+spectateLastData = null;
 
 state = {
   activeScene: 'welcome'
 };
+
+ws = new WebSocket("ws://" + location.host + "/");
+
+sendJSON = (message) => () => {
+  ws.send(JSON.stringify(message));
+};
+
+onJoin = sendJSON({cmd: 'join'});
+onSpectate = sendJSON({cmd: 'spectate'});
+onLeftPress = sendJSON({cmd: 'press', data: 'left'});
+onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
+onRightPress = sendJSON({cmd: 'press', data: 'right'});
+onRightRelease = sendJSON({cmd: 'release', data: 'right'});
+onFirePress = sendJSON({cmd: 'press', data: 'fire'});
+onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
 
 function changeThemeColor(color) {
   var metaThemeColor = document.querySelector("meta[name=theme-color]");
@@ -69,7 +85,11 @@ activateScene = (scene) => {
     .querySelector('#' + scene).classList.add('active');
 };
 
-spectateData = (data) => {
+spectateData = () => {
+  var data = spectateLastData;
+  if (data === null) {
+    return;
+  }
   var result = Array(data.stageSize).fill(null);
   data.characters.filter(c => c.alive).forEach(p => {
     result[p.x] = p.color;
@@ -84,22 +104,42 @@ spectateData = (data) => {
   });
   var node = document.createElement('div');
   node.classList.add('s-strip');
+
+  var canvas = document.getElementById('spectateCanvas');
+  var radius = Math.min(canvas.height, canvas.width) / 2;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  var one = Math.PI * 2 / data.stageSize;
   result.forEach((c, i) => {
-    var led = document.createElement('div');
-    var ledLight = document.createElement('div');
-    led.classList.add('s-led');
-    ledLight.classList.add('light');
-    var degRotate = i * 360 / data.stageSize;
-    led.style = "transform: rotate(" + degRotate + "deg)";
+
+    ctx.beginPath();
+    var from = i * one;
+    var to = (i + 1) * one;
+    ctx.arc(radius, radius, radius - 25, from, to);
+    ctx.arc(radius, radius, radius - 5, to, from, true);
+    ctx.closePath();
+    ctx.stroke();
     if (c !== null) {
-      ledLight.style = 'background-color: rgb(' + c.r + ", " + c.g + ", " + c.b + ");";
+      ctx.fillStyle = 'rgb(' + c.r + ", " + c.g + ", " + c.b + ")";
+      ctx.fill();
     }
-    led.appendChild(ledLight);
-    node.appendChild(led);
+
   });
   document.querySelector('#spectateResult').innerHTML = '';
   document.querySelector('#spectateResult').appendChild(node);
 };
+
+window.addEventListener('resize', resizeCanvas, false);
+
+function resizeCanvas() {
+  var canvas = document.getElementById('spectateCanvas');
+  var min = Math.min(window.innerWidth, window.innerHeight);
+  canvas.width = min;
+  canvas.height = min;
+
+  spectateData();
+}
+resizeCanvas();
 
 dataToString = (data) => {
   let world = '';
@@ -131,21 +171,6 @@ dataToString = (data) => {
 
 baseGray = '#777777';
 waitTime = 60;
-
-ws = new WebSocket("ws://" + location.host + "/");
-
-sendJSON = (message) => () => {
-  ws.send(JSON.stringify(message));
-};
-
-onJoin = sendJSON({cmd: 'join'});
-onSpectate = sendJSON({cmd: 'spectate'});
-onLeftPress = sendJSON({cmd: 'press', data: 'left'});
-onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
-onRightPress = sendJSON({cmd: 'press', data: 'right'});
-onRightRelease = sendJSON({cmd: 'release', data: 'right'});
-onFirePress = sendJSON({cmd: 'press', data: 'fire'});
-onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
 
 var leftDown = (e) => {
   return onLeftPress(e);
@@ -278,7 +303,8 @@ onRecieve = (message) => {
     }
 
     case 'spectateData': {
-      spectateData(json.data);
+      spectateLastData = json.data;
+      spectateData();
       break;
     }
   }

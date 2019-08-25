@@ -260,3 +260,7 @@ body {
 #spectate .background {
     background-color: #444444;
 }
+
+canvas.spectateCanvas {
+    height: 100%;
+}
