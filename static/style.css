@@ -125,6 +125,15 @@ body {
 #welcome .button {
     font-size: 6vw;
     padding: 2vw;
+    margin-top: 6vh;
+    margin-bottom: 6vh;
+}
+
+#welcome .button.mini {
+    font-size: 2vw;
+    margin-top: 1vh;
+    padding: 1vw;
+    margin-bottom: 2vh;
 }
 
 #welcome .button:disabled {
@@ -154,10 +163,14 @@ body {
     filter: contrast(0.5);
 }
 
-#wait, #getReady, #won, #lost, #gameInProgress {
+#wait, #getReady, #won, #lost, #gameInProgress, #how {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+#how {
+    line-height: 140%;
 }
 
 .button {

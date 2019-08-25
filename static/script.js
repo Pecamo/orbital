@@ -36,9 +36,13 @@ onJoinDisappear = () => {
   document.querySelector('#joinButton').removeAttribute('disabled');
 };
 
+onHowRelease = () => {
+  activateScene('how');
+};
+
 activateScene = (scene) => {
   onJoinDisappear();
-  if (!['welcome', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
+  if (!['welcome', 'how', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
     .includes(scene)) {
     console.error("This scene doesn't exist");
     return;

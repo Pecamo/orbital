@@ -19,10 +19,29 @@
             <button class="button" id="joinButton" onmouseup="onJoinRelease()">
                 Join a game
             </button>
+            <button class="button mini" id="howButton" onmouseup="onHowRelease()">
+                How to play
+            </button>
+            <!--<button class="button mini" id="spectateButton" onmouseup="onSpectateRelease()">
+                Spectate mode
+            </button>-->
             <div class="credits">
                 <div>Orbital is <a href="https://github.com/Pecamo/orbital">open source</a></div>
                 <div style="text-align: right;">Orbital, 2019, by <span class="names"></span></div>
             </div>
+        </div>
+        <div class="scene" id="how">
+            <div class="background"></div>
+            <p>How to play Orbital :</p>
+            <p>You control a colored LED.<br/>
+            Your goal is to survive the longest:<br/>
+            Move with the Left and Right arrows,<br/>
+            Shoot other players with the middle button.</p>
+            <button class="button retry" onclick="activateScene('welcome')">Back</button>
+        </div>
+        <div class="scene" id="spectate">
+            <div class="background"></div>
+            Waiting for an opponent to connect...
         </div>
         <div class="scene" id="wait">
             <div class="background"></div>
