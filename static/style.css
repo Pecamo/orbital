@@ -70,6 +70,10 @@
     --base-color-fg: #ffffff;
 }
 
+img.img {
+    pointer-events: none;
+}
+
 body {
     position: absolute;
     width: 100%;

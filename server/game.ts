@@ -209,7 +209,6 @@ export class Game {
                 for (let otherId in alives) {
                     if (alives[otherId].x === wantedPos) {
                         free = false;
-                        console.log(otherId, ' BLOCKS ', player.id);
                     }
                 }
                 if (free) {
@@ -224,7 +223,7 @@ export class Game {
                     age: 0
                 };
                 nextState.shots.push(newShot);
-                nextState.players[playerId].shotCooldown = 8;
+                nextState.players[playerId].shotCooldown = 12;
             }
         }
 
@@ -275,7 +274,7 @@ export class Game {
         }
         for (let key in nextState.shots) {
             const shot = nextState.shots[key];
-            if (shot.age <= 14) {
+            if (shot.age <= 18) {
                 const newShot = {
                     ...shot,
                     x: this.move(shot.x, shot.facesRight ? 2 : -2),

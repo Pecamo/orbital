@@ -60,8 +60,8 @@ expressWs.app.ws('/', (ws, req) => {
     });
 });
 
-app.listen(3000);
-console.log(`Server listening on port 3000`);
+app.listen(80);
+console.log(`Server listening on port 80`);
 
 let isDisplay: boolean = true;
 
@@ -131,13 +131,11 @@ function endGame(winner: Character) {
     displayWinnerColor(winner.color);
 
     if (!winnerClient) {
-        console.log('NOT FOUND');
         state = State.IDLE;
         broadcastMsg({ cmd: 'lost' });
         clients = [];
         return;
     }
-    console.log('FOUND');
 
     sendMsg(winnerClient.ws, { cmd: 'won' });
 
