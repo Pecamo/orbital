@@ -137,7 +137,7 @@ export class Game {
 
             // draw shots
             this.gameState.shots.forEach(shot => {
-                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 17));
+                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 24));
             });
 
             this.display.render();

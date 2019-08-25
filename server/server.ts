@@ -121,8 +121,8 @@ function startGame() {
         }
 
         c.inputs = game.newInputs[i];
-    });
 
+    });
     clients.forEach((c, i) => sendMsg(c.ws, { cmd: 'play', color: game.gameState.players[i].color.toString() }));
 
     game.start().then(winner => {
