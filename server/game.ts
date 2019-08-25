@@ -138,7 +138,6 @@ export class Game {
             // draw characters
             Object.keys(this.gameState.characters).forEach(key => {
                 const character = this.gameState.characters[key];
-console.log(character.shotRange);
                 if (character.alive) {
                     this.display.drawDot(character.x, character.color);
                 }

@@ -72,11 +72,11 @@ activateScene = (scene) => {
 spectateData = (data) => {
   console.log(data);
   var result = Array(data.stageSize).fill(null);
-  data.players.forEach(p => {
+  data.characters.forEach(p => {
     result[p.x] = p.color;
   });
   data.shots.forEach(s => {
-    result[s.x] = data.players[s.owner].color;
+    result[s.x] = data.characters[s.owner].color;
   });
   var node = document.createElement('div');
   node.classList.add('s-strip');
