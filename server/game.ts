@@ -25,7 +25,7 @@ export type Shot = {
     range: number,
 };
 
-interface GameState {
+export interface GameState {
     characters: Character[];
     shots: Shot[],
     winner?: Character
@@ -47,12 +47,12 @@ export class Game {
     public characterColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
     public newInputs: Partial<InputsState>;
 
-    constructor(public numberOfplayers: number, public display: Display, public onCharacterDeathCallback?: (character: Character) => void) {
+    constructor(public numberOfPlayers: number, public display: Display, public onCharacterDeathCallback?: (player: Character) => void, public onNewStateCallback?: (state: GameState) => void) {
         this.display = display;
         this.stageSize = display.size;
         this.newInputs = [];
-        this.gameState = this.startingGameState(numberOfplayers);
-        this.heldInputs = Game.startingInputsState(numberOfplayers);
+        this.gameState = this.startingGameState(numberOfPlayers);
+        this.heldInputs = Game.startingInputsState(numberOfPlayers);
     }
 
     public start(): Promise<Character> {
@@ -139,7 +139,6 @@ export class Game {
             // draw characters
             Object.keys(this.gameState.characters).forEach(key => {
                 const character = this.gameState.characters[key];
-console.log(character.shotRange);
                 if (character.alive) {
                     this.display.drawDot(character.x, character.color);
                 }
@@ -258,7 +257,9 @@ console.log(character.shotRange);
                 if ((character.x === shot.x || character.x === this.move(shot.x, shot.facesRight ? -1 : 1)) && shot.owner !== characterId) {
                     character.alive = false;
                     if (this.onCharacterDeathCallback) {
-                        this.onCharacterDeathCallback(character);
+                        setTimeout(() => {
+                            this.onCharacterDeathCallback(character);
+                        }, 1);
                     }
                     hit = true;
                 }
@@ -304,6 +305,11 @@ console.log(character.shotRange);
             }
         }
         nextState.shots = nextShots;
+        if (this.onNewStateCallback) {
+            setTimeout(() => {
+                this.onNewStateCallback(nextState);
+            }, 1);
+        }
         return nextState;
     }
 }

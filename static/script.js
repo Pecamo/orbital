@@ -40,9 +40,14 @@ onHowRelease = () => {
   activateScene('how');
 };
 
+onSpectateRelease = () => {
+  activateScene('spectate');
+  onSpectate();
+};
+
 activateScene = (scene) => {
   onJoinDisappear();
-  if (!['welcome', 'how', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
+  if (!['welcome', 'how', 'spectate', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
     .includes(scene)) {
     console.error("This scene doesn't exist");
     return;
@@ -64,6 +69,62 @@ activateScene = (scene) => {
     .querySelector('#' + scene).classList.add('active');
 };
 
+spectateData = (data) => {
+  console.log(data);
+  var result = Array(data.stageSize).fill(null);
+  data.characters.forEach(p => {
+    result[p.x] = p.color;
+  });
+  data.shots.forEach(s => {
+    result[s.x] = data.characters[s.owner].color;
+  });
+  var node = document.createElement('div');
+  node.classList.add('s-strip');
+  result.forEach((c, i) => {
+    var led = document.createElement('div');
+    var ledLight = document.createElement('div');
+    led.classList.add('s-led');
+    ledLight.classList.add('light');
+    var degRotate = i * 360 / data.stageSize;
+    led.style = "transform: rotate(" + degRotate + "deg)";
+    if (c !== null) {
+      ledLight.style = 'background-color: rgb(' + c.r + ", " + c.g + ", " + c.b + ");";
+    }
+    led.appendChild(ledLight);
+    node.appendChild(led);
+  });
+  document.querySelector('#spectateResult').innerHTML = '';
+  document.querySelector('#spectateResult').appendChild(node);
+};
+
+dataToString = (data) => {
+  let world = '';
+
+  for (let x = 0; x < data.stageSize; x++) {
+    let char = '_';
+    for (let playerId in data.players) {
+      const player = data.players[playerId];
+      if (player.x === x && player.alive) {
+        char = '' + playerId;
+      }
+    }
+    for (let shotId in data.shots) {
+      const shot = data.shots[shotId];
+      if (shot.x === x) {
+        char = shot.facesRight ? '⯈' : '⯇';
+      }
+      if (shot.x === this.move(x, 1) && shot.facesRight) {
+        char = '⬩'
+      }
+      if (shot.x === this.move(x, -1) && !shot.facesRight) {
+        char = '⬩'
+      }
+    }
+    world += char;
+  }
+  return world;
+};
+
 baseGray = '#777777';
 waitTime = 60;
 
@@ -74,6 +135,7 @@ sendJSON = (message) => () => {
 };
 
 onJoin = sendJSON({cmd: 'join'});
+onSpectate = sendJSON({cmd: 'spectate'});
 onLeftPress = sendJSON({cmd: 'press', data: 'left'});
 onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
 onRightPress = sendJSON({cmd: 'press', data: 'right'});
@@ -208,6 +270,11 @@ onRecieve = (message) => {
 
     case 'gameInProgress': {
       activateScene('gameInProgress');
+      break;
+    }
+
+    case 'spectateData': {
+      spectateData(json.data);
       break;
     }
   }
