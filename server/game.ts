@@ -3,24 +3,31 @@ import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
 import _ from 'lodash';
 
+const MAX_SHOT_RANGE = 18;
+const MIN_SHOT_RANGE = 2;
+const SHOT_COOLDOWN = 12;
+
 export type Character = {
     id: number,
     x: number,
     color: Color,
     shotCooldown: number,
+    shotRange: number,
     facesRight: boolean,
     alive: boolean,
 }
 
+export type Shot = {
+    owner: string,
+    x: number,
+    facesRight: boolean,
+    age: number,
+    range: number,
+};
+
 interface GameState {
     characters: Character[];
-
-    shots: {
-        owner: string,
-        x: number,
-        facesRight: boolean,
-        age: number,
-    }[],
+    shots: Shot[],
     winner?: Character
 }
 
@@ -37,14 +44,14 @@ export class Game {
     public stageSize: number = 300;
     public gameState: GameState;
     public heldInputs: InputsState;
-    public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
+    public characterColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
     public newInputs: Partial<InputsState>;
 
-    constructor(public numberOfPlayers: number, public display: Display, public onPlayerDeathCallback?: (player: Character) => void) {
+    constructor(public numberOfplayers: number, public display: Display, public onCharacterDeathCallback?: (character: Character) => void) {
         this.display = display;
         this.newInputs = [];
-        this.gameState = this.startingGameState(numberOfPlayers);
-        this.heldInputs = Game.startingInputsState(numberOfPlayers);
+        this.gameState = this.startingGameState(numberOfplayers);
+        this.heldInputs = Game.startingInputsState(numberOfplayers);
     }
 
     public start(): Promise<Character> {
@@ -55,19 +62,20 @@ export class Game {
         return ((from + toAdd) + this.stageSize) % this.stageSize;
     };
 
-    public startingGameState = (nbPlayers: number): GameState => {
-        const characters = [];
+    public startingGameState = (nbCharacters: number): GameState => {
+        const characters: Character[] = [];
 
-        const colors = Color.getRange(nbPlayers);
+        const colors = Color.getRange(nbCharacters);
 
-        for (let i = 0; i < nbPlayers; i++) {
+        for (let i = 0; i < nbCharacters; i++) {
             characters.push({
                 id: i,
-                x: Math.floor((this.stageSize / nbPlayers) * i),
+                x: Math.floor((this.stageSize / nbCharacters) * i),
                 color: colors[i],
                 shotCooldown: 0,
                 facesRight: true,
-                alive: true
+                alive: true,
+                shotRange: MAX_SHOT_RANGE,
             });
         }
 
@@ -77,10 +85,10 @@ export class Game {
         }
     };
 
-    public static startingInputsState(nbPlayers: number) {
+    public static startingInputsState(nbPlayer: number) {
         const inputs = [];
 
-        for (let i = 0; i < nbPlayers; i++) {
+        for (let i = 0; i < nbPlayer; i++) {
             inputs.push({
                 left: false,
                 right: false,
@@ -99,10 +107,10 @@ export class Game {
 
         for (let x = 0; x < this.stageSize; x++) {
             let char = '_';
-            for (let playerId in this.gameState.characters) {
-                const player = this.gameState.characters[playerId];
-                if (player.x === x && player.alive) {
-                    char = '' + playerId;
+            for (let characterId in this.gameState.characters) {
+                const character = this.gameState.characters[characterId];
+                if (character.x === x && character.alive) {
+                    char = '' + characterId;
                 }
             }
             for (let shotId in this.gameState.shots) {
@@ -127,11 +135,12 @@ export class Game {
             // Loop timing, keep at the beginning
             const tickStart: Date = new Date();
 
-            // draw players
+            // draw characters
             Object.keys(this.gameState.characters).forEach(key => {
-                const player = this.gameState.characters[key];
-                if (player.alive) {
-                    this.display.drawDot(player.x, player.color);
+                const character = this.gameState.characters[key];
+console.log(character.shotRange);
+                if (character.alive) {
+                    this.display.drawDot(character.x, character.color);
                 }
             });
 
@@ -175,10 +184,10 @@ export class Game {
         let alive = 0;
         let lastAlive: Character = null;
         for (let i = 0; i < this.gameState.characters.length; i++) {
-            const player = this.gameState.characters[i];
-            if (player.alive) {
+            const character = this.gameState.characters[i];
+            if (character.alive) {
                 alive += 1;
-                lastAlive = player;
+                lastAlive = character;
             }
         }
 
@@ -189,21 +198,25 @@ export class Game {
         // Usual handle
         const nextState = _.cloneDeep(gameState) as GameState;
 
-        // Frame Players
-        for (let playerId in nextState.characters) {
-            const player = nextState.characters[playerId];
-            // Skip if player is dead
-            if (!player.alive) {
+        // Frame characters
+        for (let characterId in nextState.characters) {
+            const character = nextState.characters[characterId];
+            // Skip if character is dead
+            if (!character.alive) {
                 continue;
             }
             // Decrease shot cooldown
-            player.shotCooldown = Math.max(0, player.shotCooldown - 1);
-            // Update movement or direction if any move playerId is pressed
-            if (heldInputs[playerId].left || heldInputs[playerId].right) {
-                const wantedMove = (heldInputs[playerId].left ? -1 : 0) + (heldInputs[playerId].right ? 1 : 0);
-                player.facesRight = wantedMove > 0;
-                const wantedPos = this.move(player.x, wantedMove);
-                // Check if any other player is already here
+            character.shotCooldown = Math.max(0, character.shotCooldown - 1);
+            // Recover shot range
+            if (character.shotCooldown === 0) {
+                character.shotRange = Math.min(MAX_SHOT_RANGE, character.shotRange + 0.2);
+            }
+            // Update movement or direction if any move characterId is pressed
+            if (heldInputs[characterId].left || heldInputs[characterId].right) {
+                const wantedMove = (heldInputs[characterId].left ? -1 : 0) + (heldInputs[characterId].right ? 1 : 0);
+                character.facesRight = wantedMove > 0;
+                const wantedPos = this.move(character.x, wantedMove);
+                // Check if any other character is already here
                 let free = true;
                 const alives = nextState.characters.filter(p => p.alive);
                 for (let otherId in alives) {
@@ -212,18 +225,20 @@ export class Game {
                     }
                 }
                 if (free) {
-                    player.x = this.move(player.x, wantedMove);
+                    character.x = this.move(character.x, wantedMove);
                 }
             }
-            if (heldInputs[playerId].fire && player.shotCooldown == 0) {
-                const newShot = {
-                    owner: playerId,
-                    x: player.x,
-                    facesRight: player.facesRight,
-                    age: 0
+            if (heldInputs[characterId].fire && character.shotCooldown == 0) {
+                const newShot: Shot = {
+                    owner: characterId,
+                    x: character.x,
+                    facesRight: character.facesRight,
+                    age: 0,
+                    range: character.shotRange
                 };
                 nextState.shots.push(newShot);
-                nextState.characters[playerId].shotCooldown = 12;
+                nextState.characters[characterId].shotCooldown = SHOT_COOLDOWN;
+                nextState.characters[characterId].shotRange = MIN_SHOT_RANGE;
             }
         }
 
@@ -233,16 +248,16 @@ export class Game {
             const shot = nextState.shots[key];
             // Detect if it hits anything
             let hit = false;
-            // Loop on players
-            for (let playerId in nextState.characters) {
-                const player = nextState.characters[playerId];
-                if (!player.alive) {
+            // Loop on characters
+            for (let characterId in nextState.characters) {
+                const character = nextState.characters[characterId];
+                if (!character.alive) {
                     continue;
                 }
-                if ((player.x === shot.x || player.x === this.move(shot.x, shot.facesRight ? -1 : 1)) && shot.owner !== playerId) {
-                    player.alive = false;
-                    if (this.onPlayerDeathCallback) {
-                        this.onPlayerDeathCallback(player);
+                if ((character.x === shot.x || character.x === this.move(shot.x, shot.facesRight ? -1 : 1)) && shot.owner !== characterId) {
+                    character.alive = false;
+                    if (this.onCharacterDeathCallback) {
+                        this.onCharacterDeathCallback(character);
                     }
                     hit = true;
                 }
@@ -275,9 +290,10 @@ export class Game {
                 }
             }
         }
+
         for (let key in nextState.shots) {
             const shot = nextState.shots[key];
-            if (shot.age <= 18) {
+            if (shot.age <= shot.range) {
                 const newShot = {
                     ...shot,
                     x: this.move(shot.x, shot.facesRight ? 2 : -2),
