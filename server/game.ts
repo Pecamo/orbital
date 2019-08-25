@@ -13,7 +13,7 @@ export type Character = {
 }
 
 interface GameState {
-    players: Character[];
+    characters: Character[];
 
     shots: {
         owner: string,
@@ -55,13 +55,13 @@ export class Game {
         return ((from + toAdd) + this.stageSize) % this.stageSize;
     };
 
-    public startingGameState = (nbPlayers: number) => {
-        const players = [];
+    public startingGameState = (nbPlayers: number): GameState => {
+        const characters = [];
 
         const colors = Color.getRange(nbPlayers);
 
         for (let i = 0; i < nbPlayers; i++) {
-            players.push({
+            characters.push({
                 id: i,
                 x: Math.floor((this.stageSize / nbPlayers) * i),
                 color: colors[i],
@@ -72,7 +72,7 @@ export class Game {
         }
 
         return {
-            players,
+            characters,
             shots: []
         }
     };
@@ -99,8 +99,8 @@ export class Game {
 
         for (let x = 0; x < this.stageSize; x++) {
             let char = '_';
-            for (let playerId in this.gameState.players) {
-                const player = this.gameState.players[playerId];
+            for (let playerId in this.gameState.characters) {
+                const player = this.gameState.characters[playerId];
                 if (player.x === x && player.alive) {
                     char = '' + playerId;
                 }
@@ -128,8 +128,8 @@ export class Game {
             const tickStart: Date = new Date();
 
             // draw players
-            Object.keys(this.gameState.players).forEach(key => {
-                const player = this.gameState.players[key];
+            Object.keys(this.gameState.characters).forEach(key => {
+                const player = this.gameState.characters[key];
                 if (player.alive) {
                     this.display.drawDot(player.x, player.color);
                 }
@@ -137,7 +137,7 @@ export class Game {
 
             // draw shots
             this.gameState.shots.forEach(shot => {
-                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.players[shot.owner].color, 0.3), HtmlColors.black, shot.age / 24));
+                this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.characters[shot.owner].color, 0.3), HtmlColors.black, shot.age / 24));
             });
 
             this.display.render();
@@ -174,8 +174,8 @@ export class Game {
         // End condition
         let alive = 0;
         let lastAlive: Character = null;
-        for (let i = 0; i < this.gameState.players.length; i++) {
-            const player = this.gameState.players[i];
+        for (let i = 0; i < this.gameState.characters.length; i++) {
+            const player = this.gameState.characters[i];
             if (player.alive) {
                 alive += 1;
                 lastAlive = player;
@@ -190,8 +190,8 @@ export class Game {
         const nextState = _.cloneDeep(gameState) as GameState;
 
         // Frame Players
-        for (let playerId in nextState.players) {
-            const player = nextState.players[playerId];
+        for (let playerId in nextState.characters) {
+            const player = nextState.characters[playerId];
             // Skip if player is dead
             if (!player.alive) {
                 continue;
@@ -205,7 +205,7 @@ export class Game {
                 const wantedPos = this.move(player.x, wantedMove);
                 // Check if any other player is already here
                 let free = true;
-                const alives = nextState.players.filter(p => p.alive);
+                const alives = nextState.characters.filter(p => p.alive);
                 for (let otherId in alives) {
                     if (alives[otherId].x === wantedPos) {
                         free = false;
@@ -223,7 +223,7 @@ export class Game {
                     age: 0
                 };
                 nextState.shots.push(newShot);
-                nextState.players[playerId].shotCooldown = 12;
+                nextState.characters[playerId].shotCooldown = 12;
             }
         }
 
@@ -234,8 +234,8 @@ export class Game {
             // Detect if it hits anything
             let hit = false;
             // Loop on players
-            for (let playerId in nextState.players) {
-                const player = nextState.players[playerId];
+            for (let playerId in nextState.characters) {
+                const player = nextState.characters[playerId];
                 if (!player.alive) {
                     continue;
                 }

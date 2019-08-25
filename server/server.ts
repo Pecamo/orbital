@@ -11,7 +11,7 @@ const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
 const WAITING_TIME = 20 * 1000;
-let clients: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
+let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let game: Game = null;
 let startTime = (new Date()).getTime();
 let currentDisplayAnim;
@@ -45,19 +45,19 @@ expressWs.app.ws('/', (ws, req) => {
     });
 
     ws.on('close', () => {
-        const index = clients.map(c => c.ws).indexOf(ws as any as WebSocket);
-        const client = clients[index];
+        const index = players.map(c => c.ws).indexOf(ws as any as WebSocket);
+        const player = players[index];
 
         /*
-        if (client && 'character' in client && client.character) {
+        if (player && 'character' in player && player.character) {
             return;
         }*/
 
-        clients.splice(index, 1);
+        players.splice(index, 1);
 
-        if (clients.length === 0 || clients.filter(c => c.ws.readyState === 1).length === 0) {
+        if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
             state = State.IDLE;
-            clients = [];
+            players = [];
             game = null;
         }
     });
@@ -82,20 +82,20 @@ function startWaiting() {
     stopCurrentAnimation();
 
     const cooldown = setInterval(() => {
-        if (clients.length === 0) {
+        if (players.length === 0) {
             state = State.IDLE;
-            clients = [];
+            players = [];
         }
 
-        const colors = Color.getRange(clients.length);
+        const colors = Color.getRange(players.length);
         const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
-        clients.forEach((c, i) => sendMsg(c.ws, { cmd: 'getReady', data: Math.round(diffTime), color: colors[i].toString() }));
+        players.forEach((c, i) => sendMsg(c.ws, { cmd: 'getReady', data: Math.round(diffTime), color: colors[i].toString() }));
 
         displayWaitingColor(1 - diffTime / (WAITING_TIME / 1000));
 
-        if (clients.length === 0) {
+        if (players.length === 0) {
             state = State.IDLE;
-            clients = [];
+            players = [];
         } else {
             if (diffTime <= 0) {
                 clearInterval(cooldown);
@@ -106,19 +106,19 @@ function startWaiting() {
 }
 
 function onDeath(player: Character) {
-    const deceasedClient = clients.find(c => c.character.id === player.id);
-    if (deceasedClient && deceasedClient.ws && deceasedClient.ws.readyState === 1) {
-        sendMsg(deceasedClient.ws, { cmd: 'lost' });
+    const deceasedPlayer = players.find(c => c.character.id === player.id);
+    if (deceasedPlayer && deceasedPlayer.ws && deceasedPlayer.ws.readyState === 1) {
+        sendMsg(deceasedPlayer.ws, { cmd: 'lost' });
     }
 }
 
 function startGame() {
     state = State.GAME;
 
-    game = new Game(clients.length, display, onDeath);
+    game = new Game(players.length, display, onDeath);
 
-    clients.forEach((c, i) => {c.character = game.gameState.players[i];});
-    clients.forEach((c, i) => {
+    players.forEach((c, i) => {c.character = game.gameState.characters[i];});
+    players.forEach((c, i) => {
         if (!game.newInputs[i]) {
             game.newInputs[i] = {};
         }
@@ -126,7 +126,7 @@ function startGame() {
         c.inputs = game.newInputs[i];
 
     });
-    clients.forEach((c, i) => sendMsg(c.ws, { cmd: 'play', color: game.gameState.players[i].color.toString() }));
+    players.forEach((c, i) => sendMsg(c.ws, { cmd: 'play', color: game.gameState.characters[i].color.toString() }));
 
     game.start().then(winner => {
         endGame(winner);
@@ -136,21 +136,21 @@ function startGame() {
 function endGame(winner: Character) {
     state = State.END;
 
-    const winnerClient = clients.find(c => c.character.id === winner.id);
+    const winnerPlayer = players.find(c => c.character.id === winner.id);
 
     displayWinnerColor(winner.color);
 
-    if (!winnerClient) {
+    if (!winnerPlayer) {
         state = State.IDLE;
         broadcastMsg({ cmd: 'lost' });
-        clients = [];
+        players = [];
         return;
     }
 
-    sendMsg(winnerClient.ws, { cmd: 'won' });
+    sendMsg(winnerPlayer.ws, { cmd: 'won' });
 
-    clients.filter(c => c.character.id !== winner.id).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
-    clients = [];
+    players.filter(c => c.character.id !== winner.id).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
+    players = [];
 
     state = State.IDLE;
 }
@@ -160,32 +160,32 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
     switch (msg.cmd) {
         case 'join':
             if (state === State.IDLE) {
-                clients.push({ws});
-                if (clients.length > MINIMUM_PLAYERS - 1) {
+                players.push({ws});
+                if (players.length > MINIMUM_PLAYERS - 1) {
                     startWaiting();
                 } else {
                     broadcastMsg({ cmd: 'wait' });
                 }
             } else if (state === State.WAITING) {
-                clients.push({ws});
+                players.push({ws});
                 startTime = (new Date()).getTime();
             } else {
                 sendMsg(ws, { cmd: 'gameInProgress' });
             }
             break;
         case 'press': {
-            const client = clients.find(c => c.ws === ws);
-            if (!client) {
+            const player = players.find(c => c.ws === ws);
+            if (!player) {
                 return;
             }
-            client.inputs[msg.data] = true;
+            player.inputs[msg.data] = true;
             break;}
         case 'release':{
-            const client = clients.find(c => c.ws === ws);
-            if (!client) {
+            const player = players.find(c => c.ws === ws);
+            if (!player) {
                 return;
             }
-            client.inputs[msg.data] = false;
+            player.inputs[msg.data] = false;
             break;}
         default:
             console.warn(`Unknown ws command: ${msg}`);
@@ -194,12 +194,12 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
 }
 
 function broadcastMsg(msg: SCMessage) {
-    clients.forEach(c => sendMsg(c.ws, msg));
+    players.forEach(c => sendMsg(c.ws, msg));
 }
 
-function sendMsg(client: WebSocket, msg: SCMessage) {
-    if (client.readyState === 1) {
-        client.send(JSON.stringify(msg));
+function sendMsg(player: WebSocket, msg: SCMessage) {
+    if (player.readyState === 1) {
+        player.send(JSON.stringify(msg));
     }
 }
 
