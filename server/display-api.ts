@@ -1,9 +1,11 @@
 import axios from 'axios';
 
 export class DisplayAPI {
-    private static lastFrameRendered: boolean = true;
+    constructor(public rootEndpoint: string) {}
 
-    public static set(colors): void {
+    private lastFrameRendered: boolean = true;
+
+    public set(colors): void {
         if (this.lastFrameRendered) {
             this.lastFrameRendered = false;
 
@@ -17,7 +19,7 @@ export class DisplayAPI {
         }
     }
 
-    public static sendColors(colors): Promise<any> {
+    public sendColors(colors): Promise<any> {
         const sendData = { colors };
 
         const options = {
@@ -26,6 +28,6 @@ export class DisplayAPI {
             }
         };
 
-        return axios.post('http://151.217.18.204:13334', sendData, options);
+        return axios.post(this.rootEndpoint, sendData, options);
     }
 }
