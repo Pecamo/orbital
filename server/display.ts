@@ -3,7 +3,11 @@ import { HtmlColors } from "./htmlColors";
 import { DisplayAPI } from "./display-api";
 
 export class Display {
-    constructor(public size: number, public isDisplay: boolean = true, public invertOrientation: boolean = false) {}
+    public displayApi: DisplayAPI;
+
+    constructor(public size: number, rootEndpoint: string, public isDisplay: boolean = true, public invertOrientation: boolean = false) {
+        this.displayApi = new DisplayAPI(rootEndpoint);
+    }
 
     private currentFrame: Color[] = this.newBlackArray(this.size);
     private nextFrame: Color[] = this.newBlackArray(this.size);
@@ -17,7 +21,7 @@ export class Display {
 
             this.currentFrame.forEach(color => color.safe());
 
-            DisplayAPI.set(this.currentFrame);
+            this.displayApi.set(this.currentFrame);
         }
 
         // Keep at the end
