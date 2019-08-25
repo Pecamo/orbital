@@ -35,6 +35,9 @@ app.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
 });
 
+app.use('/', express.static(__dirname + '/../staticRoot'));
+
+
 expressWs.app.ws('/', (ws, req) => {
     ws.on('message', (data) => {
         const msg: CSMessage = JSON.parse(data.toString());

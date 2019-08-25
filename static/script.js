@@ -14,11 +14,17 @@ state = {
   activeScene: 'welcome'
 };
 
+function changeThemeColor(color) {
+  var metaThemeColor = document.querySelector("meta[name=theme-color]");
+  metaThemeColor.setAttribute("content", color);
+}
+
 changeBaseColorFG = (color) => {
   document.documentElement.style.setProperty('--base-color-fg', color);
 };
 changeBaseColorBG = (color) => {
   document.documentElement.style.setProperty('--base-color-bg', color);
+  changeThemeColor(color);
 };
 
 onJoinRelease = () => {
@@ -54,7 +60,7 @@ activateScene = (scene) => {
     .querySelector('#' + scene).classList.add('active');
 };
 
-baseGray = '#8e8e8e';
+baseGray = '#777777';
 waitTime = 60;
 
 ws = new WebSocket("ws://" + location.host + "/");

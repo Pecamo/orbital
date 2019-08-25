@@ -66,7 +66,7 @@
 }
 
 :root {
-    --base-color-bg: #8e8e8e;
+    --base-color-bg: #777777;
     --base-color-fg: #ffffff;
 }
 
@@ -105,6 +105,7 @@ body {
 
 .scene.active {
     display: flex !important;
+    align-items: center;
 }
 
 #container {
@@ -145,6 +146,7 @@ body {
     height: 100%;
     border: 0;
     max-width: 32%;
+    max-height: 98%;
     fill: white;
 }
 
@@ -182,6 +184,10 @@ body {
     outline: 0;
 }
 
+.button img {
+    max-width: 80%;
+}
+
 .fire {
     font-size: 25vw;
 }
@@ -198,21 +204,13 @@ body {
     bottom: 0;
     padding: 10px;
     opacity: 0.3;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 20px);
 }
 
-.opensource {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    padding: 10px;
-    opacity: 0.3;
-}
-
-.names a {
-    color: inherit;
-}
-
-.opensource a {
+.credits a {
     color: inherit;
 }
 
