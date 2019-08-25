@@ -102,10 +102,17 @@ function startWaiting() {
     }, 15);
 }
 
+function onDeath(player: Character) {
+    const deceasedClient = clients.find(c => c.character.id === player.id);
+    if (deceasedClient && deceasedClient.ws && deceasedClient.ws.readyState === 1) {
+        sendMsg(deceasedClient.ws, { cmd: 'lost' });
+    }
+}
+
 function startGame() {
     state = State.GAME;
 
-    game = new Game(clients.length, display);
+    game = new Game(clients.length, display, onDeath);
 
     clients.forEach((c, i) => {c.character = game.gameState.players[i];});
     clients.forEach((c, i) => {

@@ -40,7 +40,7 @@ export class Game {
     public playerColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
     public newInputs: Partial<InputsState>;
 
-    constructor(public numberOfPlayers: number, public display: Display) {
+    constructor(public numberOfPlayers: number, public display: Display, public onPlayerDeathCallback?: (player: Character) => void) {
         this.display = display;
         this.newInputs = [];
         this.gameState = this.startingGameState(numberOfPlayers);
@@ -241,6 +241,9 @@ export class Game {
                 }
                 if ((player.x === shot.x || player.x === this.move(shot.x, shot.facesRight ? -1 : 1)) && shot.owner !== playerId) {
                     player.alive = false;
+                    if (this.onPlayerDeathCallback) {
+                        this.onPlayerDeathCallback(player);
+                    }
                     hit = true;
                 }
             }
