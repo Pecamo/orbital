@@ -236,21 +236,27 @@ body {
 }
 
 .s-strip {
-    height: 20px;
 }
 
 .s-led {
     position: absolute;
     padding-top: 100px;
-    height: calc(40% - 20px);
-    width: 20px;
+    height: calc(40% - 40px);
+    width: 1px;
+    overflow-x: visible;
     transform-origin: top;
     display: flex;
     align-items: flex-end;
+    justify-content: center;
 }
 
 .s-led .light {
     height: 20px;
     width: 100%;
+    min-width: 20px;
     background-color: black;
+}
+
+#spectate .background {
+    background-color: #444444;
 }

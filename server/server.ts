@@ -2,7 +2,7 @@ import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { CSMessage, SCMessage } from './types/Message';
 import * as path from "path";
-import {Character, Game, GameState, Inputs} from "./game";
+import { Character, Game, GameState, Inputs } from "./game";
 import { Display } from './display';
 import { Color } from './color';
 

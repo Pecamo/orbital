@@ -70,13 +70,17 @@ activateScene = (scene) => {
 };
 
 spectateData = (data) => {
-  console.log(data);
   var result = Array(data.stageSize).fill(null);
-  data.characters.forEach(p => {
+  data.characters.filter(c => c.alive).forEach(p => {
     result[p.x] = p.color;
   });
   data.shots.forEach(s => {
-    result[s.x] = data.characters[s.owner].color;
+    var pColor = data.characters[s.owner].color;
+    result[s.x] = {
+      r: pColor.r / 1.5,
+      g: pColor.g / 1.5,
+      b: pColor.b / 1.5
+    };
   });
   var node = document.createElement('div');
   node.classList.add('s-strip');
