@@ -47,15 +47,12 @@ expressWs.app.ws('/', (ws, req) => {
     });
 
     ws.on('close', () => {
-        const index = players.map(c => c.ws).indexOf(ws as any as WebSocket);
-        const player = players[index];
+        players = players.filter(c => c.ws !== ws as any as WebSocket);
 
         /*
         if (player && 'character' in player && player.character) {
             return;
         }*/
-
-        players.splice(index, 1);
 
         if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
             state = State.IDLE;
