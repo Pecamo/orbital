@@ -169,6 +169,7 @@ function endGame(winner: Character) {
     }
 
     sendMsg(winnerPlayer.ws, { cmd: 'won' });
+    spectators.forEach(s => sendMsg(s, { cmd: 'won' })); // TODO Change that for "Blue won".
 
     players.filter(c => c.character.id !== winner.id).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
     players = [];
