@@ -81,7 +81,13 @@ const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_ENDPOINT, isDispla
 function startWaiting() {
     startTime = (new Date()).getTime();
     state = State.WAITING;
+    let diffTime: number = WAITING_TIME;
+
     stopCurrentAnimation();
+
+    const ledAnim = setInterval(() => {
+        displayWaitingColor(1 - diffTime / WAITING_TIME);
+    }, 15);
 
     const cooldown = setInterval(() => {
         if (players.length === 0) {
@@ -90,10 +96,8 @@ function startWaiting() {
         }
 
         const colors = Color.getRange(players.length);
-        const diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime)) / 1000;
-        players.forEach((c, i) => sendMsg(c.ws, { cmd: 'getReady', data: Math.round(diffTime), color: colors[i].toString() }));
-
-        displayWaitingColor(1 - diffTime / (WAITING_TIME / 1000));
+        diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime));
+        players.forEach((c, i) => sendMsg(c.ws, { cmd: 'getReady', data: Math.round(diffTime / 1000), color: colors[i].toString() }));
 
         if (players.length === 0) {
             state = State.IDLE;
@@ -101,10 +105,11 @@ function startWaiting() {
         } else {
             if (diffTime <= 0) {
                 clearInterval(cooldown);
+                clearInterval(ledAnim);
                 startGame();
             }
         }
-    }, 15);
+    }, 500);
 }
 
 function onDeath(player: Character) {
