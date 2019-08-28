@@ -109,8 +109,10 @@ function startWaiting() {
 
 function onDeath(player: Character) {
     const deceasedPlayer = players.find(c => c.character.id === player.id);
+
     if (deceasedPlayer && deceasedPlayer.ws && deceasedPlayer.ws.readyState === 1) {
         sendMsg(deceasedPlayer.ws, { cmd: 'lost' });
+        players = players.filter(p => p !== deceasedPlayer);
     }
 }
 
