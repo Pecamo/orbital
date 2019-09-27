@@ -5,6 +5,7 @@ import * as path from "path";
 import { Character, Game, GameState, Inputs } from "./game";
 import { Display } from './display';
 import { Color } from './color';
+import { HtmlColors } from './htmlColors';
 
 let app = express();
 const expressWs = expressWsWrapper(app);
@@ -245,13 +246,14 @@ function displayWinnerColor(color: Color) {
         }
         if (it > 512) {
             it = 0;
+
+            nbLoops--;
+            if (nbLoops < 0) {
+                stopCurrentAnimation();
+                display.drawAll(HtmlColors.black);
+            }
         }
         it += 5;
-
-        nbLoops--;
-        if (nbLoops < 0) {
-            stopCurrentAnimation();
-        }
     }, 20);
 }
 
