@@ -234,13 +234,13 @@ function sendMsg(player: WebSocket, msg: SCMessage) {
 }
 
 function displayServerStarted() {
-    const colors: Color[] = [HtmlColors.red, HtmlColors.green, HtmlColors.blue, new Color(0, 0, 0, 255)];
+    const colors: Color[] = [HtmlColors.red, HtmlColors.green, HtmlColors.blue, new Color(0, 0, 0, 255), HtmlColors.black];
 
     colors.forEach((color, i) => {
         setTimeout(() => {
             display.drawAll(color);
             display.render();
-        }, i * 100);
+        }, i * 400);
     });
 }
 
