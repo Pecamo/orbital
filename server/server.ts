@@ -10,7 +10,7 @@ let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const DISPLAY_API_ROOT_ENDPOINT = 'http://62.220.135.208:13334';
+const DISPLAY_API_ROOT_ENDPOINT = 'http://localhost:13334';
 const WAITING_TIME = 20 * 1000;
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
@@ -62,8 +62,9 @@ expressWs.app.ws('/', (ws, req) => {
     });
 });
 
-app.listen(3000);
-console.log(`Server listening on port 3000`);
+const port: number = parseInt(process.argv[2]) || 3000;
+app.listen(port);
+console.log(`Server listening on port ${port}`);
 
 let isDisplay: boolean = true;
 
