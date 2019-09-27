@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch",
     "start": "cd dist && node server.js",
-    "nodemon": "nodemon --exec 'npm run build && npm run start'",
+    "watch:build": "tsc --watch",
+    "watch:start": "nodemon --exec npm run start 80",
     "start:no-display": "cd dist && node server.js --no-display",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
