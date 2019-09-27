@@ -9,23 +9,23 @@ export class Display {
         this.displayApi = new DisplayAPI(rootEndpoint);
     }
 
-    private currentFrame: Color[] = this.newBlackArray(this.size);
+    private previousFrame: Color[] = this.newBlackArray(this.size);
     private nextFrame: Color[] = this.newBlackArray(this.size);
 
     public render(): void {
         // TODO play with LEDs
         if (this.isDisplay) {
             if (this.invertOrientation) {
-                this.currentFrame.reverse();
+                this.nextFrame.reverse();
             }
 
-            this.currentFrame.forEach(color => color.safe());
+            this.nextFrame.forEach(color => color.safe());
 
-            this.displayApi.set(this.currentFrame);
+            this.displayApi.set(this.nextFrame);
         }
 
         // Keep at the end
-        this.currentFrame = this.nextFrame;
+        this.previousFrame = this.nextFrame;
         this.nextFrame = this.newBlackArray(this.size);
     }
 
@@ -51,11 +51,11 @@ export class Display {
     }
 
     public get(index: number): Color {
-        return this.currentFrame[index];
+        return this.nextFrame[index];
     }
 
     public screenshot(): Color[] {
-        return this.currentFrame;
+        return this.previousFrame;
     }
 
     public clear(): void {
