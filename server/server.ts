@@ -233,6 +233,7 @@ function sendMsg(player: WebSocket, msg: SCMessage) {
 function displayWinnerColor(color: Color) {
     stopCurrentAnimation();
 
+    let nbLoops = 10;
     let it = 0;
     currentDisplayAnim = setInterval(() => {
         if (it <= 255) {
@@ -246,6 +247,11 @@ function displayWinnerColor(color: Color) {
             it = 0;
         }
         it += 5;
+
+        nbLoops--;
+        if (nbLoops < 0) {
+            stopCurrentAnimation();
+        }
     }, 20);
 }
 
