@@ -251,6 +251,7 @@ function displayWinnerColor(color: Color) {
             if (nbLoops < 0) {
                 stopCurrentAnimation();
                 display.drawAll(HtmlColors.black);
+                display.render();
             }
         }
         it += 5;
