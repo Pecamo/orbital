@@ -76,6 +76,8 @@ if (process.argv.includes('--no-display')) {
 const invertOrientation = process.argv.includes('--invert');
 const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_ENDPOINT, isDisplay, invertOrientation);
 
+displayServerStarted();
+
 // States of the Art
 function startWaiting() {
     startTime = (new Date()).getTime();
@@ -229,6 +231,17 @@ function sendMsg(player: WebSocket, msg: SCMessage) {
     if (player.readyState === 1) {
         player.send(JSON.stringify(msg));
     }
+}
+
+function displayServerStarted() {
+    const colors: Color[] = [HtmlColors.red, HtmlColors.green, HtmlColors.blue, new Color(0, 0, 0, 255)];
+
+    colors.forEach((color, i) => {
+        setTimeout(() => {
+            display.drawAll(color);
+            display.render();
+        }, i * 100);
+    });
 }
 
 function displayWinnerColor(color: Color) {
