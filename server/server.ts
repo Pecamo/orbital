@@ -240,7 +240,6 @@ function displayServerStarted() {
         HtmlColors.blue,
         new Color(0, 0, 0, 255),
         HtmlColors.black,
-        HtmlColors.black,
     ];
 
     colors.forEach((color, i) => {
