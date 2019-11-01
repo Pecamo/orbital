@@ -12,7 +12,7 @@ const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
 const DISPLAY_API_ROOT_ENDPOINT = 'http://localhost:13334';
-const WAITING_TIME = 20 * 1000;
+const WAITING_TIME = 10 * 1000;
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
 let game: Game = null;
@@ -253,7 +253,7 @@ function displayServerStarted() {
 function displayWinnerColor(color: Color) {
     stopCurrentAnimation();
 
-    let nbLoops = 10;
+    let nbLoops = 2;
     let it = 0;
     currentDisplayAnim = setInterval(() => {
         if (it <= 255) {
@@ -265,13 +265,12 @@ function displayWinnerColor(color: Color) {
         }
         if (it > 512) {
             it = 0;
-
             nbLoops--;
-            if (nbLoops < 0) {
-                stopCurrentAnimation();
-                display.drawAll(HtmlColors.black);
-                display.render();
-            }
+        }
+        if (it === 255 && nbLoops < 0) {
+            display.drawAll(color.withOpactiy(0));
+            display.render();
+            stopCurrentAnimation();
         }
         it += 5;
     }, 20);
