@@ -1,6 +1,7 @@
 import { Color } from "./color";
 import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
+import terminalOverwrite from "terminal-overwrite";
 import _ from 'lodash';
 
 const MAX_SHOT_RANGE = 18;
@@ -159,7 +160,7 @@ export class Game {
             }
 
             if (!this.display.isDisplay) {
-                console.log(this.toString());
+                terminalOverwrite(this.toString());
             }
 
             // Loop timing, keep at the end
