@@ -50,11 +50,6 @@ expressWs.app.ws('/', (ws, req) => {
     ws.on('close', () => {
         players = players.filter(c => c.ws !== ws as any as WebSocket);
 
-        /*
-        if (player && 'character' in player && player.character) {
-            return;
-        }*/
-
         if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
             state = State.IDLE;
             players = [];
@@ -182,7 +177,6 @@ function endGame(winner: Character) {
 }
 
 function handleMessage(msg: CSMessage, ws: WebSocket) {
-    // TODO this.game.newInputs = ???
     switch (msg.cmd) {
         case 'join':
             if (state === State.IDLE) {

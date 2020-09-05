@@ -44,7 +44,6 @@ export class Game {
     public stageSize: number;
     public gameState: GameState;
     public heldInputs: InputsState;
-    public characterColors = [HtmlColors.red, HtmlColors.blue, HtmlColors.green, HtmlColors.yellow]; // TODO
     public newInputs: Partial<InputsState>;
 
     constructor(public numberOfPlayers: number, public display: Display, public onCharacterDeathCallback?: (player: Character) => void, public onNewStateCallback?: (state: GameState) => void) {

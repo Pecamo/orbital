@@ -13,7 +13,6 @@ export class Display {
     private nextFrame: Color[] = this.newBlackArray(this.size);
 
     public render(): void {
-        // TODO play with LEDs
         if (this.isDisplay) {
             if (this.invertOrientation) {
                 this.nextFrame.reverse();
