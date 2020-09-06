@@ -6,6 +6,28 @@ import { Character, Game, GameState, Inputs } from "./game";
 import { Display } from './display';
 import { Color } from './color';
 import { HtmlColors } from './htmlColors';
+import { GameOptions } from "./types/GameOptions";
+
+const gameOptions: GameOptions = {
+    BattleRoyale: {
+        type: "boolean",
+        default: false,
+        value: false,
+    },
+    MissileCollision: {
+        type: "enum",
+        default: "on",
+        value: "on",
+        options: ["on", "off", "stronger"]
+    },
+    ShotCooldown: {
+        type: "number",
+        default: 12,
+        value: 12,
+        min: 1,
+        max: 20
+    }
+};
 
 let app = express();
 const expressWs = expressWsWrapper(app);
@@ -135,7 +157,7 @@ function onNewState(newState: GameState) {
 function startGame() {
     state = State.GAME;
 
-    game = new Game(players.length, display, onDeath, onNewState);
+    game = new Game(players.length, display, gameOptions, onDeath, onNewState);
 
     players.forEach((c, i) => {c.character = game.gameState.characters[i];});
     players.forEach((c, i) => {

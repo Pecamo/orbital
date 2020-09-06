@@ -1,12 +1,12 @@
 import { Color } from "./color";
 import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
+import { GameOptions } from "./types/GameOptions";
 import terminalOverwrite from "terminal-overwrite";
 import _ from 'lodash';
 
 const MAX_SHOT_RANGE = 18;
 const MIN_SHOT_RANGE = 2;
-const SHOT_COOLDOWN = 12;
 
 export type Character = {
     id: number,
@@ -32,7 +32,7 @@ export interface GameState {
     winner?: Character
 }
 
-type inputKeys = 'right' | 'left' | 'fire'
+type inputKeys = 'right' | 'left' | 'fire';
 
 export type Inputs = {
     [key in inputKeys]: boolean
@@ -47,7 +47,7 @@ export class Game {
     public heldInputs: InputsState;
     public newInputs: Partial<InputsState>;
 
-    constructor(public numberOfPlayers: number, public display: Display, public onCharacterDeathCallback?: (player: Character) => void, public onNewStateCallback?: (state: GameState) => void) {
+    constructor(public numberOfPlayers: number, public display: Display, public gameOptions: GameOptions, public onCharacterDeathCallback?: (player: Character) => void, public onNewStateCallback?: (state: GameState) => void) {
         this.display = display;
         this.stageSize = display.size;
         this.newInputs = [];
@@ -237,7 +237,7 @@ export class Game {
                     range: character.shotRange
                 };
                 nextState.shots.push(newShot);
-                nextState.characters[characterId].shotCooldown = SHOT_COOLDOWN;
+                nextState.characters[characterId].shotCooldown = this.gameOptions.ShotCooldown.value;
                 nextState.characters[characterId].shotRange = MIN_SHOT_RANGE;
             }
         }
