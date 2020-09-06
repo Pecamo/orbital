@@ -241,7 +241,7 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         default: {
-            console.warn(`Unknown ws command: ${msg}`);
+            console.warn(`Unknown ws command: ${msg.cmd}`);
             break;
         }
     }

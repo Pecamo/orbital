@@ -75,6 +75,12 @@ onChangeOptionsDisappear = () => {
   document.querySelector('#changeOptionsButton').removeAttribute('disabled');
 };
 
+onChangeOptionsValidate = () => {
+  onWriteGameOptions(gameOptions);
+  onChangeOptionsDisappear();
+  activateScene('welcome');
+}
+
 activateScene = (scene) => {
   onJoinDisappear();
   if (!['welcome', 'how', 'spectate', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress', 'changeGameOptions']
@@ -90,9 +96,6 @@ activateScene = (scene) => {
   }
   if (scene === 'welcome') {
     changeBaseColorBG(baseGray);
-  }
-  if (scene === 'changeGameOptions') {
-    console.log("Hello")
   }
   state.activeScene = scene;
   document
@@ -320,7 +323,9 @@ onRecieve = (message) => {
     }
 
     case 'readGameOptions': {
-      document.querySelector('#gameOptions').value = JSON.stringify(json.data);
+      json.data;
+      gameOptions = json.data;
+      document.querySelector('#gameOptionsScene').innerHTML = gameOptionsToForm();
       activateScene('changeGameOptions');
       break;
     }
