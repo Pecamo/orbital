@@ -181,6 +181,29 @@ body {
     color: var(--base-color-fg);
 }
 
+#changeGameOptions .name {
+    margin-top: 3vw;
+    margin-bottom: 2vw;
+    font-size: 3vw;
+}
+
+#changeGameOptions .radio-inputs {
+    display: flex;
+    justify-content: space-around;
+    text-transform: capitalize;
+}
+
+#changeGameOptions .button {
+    font-size: 3vw;
+    padding: 1vw;
+    margin: 3vw auto;
+}
+
+#changeGameOptions [type="checkbox"], #changeGameOptions [type="radio"] {
+    transform: scale(1.3);
+    margin: 0 1vw;
+}
+
 .button {
     background-color: var(--base-color-bg);
     font-family: Montserrat, sans-serif;

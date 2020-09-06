@@ -38,22 +38,29 @@ function generateInputBoolean(gameOption, name) {
     const checked = gameOption.value ? "checked" : "";
 
     return `
-        <label for="${name}">${formatName(name)} (default: ${gameOption.default}): </label>
+        <label class="name" for="${name}">${formatName(name)} <small>(default: ${gameOption.default})</small>:</label>
         <input type="checkbox" name="${name}" ${checked} onchange="updateValue(this, this.checked)">
     `;
 }
 
 function generateInputEnum(gameOption, name) {
-    let html = `<h3>${formatName(name)} (default: ${gameOption.default}):</h3>`;
+    let html = `
+        <div class="name">${formatName(name)} <small>(default: ${gameOption.default})</small>:</div>
+        <div class="radio-inputs">
+    `;
 
     html += gameOption.options.map(option => {
         const checked = gameOption.value === option ? "checked" : "";
 
         return `
-            <label for="${name}-${option}">${formatName(option)}: </label>
-            <input type="radio" id="${name}-${option}" name="${name}" value="${option}" ${checked} onchange="updateValue(this, this.value)">
+            <span>
+                <label for="${name}-${option}">${formatName(option)}: </label>
+                <input type="radio" id="${name}-${option}" name="${name}" value="${option}" ${checked} onchange="updateValue(this, this.value)">
+            </span>
         `;
     }).join(' ');
+
+    html += `</div>`;
 
     return html;
 }
@@ -63,7 +70,7 @@ function generateInputNumber(gameOption, name) {
     const max = gameOption.max;
 
     return `
-        <label for="${name}">${formatName(name)} (${min}-${max}, default: ${gameOption.default}): </label>
+        <label class="name" for="${name}">${formatName(name)} <small>(${min}-${max}, default: ${gameOption.default})</small>:</label>
         <input type="number" name="${name}" min="${min}" max="${max}" value="${gameOption.value}" size="5" onchange="updateValue(this, parseFloat(this.value))">
     `;
 }
