@@ -18,7 +18,7 @@ state = {
 ws = new WebSocket("ws://" + location.host + "/");
 
 sendJSON = (message) => (data) => {
-  if (data) {
+  if (data && !message.data) {
     message.data = data;
   }
 
