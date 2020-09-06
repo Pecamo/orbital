@@ -17,7 +17,11 @@ state = {
 
 ws = new WebSocket("ws://" + location.host + "/");
 
-sendJSON = (message) => () => {
+sendJSON = (message) => (data) => {
+  if (data) {
+    message.data = data;
+  }
+
   ws.send(JSON.stringify(message));
 };
 
@@ -29,6 +33,8 @@ onRightPress = sendJSON({cmd: 'press', data: 'right'});
 onRightRelease = sendJSON({cmd: 'release', data: 'right'});
 onFirePress = sendJSON({cmd: 'press', data: 'fire'});
 onFireRelease = sendJSON({cmd: 'release', data: 'fire'});
+onQueryGameOptions = sendJSON({cmd: 'queryGameOptions'});
+onWriteGameOptions = sendJSON({cmd: 'writeGameOptions'});
 
 function changeThemeColor(color) {
   var metaThemeColor = document.querySelector("meta[name=theme-color]");
@@ -51,7 +57,6 @@ onJoinRelease = () => {
 onJoinDisappear = () => {
   document.querySelector('#joinButton').removeAttribute('disabled');
 };
-
 onHowRelease = () => {
   activateScene('how');
 };
@@ -61,9 +66,18 @@ onSpectateRelease = () => {
   onSpectate();
 };
 
+onChangeOptionsRelease = () => {
+  document.querySelector('#changeOptionsButton').setAttribute('disabled', true);
+  onQueryGameOptions();
+};
+
+onChangeOptionsDisappear = () => {
+  document.querySelector('#changeOptionsButton').removeAttribute('disabled');
+};
+
 activateScene = (scene) => {
   onJoinDisappear();
-  if (!['welcome', 'how', 'spectate', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress']
+  if (!['welcome', 'how', 'spectate', 'wait', 'getReady', 'play', 'won', 'lost', 'gameInProgress', 'changeGameOptions']
     .includes(scene)) {
     console.error("This scene doesn't exist");
     return;
@@ -76,6 +90,9 @@ activateScene = (scene) => {
   }
   if (scene === 'welcome') {
     changeBaseColorBG(baseGray);
+  }
+  if (scene === 'changeGameOptions') {
+    console.log("Hello")
   }
   state.activeScene = scene;
   document
@@ -299,6 +316,12 @@ onRecieve = (message) => {
 
     case 'gameInProgress': {
       activateScene('gameInProgress');
+      break;
+    }
+
+    case 'readGameOptions': {
+      document.querySelector('#gameOptions').value = JSON.stringify(json.data);
+      activateScene('changeGameOptions');
       break;
     }
 

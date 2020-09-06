@@ -200,7 +200,7 @@ function endGame(winner: Character) {
 
 function handleMessage(msg: CSMessage, ws: WebSocket) {
     switch (msg.cmd) {
-        case 'join':
+        case 'join': {
             if (state === State.IDLE) {
                 players.push({ws});
                 if (players.length > MINIMUM_PLAYERS - 1) {
@@ -215,27 +215,35 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
                 sendMsg(ws, { cmd: 'gameInProgress' });
             }
             break;
+        }
         case 'press': {
             const player = players.find(c => c.ws === ws);
             if (!player) {
                 return;
             }
             player.inputs[msg.data] = true;
-            break;}
-        case 'release':{
+            break;
+        }
+        case 'release': {
             const player = players.find(c => c.ws === ws);
             if (!player) {
                 return;
             }
             player.inputs[msg.data] = false;
-            break;}
+            break;
+        }
         case 'spectate': {
             spectators.push(ws);
             break;
         }
-        default:
+        case 'queryGameOptions': {
+            sendMsg(ws, { cmd: 'readGameOptions', data: gameOptions });
+            break;
+        }
+        default: {
             console.warn(`Unknown ws command: ${msg}`);
             break;
+        }
     }
 }
 
