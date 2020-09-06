@@ -8,7 +8,7 @@ import { Color } from './color';
 import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 
-const gameOptions: GameOptions = {
+let gameOptions: GameOptions = {
     BattleRoyale: {
         type: "boolean",
         default: false,
@@ -240,8 +240,13 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             sendMsg(ws, { cmd: 'readGameOptions', data: gameOptions });
             break;
         }
+        case 'writeGameOptions': {
+            // TODO we may want to validate this
+            gameOptions = msg.data;
+            break;
+        }
         default: {
-            console.warn(`Unknown ws command: ${msg.cmd}`);
+            console.warn(`Unknown ws command: ${msg['cmd']}`);
             break;
         }
     }
