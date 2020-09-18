@@ -32,7 +32,6 @@
     width: 120%;
     margin-left: -20%;
     height: 100%;
-    pointer-events: none;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -65,8 +64,13 @@
     transition: all 1s;
 }
 
+#allBackground .led:hover {
+    background-color: var(--base-color-fg);
+    box-shadow: 0 0 10px 5px var(--base-color-fg);
+}
+
 :root {
-    --base-color-bg: #777777;
+    --base-color-bg: #666666;
     --base-color-fg: #ffffff;
 }
 
@@ -170,8 +174,8 @@ body {
 }
 
 #wait .button {
-    font-size: 6vw;
-    padding: 2vw;
+    font-size: 3vw;
+    padding: 1vw;
     margin-top: 6vh;
     margin-bottom: 6vh;
 }
