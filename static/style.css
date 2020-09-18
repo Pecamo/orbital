@@ -295,3 +295,23 @@ body {
 canvas.spectateCanvas {
     height: 100%;
 }
+
+input[type="checkbox"] {
+    width: 2vw;
+    height: 2vw;
+}
+
+input[type="radio"] {
+    width: 1.4vw;
+    height: 1.4vw;
+}
+
+input[type="number"] {
+    font-size: 2vw;
+    text-align: right;
+    max-width: 5vw;
+}
+
+label {
+    font-size: 2vw;
+}
