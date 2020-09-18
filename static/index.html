@@ -31,7 +31,7 @@
             </button>
             <div class="credits">
                 <div>Orbital is <a href="https://github.com/Pecamo/orbital">open source</a></div>
-                <div style="text-align: right;">Orbital, 2019, by <span class="names"></span></div>
+                <div style="text-align: right;">Orbital, 2020, by <span class="names"></span></div>
             </div>
         </div>
         <div class="scene" id="how">
@@ -59,7 +59,10 @@
         </div>
         <div class="scene" id="wait">
             <div class="background"></div>
-            Waiting for an opponent to connect...
+            <p>Waiting for an opponent to connect...</p>
+            <button class="button" id="cancelButton" onmouseup="onCancelRelease()">
+                Cancel
+            </button>
         </div>
         <div class="scene" id="getReady">
             <div class="background"></div>

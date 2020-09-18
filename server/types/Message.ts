@@ -6,7 +6,7 @@ export interface BaseMessage {
 }
 
 // Client -> Server
-export type CSMessage = KeyMessage | JoinMessage | SpectateMessage | QueryGameOptionsMessage | WriteGameOptionsMessage;
+export type CSMessage = KeyMessage | JoinMessage | CancelMessage | SpectateMessage | QueryGameOptionsMessage | WriteGameOptionsMessage;
 
 export interface KeyMessage extends BaseMessage {
     cmd: 'press' | 'release';
@@ -15,6 +15,10 @@ export interface KeyMessage extends BaseMessage {
 
 export interface JoinMessage extends BaseMessage {
     cmd: 'join';
+}
+
+export interface CancelMessage extends BaseMessage {
+    cmd: 'cancel';
 }
 
 export interface SpectateMessage extends BaseMessage {

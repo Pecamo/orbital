@@ -169,6 +169,13 @@ body {
     align-items: center;
 }
 
+#wait .button {
+    font-size: 6vw;
+    padding: 2vw;
+    margin-top: 6vh;
+    margin-bottom: 6vh;
+}
+
 #how {
     line-height: 140%;
 }

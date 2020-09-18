@@ -26,6 +26,7 @@ sendJSON = (message) => (data) => {
 };
 
 onJoin = sendJSON({cmd: 'join'});
+onCancel = sendJSON({cmd: 'cancel'});
 onSpectate = sendJSON({cmd: 'spectate'});
 onLeftPress = sendJSON({cmd: 'press', data: 'left'});
 onLeftRelease = sendJSON({cmd: 'release', data: 'left'});
@@ -53,6 +54,10 @@ onJoinRelease = () => {
   document.querySelector('#joinButton').setAttribute('disabled', true);
   onJoin();
 };
+
+onCancelRelease = () => {
+  onCancel();
+}
 
 onJoinDisappear = () => {
   document.querySelector('#joinButton').removeAttribute('disabled');

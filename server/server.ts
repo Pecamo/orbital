@@ -49,6 +49,8 @@ enum State {
 }
 
 let state: State = State.IDLE;
+let cooldown;
+let ledAnim;
 
 app.use((req, res, next) => {
     return next();
@@ -103,11 +105,11 @@ function startWaiting() {
 
     stopCurrentAnimation();
 
-    const ledAnim = setInterval(() => {
+    ledAnim = setInterval(() => {
         displayWaitingColor(1 - diffTime / WAITING_TIME);
     }, 15);
 
-    const cooldown = setInterval(() => {
+    cooldown = setInterval(() => {
         if (players.length === 0) {
             state = State.IDLE;
             players = [];
@@ -128,6 +130,15 @@ function startWaiting() {
             }
         }
     }, 500);
+}
+
+function cancelWaiting(ws) {
+    sendMsg(ws, { cmd: 'welcome' });
+    players = [];
+    stopCurrentAnimation();
+    state = State.IDLE;
+    clearInterval(cooldown);
+    clearInterval(ledAnim);
 }
 
 function onDeath(player: Character) {
@@ -213,6 +224,13 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
                 startTime = (new Date()).getTime();
             } else {
                 sendMsg(ws, { cmd: 'gameInProgress' });
+            }
+            break;
+        }
+        case 'cancel': {
+            if (players.length == 1) {
+                players = [];
+                cancelWaiting(ws);
             }
             break;
         }
