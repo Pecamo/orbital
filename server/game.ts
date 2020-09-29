@@ -4,6 +4,7 @@ import { HtmlColors } from "./htmlColors";
 import { GameOptions } from "./types/GameOptions";
 import terminalOverwrite from "terminal-overwrite";
 import _ from 'lodash';
+import { BattleRoyale, BattleRoyaleState } from "./mods/BattleRoyale";
 
 const MAX_SHOT_RANGE = 18;
 const MIN_SHOT_RANGE = 2;
@@ -27,9 +28,12 @@ export type Shot = {
 };
 
 export interface GameState {
+    turnNb: number;
+    startDate: Date;
     characters: Character[];
     shots: Shot[];
     winner?: Character;
+    battleRoyale?: BattleRoyaleState;
 }
 
 type inputKeys = 'right' | 'left' | 'fire';
@@ -80,9 +84,21 @@ export class Game {
             });
         }
 
-        return {
-            characters,
-            shots: []
+        if (this.gameOptions.BattleRoyale.value) {
+            return {
+                startDate: new Date(),
+                turnNb: 0,
+                characters,
+                shots: [],
+                battleRoyale: BattleRoyale.startingGameState,
+            }
+        } else {
+            return {
+                startDate: new Date(),
+                turnNb: 0,
+                characters,
+                shots: [],
+            }
         }
     };
 
@@ -148,6 +164,10 @@ export class Game {
             this.gameState.shots.forEach(shot => {
                 this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.characters[shot.owner].color, 0.3), HtmlColors.black, shot.age / 24));
             });
+
+            if (this.gameOptions.BattleRoyale.value) {
+                BattleRoyale.tick(this.gameState, this.display);
+            }
 
             this.display.render();
 
@@ -304,7 +324,16 @@ export class Game {
                 nextShots.push(newShot);
             }
         }
+
         nextState.shots = nextShots;
+
+        // Mods
+        if (this.gameOptions.BattleRoyale.value) {
+            nextState.battleRoyale = BattleRoyale.nextState(gameState, nextState, this.stageSize);
+        }
+
+        nextState.turnNb++;
+
         if (this.onNewStateCallback) {
             setTimeout(() => {
                 this.onNewStateCallback(nextState);
