@@ -28,8 +28,8 @@ export type Shot = {
 
 export interface GameState {
     characters: Character[];
-    shots: Shot[],
-    winner?: Character
+    shots: Shot[];
+    winner?: Character;
 }
 
 type inputKeys = 'right' | 'left' | 'fire';
