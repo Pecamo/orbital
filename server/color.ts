@@ -39,6 +39,37 @@ export class Color {
         this.w = Math.max(0, Math.min(this.w, 255));
     }
 
+    public isEqual(other: Color) {
+        return this.r === other.r
+            && this.g === other.g
+            && this.b === other.b
+            && this.w === other.w;
+        /*return [
+            c => c.r, c => c.g, c => c.b, c => c.w
+        ].reduce((acc, curr) => acc && curr(this) === curr(other), true);*/
+    }
+
+    public getDiff(next: Color): ColorDiff {
+        const result: ColorDiff = {};
+        if (this.r != next.r) {
+            result.r = next.r;
+        }
+        if (this.g != next.g) {
+            result.g = next.g;
+        }
+        if (this.b != next.b) {
+            result.b = next.b;
+        }
+        if (this.w != next.w) {
+            result.w = next.w;
+        }
+        return result;
+    }
+
+    public applyDiff(diff: ColorDiff) {
+        return Object.assign({}, this, diff);
+    }
+
     public static getRange(nb: number): Color[] {
         const tintIncrement = 256 * 6 / nb;
         return [...Array(nb).keys()].map(c => {
@@ -67,3 +98,7 @@ export class Color {
 }
 
 export type LEDStrip = Color[];
+
+export type ColorDiff = Partial<Color>;
+
+export type LEDDiffs = { [key: number] : ColorDiff};

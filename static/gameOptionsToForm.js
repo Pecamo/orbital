@@ -81,6 +81,5 @@ function formatName(name) {
 
 function updateValue(input, value) {
     const name = input.name;
-    console.log("updateValue", input, name, value);
     gameOptions[name].value = value;
 }
