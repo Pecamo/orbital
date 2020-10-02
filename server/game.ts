@@ -180,7 +180,7 @@ export class Game {
             }
 
             if (!this.display.isDisplay) {
-                terminalOverwrite(this.toString());
+                // terminalOverwrite(this.toString());
             }
 
             // Loop timing, keep at the end

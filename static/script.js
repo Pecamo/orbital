@@ -116,6 +116,41 @@ spectateData = () => {
     return;
   }
   var result = Array(data.stageSize).fill(null);
+
+  if (data.battleRoyale) {
+    const warnColor = {r: 100, g: 0, b: 0, w: 0};
+    data.battleRoyale.warnLines.forEach(line => {
+      if (line._isLooping) {
+        for (let i = line._from; i <= this.size; i++) {
+          result[i] = warnColor;
+        }
+        for (let i = 0; i <= line._to; i++) {
+          result[i] = warnColor;
+        }
+      } else {
+          for (let i = line._from; i <= line._to; i++) {
+              result[i] = warnColor;
+          }
+      }
+    });
+
+    const deathColor = {r: 255, g: 0, b: 0, w: 0};
+    data.battleRoyale.deathLines.forEach(line => {
+      if (line._isLooping) {
+        for (let i = line._from; i <= this.size; i++) {
+          result[i] = deathColor;
+        }
+        for (let i = 0; i <= line._to; i++) {
+          result[i] = deathColor;
+        }
+      } else {
+        for (let i = line._from; i <= line._to; i++) {
+          result[i] = deathColor;
+        }
+      }
+    });
+  }
+
   data.characters.filter(c => c.alive).forEach(p => {
     result[p.x] = p.color;
   });

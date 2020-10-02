@@ -1,6 +1,7 @@
 import { Color } from "./color";
 import { HtmlColors } from "./htmlColors";
 import { DisplayAPI } from "./display-api";
+import { Line } from "./types/Line";
 
 export class Display {
     public displayApi: DisplayAPI;
@@ -32,9 +33,18 @@ export class Display {
         this.nextFrame[index] = color;
     }
 
-    public drawLine(from: number, to: number, color: Color): void {
-        for (let i = from; i <= to; i++) {
-            this.nextFrame[i] = color;
+    public drawLine(line: Line, color: Color): void {
+        if (line.isLooping) {
+            for (let i = line.from; i <= this.size; i++) {
+                this.nextFrame[i] = color;
+            }
+            for (let i = 0; i <= line.to; i++) {
+                this.nextFrame[i] = color;
+            }
+        } else {
+            for (let i = line.from; i <= line.to; i++) {
+                this.nextFrame[i] = color;
+            }
         }
     }
 
@@ -46,7 +56,7 @@ export class Display {
     }
 
     public drawAll(color: Color): void {
-        this.drawLine(0, this.size, color);
+        this.drawLine(new Line(0, this.size, this.size), color);
     }
 
     public get(index: number): Color {
@@ -58,7 +68,7 @@ export class Display {
     }
 
     public clear(): void {
-        this.drawLine(0, this.size, HtmlColors.black);
+        this.drawAll(HtmlColors.black);
     }
 
     private newBlackArray(length: number): Color[] {
