@@ -12,7 +12,7 @@ export class BattleRoyale {
     private static DEATH_COLOR = HtmlColors.orangered;
     private static WARN_COLOR = HtmlColors.darkred;
     private static EXPANSION_SIZE = 10;
-    private static EXPANSION_DELAY = 50;
+    private static EXPANSION_DELAY = 200;
     private static lastExpansion = 0;
 
     public static startingGameState: BattleRoyaleState = {
