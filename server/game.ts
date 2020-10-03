@@ -330,6 +330,12 @@ export class Game {
         // Mods
         if (this.gameOptions.BattleRoyale.value) {
             nextState.battleRoyale = BattleRoyale.nextState(gameState, nextState, this.stageSize);
+
+            nextState.characters.forEach(character => {
+                if (nextState.battleRoyale.deathLines.some(line => line.includes(character.x))) {
+                    character.alive = false;
+                }
+            })
         }
 
         nextState.turnNb++;
