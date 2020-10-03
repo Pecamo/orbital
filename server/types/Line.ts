@@ -20,7 +20,7 @@ export class Line {
     }
 
     set from(x: number) {
-        this._from = mod(x, this.stageSize);
+        this._from = mod(x, this.stageSize + 1);
     }
 
     get to(): number {
@@ -28,14 +28,14 @@ export class Line {
     }
 
     set to(x: number) {
-        this._to = mod(x, this.stageSize);
+        this._to = mod(x, this.stageSize + 1);
     }
 
     public includes(x: number): boolean {
-        x = mod(x, this.stageSize);
+        x = mod(x, this.stageSize + 1);
 
         if (this.isLooping) {
-            return (this.from <= x && x >= this.stageSize) || (x >= 0 && this.to <= x);
+            return (this.from <= x && x <= this.stageSize) || (x >= 0 && x <= this.to);
         } else {
             return this.from <= x && this.to >= x;
         }
@@ -71,7 +71,7 @@ export class Line {
     }
 
     public static simplifyArray(lines: Line[]): Line[] {
-        const simplifiedLines = [];
+        const simplifiedLines: Line[] = [];
 
         if (lines.length < 2) {
             return lines;
@@ -81,14 +81,18 @@ export class Line {
             return a.from - b.from;
         });
 
+        let currentLine: Line;
         for (let i = 0; i < lines.length - 1; i++) {
-            let currentLine: Line;
-
             if (lines[i].isOverlapping(lines[i + 1])) {
                 if (currentLine) {
                     currentLine = currentLine.merge(lines[i + 1]);
                 } else {
                     currentLine = lines[i].merge(lines[i + 1]);
+                }
+
+                // last loop
+                if (i === lines.length - 2) {
+                    simplifiedLines.push(currentLine);
                 }
             } else {
                 if (currentLine) {
@@ -97,7 +101,19 @@ export class Line {
                 } else {
                     simplifiedLines.push(lines[i]);
                 }
+
+                // last loop
+                if (i === lines.length - 2) {
+                    simplifiedLines.push(lines[i + 1]);
+                }
             }
+        }
+
+        if (simplifiedLines.length > 1 && simplifiedLines[0].isOverlapping(simplifiedLines[simplifiedLines.length - 1])) {
+            const line1 = simplifiedLines.shift();
+            const line2 = simplifiedLines.pop();
+            const newLine = line1.merge(line2);
+            simplifiedLines.push(newLine);
         }
 
         return simplifiedLines;

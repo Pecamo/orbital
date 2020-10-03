@@ -121,7 +121,7 @@ spectateData = () => {
     const warnColor = {r: 100, g: 0, b: 0, w: 0};
     data.battleRoyale.warnLines.forEach(line => {
       if (line._isLooping) {
-        for (let i = line._from; i <= this.size; i++) {
+        for (let i = line._from; i <= data.stageSize; i++) {
           result[i] = warnColor;
         }
         for (let i = 0; i <= line._to; i++) {
@@ -137,7 +137,7 @@ spectateData = () => {
     const deathColor = {r: 255, g: 0, b: 0, w: 0};
     data.battleRoyale.deathLines.forEach(line => {
       if (line._isLooping) {
-        for (let i = line._from; i <= this.size; i++) {
+        for (let i = line._from; i <= data.stageSize; i++) {
           result[i] = deathColor;
         }
         for (let i = 0; i <= line._to; i++) {
