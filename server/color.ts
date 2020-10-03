@@ -101,4 +101,4 @@ export type LEDStrip = Color[];
 
 export type ColorDiff = Partial<Color>;
 
-export type LEDDiffs = { [key: number] : ColorDiff};
+export type LEDDiffs = { [key: number] : ColorDiff };

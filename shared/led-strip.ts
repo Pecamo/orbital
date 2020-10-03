@@ -1,7 +1,7 @@
 import {LEDDiffs, LEDStrip} from "../server/color";
 
 export class LedStrip {
-    computeDiff(colors: LEDStrip, colorsNext: LEDStrip): LEDDiffs {
+    static computeDiff(colors: LEDStrip, colorsNext: LEDStrip): LEDDiffs {
         const result = {};
         for (let i = 0; i < colors.length; i++) {
             if (!colors[i].isEqual(colorsNext[i])) {
@@ -11,10 +11,10 @@ export class LedStrip {
         return result;
     }
 
-    applyDiff(colors: LEDStrip, diffs: LEDDiffs) {
+    static applyDiff(colors: LEDStrip, diffs: LEDDiffs) {
         const result = [...colors];
         for (const [pos, diff] of Object.entries(diffs)) {
-            colors[pos] = colors[pos].applyDiff(diff);
+            result[pos] = colors[pos].applyDiff(diff);
         }
         return result;
     }

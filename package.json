@@ -6,11 +6,12 @@
   "scripts": {
     "build": "tsc",
     "start": "cd dist && node server.js",
+    "start:no-display": "cd dist && node server.js --no-display",
+    "test": "jest",
     "watch:build": "tsc --watch",
     "watch:start": "nodemon --exec npm run start 80",
     "watch:no-display": "nodemon --exec npm run start -- -- --no-display",
-    "start:no-display": "cd dist && node server.js --no-display",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:test": "jest --watch"
   },
   "author": "",
   "license": "ISC",
