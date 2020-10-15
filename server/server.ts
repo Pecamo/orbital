@@ -7,12 +7,13 @@ import { Display } from './display';
 import { Color } from './color';
 import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
+import { Line } from './types/Line';
 
 let gameOptions: GameOptions = {
     BattleRoyale: {
         type: "boolean",
-        default: false,
-        value: false,
+        default: true,
+        value: true,
     },
     MissileCollision: {
         type: "enum",
@@ -328,7 +329,7 @@ function displayWaitingColor(percentage: number) {
 
     const color: Color = new Color(percentage * 255, 0, (1 - percentage) * 255);
 
-    display.drawLine(0, Math.floor(NB_LED * percentage), color);
+    display.drawLine(new Line(0, Math.floor(NB_LED * percentage), NB_LED), color);
     display.render();
 }
 
