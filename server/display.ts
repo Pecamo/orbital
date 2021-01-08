@@ -6,8 +6,12 @@ import { Line } from "./types/Line";
 export class Display {
     public displayApi: DisplayAPI;
 
-    constructor(public size: number, rootEndpoint: string, public isDisplay: boolean = true, public invertOrientation: boolean = false) {
-        this.displayApi = new DisplayAPI(rootEndpoint);
+    constructor(public size: number,
+                rootHost: string,
+                rootPort: number,
+                public isDisplay: boolean = true,
+                public invertOrientation: boolean = false) {
+        this.displayApi = new DisplayAPI(size, rootHost, rootPort);
     }
 
     private previousFrame: Color[] = this.newBlackArray(this.size);

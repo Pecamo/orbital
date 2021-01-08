@@ -34,7 +34,8 @@ let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const DISPLAY_API_ROOT_ENDPOINT = 'http://localhost:13334';
+const DISPLAY_API_ROOT_HOSTNAME = 'localhost';
+const DISPLAY_API_ROOT_PORT = 13335;
 const WAITING_TIME = 10 * 1000;
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
@@ -94,7 +95,7 @@ if (process.argv.includes('--no-display')) {
 }
 
 const invertOrientation = process.argv.includes('--invert');
-const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_ENDPOINT, isDisplay, invertOrientation);
+const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_API_ROOT_PORT, isDisplay, invertOrientation);
 
 displayServerStarted();
 
