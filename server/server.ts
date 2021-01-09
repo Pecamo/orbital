@@ -330,7 +330,7 @@ function displayWaitingColor(percentage: number) {
 
     const color: Color = new Color(percentage * 255, 0, (1 - percentage) * 255);
 
-    display.drawLine(new Line(0, Math.floor(NB_LED * percentage), NB_LED), color);
+    display.drawLine(new Line(NB_LED, 0, Math.floor(NB_LED * percentage)), color);
     display.render();
 }
 

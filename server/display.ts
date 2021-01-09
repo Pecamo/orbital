@@ -60,7 +60,7 @@ export class Display {
     }
 
     public drawAll(color: Color): void {
-        this.drawLine(new Line(0, this.size, this.size), color);
+        this.drawLine(new Line(this.size, 0, this.size), color);
     }
 
     public get(index: number): Color {
