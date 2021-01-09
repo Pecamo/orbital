@@ -6,6 +6,7 @@ import { Line } from "../types/Line";
 export type BattleRoyaleState = {
     warnLines: Line[],
     deathLines: Line[],
+    lastExpansion: number,
 };
 
 export class BattleRoyale {
@@ -13,11 +14,11 @@ export class BattleRoyale {
     private static WARN_COLOR = HtmlColors.darkred;
     private static EXPANSION_SIZE = 10;
     private static EXPANSION_DELAY = 200;
-    private static lastExpansion = 0;
 
     public static startingGameState: BattleRoyaleState = {
         warnLines: [],
         deathLines: [],
+        lastExpansion: 0,
     }
 
     public static tick(gameState: GameState, display: Display) {
@@ -26,8 +27,8 @@ export class BattleRoyale {
     }
 
     public static nextState(gameState: GameState, nextState: GameState, stageSize: number): BattleRoyaleState {
-        if (gameState.turnNb >= this.lastExpansion + this.EXPANSION_DELAY) {
-            this.lastExpansion = gameState.turnNb;
+        if (gameState.turnNb >= this.startingGameState.lastExpansion + this.EXPANSION_DELAY) {
+            this.startingGameState.lastExpansion = gameState.turnNb;
 
             const warnLines = Line.simplifyArray(gameState.battleRoyale.warnLines);
             const deathLines = Line.simplifyArray(gameState.battleRoyale.deathLines);
