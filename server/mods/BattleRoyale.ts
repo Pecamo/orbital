@@ -28,7 +28,7 @@ export class BattleRoyale {
 
     public static nextState(gameState: GameState, nextState: GameState, stageSize: number): BattleRoyaleState {
         if (gameState.turnNb >= gameState.battleRoyale.lastExpansion + this.EXPANSION_DELAY) {
-            gameState.battleRoyale.lastExpansion = gameState.turnNb;
+            nextState.battleRoyale.lastExpansion = gameState.turnNb;
 
             const warnLines = Line.simplifyArray(gameState.battleRoyale.warnLines);
             const deathLines = Line.simplifyArray(gameState.battleRoyale.deathLines);
