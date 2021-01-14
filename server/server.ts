@@ -34,7 +34,8 @@ let app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
-const DISPLAY_API_ROOT_ENDPOINT = 'http://localhost:13334';
+const DISPLAY_API_ROOT_HOSTNAME = 'localhost';
+const DISPLAY_API_ROOT_PORT = 13335;
 const WAITING_TIME = 10 * 1000;
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
@@ -94,7 +95,7 @@ if (process.argv.includes('--no-display')) {
 }
 
 const invertOrientation = process.argv.includes('--invert');
-const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_ENDPOINT, isDisplay, invertOrientation);
+const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_API_ROOT_PORT, isDisplay, invertOrientation);
 
 displayServerStarted();
 
@@ -305,10 +306,10 @@ function displayWinnerColor(color: Color) {
     let it = 0;
     currentDisplayAnim = setInterval(() => {
         if (it <= 255) {
-            display.drawAll(color.withOpactiy(1 - it / 255));
+            display.drawAll(color.withOpacitiy(1 - it / 255));
             display.render();
         } else {
-            display.drawAll(color.withOpactiy((it - 255) / 255));
+            display.drawAll(color.withOpacitiy((it - 255) / 255));
             display.render();
         }
         if (it > 512) {
@@ -316,7 +317,7 @@ function displayWinnerColor(color: Color) {
             nbLoops--;
         }
         if (it === 255 && nbLoops < 0) {
-            display.drawAll(color.withOpactiy(0));
+            display.drawAll(color.withOpacitiy(0));
             display.render();
             stopCurrentAnimation();
         }
@@ -329,7 +330,7 @@ function displayWaitingColor(percentage: number) {
 
     const color: Color = new Color(percentage * 255, 0, (1 - percentage) * 255);
 
-    display.drawLine(new Line(0, Math.floor(NB_LED * percentage), NB_LED), color);
+    display.drawLine(new Line(NB_LED, 0, Math.floor(NB_LED * percentage)), color);
     display.render();
 }
 

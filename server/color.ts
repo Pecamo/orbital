@@ -23,7 +23,7 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
-    public withOpactiy(opacity): Color {
+    public withOpacitiy(opacity): Color {
         return new Color(
             Math.round(this.r * opacity),
             Math.round(this.g * opacity),

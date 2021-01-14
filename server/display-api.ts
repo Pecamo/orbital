@@ -1,11 +1,14 @@
-import axios from 'axios';
+import dgram from 'dgram-as-promised';
+import {Color} from "./color";
 
 export class DisplayAPI {
-    constructor(public rootEndpoint: string) {}
+    constructor(public size: number, public rootHost: string, public rootPort) {}
 
     private lastFrameRendered: boolean = true;
 
-    public set(colors): void {
+    private socket = dgram.createSocket('udp4');
+
+    public set(colors: Color[]): void {
         if (this.lastFrameRendered) {
             this.lastFrameRendered = false;
 
@@ -19,15 +22,21 @@ export class DisplayAPI {
         }
     }
 
-    public sendColors(colors): Promise<any> {
+    private sendColors(colors: Color[]): Promise<any> {
         const sendData = { colors };
 
-        const options = {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        };
+        const header = 0x04; // 0x03 for RGB, 0x04 for RGBW
+        const message = [header];
 
-        return axios.post(this.rootEndpoint, sendData, options);
+        sendData.colors.forEach(color => {
+            message.push(color.r);
+            message.push(color.g);
+            message.push(color.b);
+            message.push(color.w);
+        });
+
+        const messageBuffer = Buffer.from(message);
+
+        return this.socket.send(messageBuffer, 0, messageBuffer.length, this.rootPort, this.rootHost);
     }
 }
