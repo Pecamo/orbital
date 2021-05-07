@@ -1,0 +1,12 @@
+[Unit]
+Description=LED Server
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/pi/led-server
+ExecStart=npm start
+
+[Install]
+WantedBy=multi-user.target

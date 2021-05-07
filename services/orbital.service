@@ -1,0 +1,13 @@
+[Unit]
+Description=Orbital
+After=network-online.target
+Wants=led-server.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=/home/pi/orbital/run.sh
+WorkingDirectory=/home/pi/orbital
+
+[Install]
+WantedBy=multi-user.target
