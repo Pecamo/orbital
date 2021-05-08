@@ -6,8 +6,8 @@ Wants=led-server.service
 [Service]
 Type=simple
 User=root
-ExecStart=/home/pi/orbital/run.sh
 WorkingDirectory=/home/pi/orbital
+ExecStart=npm start
 
 [Install]
 WantedBy=multi-user.target

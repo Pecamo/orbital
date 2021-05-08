@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "cd dist && node server.js",
+    "start": "cd dist && node server.js 80",
     "watch:build": "tsc --watch",
     "watch:start": "nodemon --exec npm run start 80",
     "start:no-display": "cd dist && node server.js --no-display",
