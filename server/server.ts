@@ -40,7 +40,7 @@ const WAITING_TIME = 10 * 1000;
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
 let game: Game = null;
-let startTime = (new Date()).getTime();
+let startTime = Date.now();
 let currentDisplayAnim;
 
 enum State {
@@ -101,7 +101,7 @@ displayServerStarted();
 
 // States of the Art
 function startWaiting() {
-    startTime = (new Date()).getTime();
+    startTime = Date.now();
     state = State.WAITING;
     let diffTime: number = WAITING_TIME;
 
@@ -118,7 +118,7 @@ function startWaiting() {
         }
 
         const colors = Color.getRange(players.length);
-        diffTime = (WAITING_TIME - ((new Date()).getTime() - startTime));
+        diffTime = (WAITING_TIME - (Date.now() - startTime));
         players.forEach((c, i) => sendMsg(c.ws, { cmd: 'getReady', data: Math.round(diffTime / 1000), color: colors[i].toString() }));
 
         if (players.length === 0) {
@@ -223,7 +223,7 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
                 }
             } else if (state === State.WAITING) {
                 players.push({ws});
-                startTime = (new Date()).getTime();
+                startTime = Date.now();
             } else {
                 sendMsg(ws, { cmd: 'gameInProgress' });
             }

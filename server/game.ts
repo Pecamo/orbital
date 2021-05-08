@@ -150,7 +150,7 @@ export class Game {
     public tick(): Promise<Character> {
         return new Promise<Character>((resolve) => {
             // Loop timing, keep at the beginning
-            const tickStart: Date = new Date();
+            const tickStart = Date.now();
 
             // draw characters
             Object.keys(this.gameState.characters).forEach(key => {
@@ -184,8 +184,8 @@ export class Game {
             }
 
             // Loop timing, keep at the end
-            const tickEnd: Date = new Date();
-            const diff = tickStart.getTime() - tickEnd.getTime();
+            const tickEnd = Date.now();
+            const diff = tickStart - tickEnd;
             const waitingTime = 1 / this.fps * 1000 + diff;
             setTimeout(() => resolve(this.tick()), waitingTime);
         });
