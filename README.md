@@ -40,6 +40,13 @@ npm start -- --no-display
 npm start -- --invert
 ```
 
+Systemd Services
+----------------
+
+Some services example are located in `/services`.  
+You can install them in `/etc/systemd/system` on your Raspberry Pi.  
+You may need to change them a bit depending on your configuration.
+
 Develop
 -------
 
