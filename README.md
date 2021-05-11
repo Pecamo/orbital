@@ -1,4 +1,4 @@
-![Orbital](./static/logo.png)
+![Orbital](./static/logo/logo-github.png)
 
 Orbital is a game designed to be played on addressable LED strips, on any one dimensional array of lights.
 
