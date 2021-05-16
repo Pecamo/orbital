@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@types/node": "^12.7.2",
+    "axios": "^0.21.1",
     "dgram-as-promised": "^5.0.1",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
