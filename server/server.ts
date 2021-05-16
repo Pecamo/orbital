@@ -8,6 +8,7 @@ import { Color } from './color';
 import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
+import { connectToPortal } from './portal-connector';
 
 let gameOptions: GameOptions = {
     BattleRoyale: {
@@ -37,6 +38,8 @@ const MINIMUM_PLAYERS = 2;
 const DISPLAY_API_ROOT_HOSTNAME = 'localhost';
 const DISPLAY_API_ROOT_PORT = 13335;
 const WAITING_TIME = 10 * 1000;
+const ORBITAL_PORTAL_CONNECT_ENDPOINT = 'https://orbital.run/connect';
+
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
 let game: Game = null;
@@ -98,6 +101,8 @@ const invertOrientation = process.argv.includes('--invert');
 const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_API_ROOT_PORT, isDisplay, invertOrientation);
 
 displayServerStarted();
+
+connectToPortal(ORBITAL_PORTAL_CONNECT_ENDPOINT);
 
 // States of the Art
 function startWaiting() {
