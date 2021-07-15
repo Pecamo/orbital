@@ -1,6 +1,6 @@
 import { Display } from "../display";
 import { GameState } from "../game";
-import { HtmlColors } from "../htmlColors";
+import { Color } from "../color";
 import { Line } from "../types/Line";
 
 export type BattleRoyaleState = {
@@ -10,8 +10,8 @@ export type BattleRoyaleState = {
 };
 
 export class BattleRoyale {
-    private static DEATH_COLOR = HtmlColors.orangered;
-    private static WARN_COLOR = HtmlColors.darkred;
+    private static DEATH_COLOR = new Color(128, 64, 0);
+    private static WARN_COLOR = new Color(40, 30, 0);
     private static EXPANSION_SIZE = 10;
     private static EXPANSION_DELAY = 200;
 
