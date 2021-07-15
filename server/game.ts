@@ -152,6 +152,10 @@ export class Game {
             // Loop timing, keep at the beginning
             const tickStart = Date.now();
 
+            if (this.gameOptions.BattleRoyale.value) {
+                BattleRoyale.tick(this.gameState, this.display);
+            }
+
             // draw characters
             Object.keys(this.gameState.characters).forEach(key => {
                 const character = this.gameState.characters[key];
@@ -164,10 +168,6 @@ export class Game {
             this.gameState.shots.forEach(shot => {
                 this.display.drawDot(shot.x, Color.overlap(Color.overlap(HtmlColors.darkgrey, this.gameState.characters[shot.owner].color, 0.3), HtmlColors.black, shot.age / 24));
             });
-
-            if (this.gameOptions.BattleRoyale.value) {
-                BattleRoyale.tick(this.gameState, this.display);
-            }
 
             this.display.render();
 
