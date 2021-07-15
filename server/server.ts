@@ -102,7 +102,8 @@ const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_
 
 displayServerStarted();
 
-connectToPortal(ORBITAL_PORTAL_CONNECT_ENDPOINT);
+// Currently done in another service
+// connectToPortal(ORBITAL_PORTAL_CONNECT_ENDPOINT);
 
 // States of the Art
 function startWaiting() {
