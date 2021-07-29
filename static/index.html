@@ -31,7 +31,7 @@
             </button>
             <div class="credits">
                 <div>Orbital is <a href="https://github.com/Pecamo/orbital">open source</a></div>
-                <div style="text-align: right;">Orbital, 2020, by <span class="names"></span></div>
+                <div style="text-align: right;">Orbital, 2020 - 2021, by <span class="names"></span></div>
             </div>
         </div>
         <div class="scene" id="how">
@@ -42,7 +42,7 @@
             Move with the <img class="img" src="/static/left-arrow.svg" style="height: 3vw;">
                 and <img class="img" src="/static/right-arrow.svg" style="height: 3vw;"> arrows<br/>
             Shoot others with the middle <img class="img" src="/static/target.svg" style="height: 3vw;"> button</p>
-            <button class="button retry" onclick="activateScene('welcome')">Back</button>
+            <button class="button retry" onclick="activateSceneWelcome()">Back</button>
         </div>
         <div class="scene" id="spectate">
             <div class="background"></div>
@@ -87,22 +87,28 @@
             <div class="background"></div>
             <p style="color: var(--base-color-bg);">CONGRATULATIONS</p>
             <p>You won !</p>
-            <button class="button retry" onclick="activateScene('welcome')">Play again</button>
+            <button class="button retry" onclick="activateSceneWelcome()">Play again</button>
         </div>
         <div class="scene" id="lost">
             <div class="background"></div>
             <p>GAME OVER</p>
             <p>You died.</p>
-            <button class="button retry" onclick="activateScene('welcome')">Play again</button>
+            <button class="button retry" onclick="activateSceneWelcome()">Play again</button>
         </div>
         <div class="scene" id="gameInProgress">
             <div class="background"></div>
             <p>A game is currently in progress.</p>
             <p>Spectate and be ready for the next game !</p>
-            <button class="button retry" onclick="activateScene('welcome')">Try again</button>
+            <button class="button retry" onclick="activateSceneWelcome()">Try again</button>
         </div>
     </div>
     <script src="/static/gameOptionsToForm.js"></script>
     <script src="/static/script.js"></script>
+    <audio id="sound-fire" src="/static/sounds/fire.mp3"></audio>
+    <audio id="sound-victory" src="/static/sounds/victory.mp3"></audio>
+    <audio id="sound-defeat" src="/static/sounds/defeat.mp3"></audio>
+    <audio id="sound-confirm" src="/static/sounds/confirm.wav"></audio>
+    <audio id="sound-start" src="/static/sounds/start.wav"></audio>
+    <audio id="sound-button" src="/static/sounds/button.wav"></audio>
 </body>
 </html>

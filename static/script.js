@@ -52,10 +52,12 @@ changeBaseColorBG = (color) => {
 
 onJoinRelease = () => {
   document.querySelector('#joinButton').setAttribute('disabled', true);
+  playSound('button');
   onJoin();
 };
 
 onCancelRelease = () => {
+  playSound('button');
   onCancel();
 }
 
@@ -63,16 +65,19 @@ onJoinDisappear = () => {
   document.querySelector('#joinButton').removeAttribute('disabled');
 };
 onHowRelease = () => {
+  playSound('button');
   activateScene('how');
 };
 
 onSpectateRelease = () => {
   activateScene('spectate');
+  playSound('button');
   onSpectate();
 };
 
 onChangeOptionsRelease = () => {
   document.querySelector('#changeOptionsButton').setAttribute('disabled', true);
+  playSound('button');
   onQueryGameOptions();
 };
 
@@ -83,7 +88,13 @@ onChangeOptionsDisappear = () => {
 onChangeOptionsValidate = () => {
   onWriteGameOptions(gameOptions);
   onChangeOptionsDisappear();
+  playSound('confirm');
   activateScene('welcome');
+}
+
+activateSceneWelcome = () => {
+  activateScene('welcome');
+  playSound('button');
 }
 
 activateScene = (scene) => {
@@ -93,6 +104,12 @@ activateScene = (scene) => {
     console.error("This scene doesn't exist");
     return;
   }
+  if (scene === 'lost') {
+    playSound('defeat');
+  }
+  if (scene === 'won') {
+    playSound('victory');
+  }
   if (scene === 'lost' || scene === 'won') {
     if ("vibrate" in window.navigator)
     {
@@ -101,6 +118,9 @@ activateScene = (scene) => {
   }
   if (scene === 'welcome') {
     changeBaseColorBG(baseGray);
+  }
+  if (scene === 'play') {
+    playSound('start');
   }
   state.activeScene = scene;
   document
@@ -381,6 +401,10 @@ onRecieve = (message) => {
 ws.onmessage = (evt) => {
   onRecieve(evt.data);
 };
+
+playSound = (soundName) => {
+  document.getElementById('sound-' + soundName).play();
+}
 
 var protectator = '<a href="https://twitter.com/Protectator">Protectator</a>';
 var binary_brain = '<a href="https://twitter.com/Binary_Brain">Binary Brain</a>';
