@@ -9,6 +9,7 @@
     "watch:build": "tsc --watch",
     "watch:start": "nodemon --exec npm run start 80",
     "start:no-display": "cd dist && node server.js --no-display",
+    "watch:no-display": "nodemon --exec npm run start:no-display",
     "test": "jest"
   },
   "author": "",
