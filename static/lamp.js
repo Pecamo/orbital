@@ -12,7 +12,7 @@ colorPicker.addEventListener('input', () => {
 });
 
 function sendColor(color) {
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.open("POST", "/lamp/color", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(color));
