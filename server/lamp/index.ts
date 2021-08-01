@@ -24,7 +24,7 @@ let isLampRunning = false;
 let currentColor: Color = HtmlColors.black;
 
 function startLamp() {
-    if (!isLampRunning) {
+    if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
         tick();
     }
