@@ -8,6 +8,7 @@ import { Color } from './color';
 import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
+import { lamp } from './lamp';
 
 let gameOptions: GameOptions = {
     BattleRoyale: {
@@ -30,7 +31,7 @@ let gameOptions: GameOptions = {
     }
 };
 
-let app = express();
+const app = express();
 const expressWs = expressWsWrapper(app);
 const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
@@ -43,20 +44,18 @@ let game: Game = null;
 let startTime = Date.now();
 let currentDisplayAnim;
 
-enum State {
+export enum State {
     IDLE,
     WAITING,
     GAME,
     END,
 }
 
-let state: State = State.IDLE;
+export let state: State = State.IDLE;
 let cooldown;
 let ledAnim;
 
-app.use((req, res, next) => {
-    return next();
-});
+app.use('/lamp', lamp);
 
 app.use('/static', express.static(__dirname + '/../static'));
 
@@ -95,7 +94,7 @@ if (process.argv.includes('--no-display')) {
 }
 
 const invertOrientation = process.argv.includes('--invert');
-const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_API_ROOT_PORT, isDisplay, invertOrientation);
+export const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_API_ROOT_PORT, isDisplay, invertOrientation);
 
 displayServerStarted();
 
