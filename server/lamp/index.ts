@@ -36,6 +36,11 @@ lamp.post('/animation', (req, res) => {
     res.send("OK");
 });
 
+lamp.post('/brightness', (req, res) => {
+    // TODO Overall brightness
+    res.send("OK");
+});
+
 let isLampRunning = false;
 let currentColor: Color = HtmlColors.black;
 
@@ -68,8 +73,7 @@ function startLamp() {
             case Animation.RAINBOW:
                 // TODO
                 for (let n = 0; n < NB_LED; n++) {
-
-                    const rgb = convert.hsv.rgb([n * 360 / NB_LED, 100, 100]);
+                    const rgb = convert.hsv.rgb([(n + t) * 360 / NB_LED, 100, 100]);
                     const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
                     display.drawDot(n, color);
 
