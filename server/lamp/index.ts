@@ -1,8 +1,10 @@
 import * as path from "path";
 import express from 'express';
-import { State, state, display } from '../server';
+import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
+import * as convert from 'color-convert';
+
 
 export const lamp = express();
 lamp.use(express.json());
@@ -52,6 +54,7 @@ function startLamp() {
         switch (currentAnimation) {
             case Animation.NONE:
                 nextColor = currentColor;
+                display.drawAll(nextColor);
                 break;
             case Animation.STROBE:
                 if (t % 2 === 0) {
@@ -59,17 +62,28 @@ function startLamp() {
                 } else {
                     nextColor = HtmlColors.black;
                 }
+
+                display.drawAll(nextColor);
                 break;
             case Animation.RAINBOW:
                 // TODO
+                for (let n = 0; n < NB_LED; n++) {
+
+                    const rgb = convert.hsv.rgb([n * 360 / NB_LED, 100, 100]);
+                    const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
+                    display.drawDot(n, color);
+
+                    if (t === 0) {
+                        console.log(n, color);
+                    }
+                }
                 break;
         }
 
-        display.drawAll(nextColor);
         display.render();
 
         if (!display.isDisplay) {
-            console.log(t, nextColor);
+            // console.log(t, nextColor);
         }
 
         // Loop timing, keep at the end

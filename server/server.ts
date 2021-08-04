@@ -33,7 +33,7 @@ let gameOptions: GameOptions = {
 
 const app = express();
 const expressWs = expressWsWrapper(app);
-const NB_LED = 300;
+export const NB_LED = 300;
 const MINIMUM_PLAYERS = 2;
 const DISPLAY_API_ROOT_HOSTNAME = 'localhost';
 const DISPLAY_API_ROOT_PORT = 13335;
