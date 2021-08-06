@@ -1,10 +1,9 @@
-import * as path from "path";
+import * as path from 'path';
 import express from 'express';
 import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import * as convert from 'color-convert';
-
 
 export const lamp = express();
 lamp.use(express.json());
