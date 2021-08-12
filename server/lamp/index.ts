@@ -1,4 +1,4 @@
-import * as path from "path";
+import * as path from 'path';
 import express from 'express';
 import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';

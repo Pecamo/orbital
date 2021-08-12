@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv';
 import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { CSMessage, SCMessage } from './types/Message';
@@ -9,6 +10,8 @@ import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
 import { lamp } from './lamp';
+
+dotenv.config({ path: "../.env" });
 
 let gameOptions: GameOptions = {
     BattleRoyale: {
@@ -33,7 +36,7 @@ let gameOptions: GameOptions = {
 
 const app = express();
 const expressWs = expressWsWrapper(app);
-export const NB_LED = 300;
+export const NB_LED: number = parseInt(process.env.ORBITAL_NB_LED);
 const MINIMUM_PLAYERS = 2;
 const DISPLAY_API_ROOT_HOSTNAME = 'localhost';
 const DISPLAY_API_ROOT_PORT = 13335;
@@ -83,7 +86,7 @@ expressWs.app.ws('/', (ws, req) => {
     });
 });
 
-const port: number = parseInt(process.argv[2]) || 3000;
+const port: number = parseInt(process.argv[2]) || parseInt(process.env.ORBITAL_PORT);
 app.listen(port);
 console.log(`Server listening on port ${port}`);
 
