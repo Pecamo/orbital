@@ -24,7 +24,7 @@ lamp.get('/', (req, res) => {
 
 lamp.post('/color', (req, res) => {
     const { r, g, b, w } = req.body;
-    nextColor = new Color(r, g, b, w);
+    currentColor = new Color(r, g, b, w);
     startLamp();
     res.send("OK");
 });
@@ -43,7 +43,6 @@ lamp.post('/brightness', (req, res) => {
 
 let isLampRunning = false;
 let currentColor: Color = HtmlColors.black;
-let nextColor: Color = HtmlColors.black;
 
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
@@ -58,16 +57,12 @@ function startLamp() {
         // Animations
         switch (currentAnimation) {
             case Animation.NONE:
-                currentColor = nextColor;
                 display.drawAll(currentColor);
                 break;
             case Animation.STROBE:
                 if (t % 2 === 0) {
-                    currentColor = nextColor;
-                } else {
-                    currentColor = HtmlColors.black;
-                }
-
+                    display.drawAll(HtmlColors.black);
+                } 
                 display.drawAll(currentColor);
                 break;
             case Animation.RAINBOW:
