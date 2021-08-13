@@ -1,19 +1,19 @@
 {
   "name": "orbital",
   "version": "1.0.0",
-  "description": "Orbital =======",
-  "main": "index.js",
+  "description": "Orbital is a game designed to be played on LED strips",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "cd dist && node server.js 80",
+    "start": "cd dist && node server.js",
     "watch:build": "tsc --watch",
-    "watch:start": "nodemon --exec npm run start 80",
-    "start:no-display": "cd dist && node server.js --no-display",
-    "watch:no-display": "nodemon --exec npm run start:no-display",
-    "watch:start:no-display": "nodemon --exec npm run start:no-display",
+    "watch:start": "nodemon --exec npm run start",
     "test": "jest"
   },
-  "author": "",
+  "contributors": [
+    "Protectator",
+    "Binary Brain"
+  ],
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -46,7 +46,6 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-ws": "^5.0.2",
-    "lodash": "^4.17.21",
-    "terminal-overwrite": "^2.0.1"
+    "lodash": "^4.17.21"
   }
 }

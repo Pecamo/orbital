@@ -24,7 +24,7 @@ let gameOptions: GameOptions = {
 };
 
 test('Game is created correctly', () => {
-    const display: Display = new Display(100, '', 13335, false, false);
+    const display: Display = new Display(100, '', 13335, false);
     const game = new Game(2, display, gameOptions);
     expect(game.newInputs.length).toBe(0);
 });
