@@ -2,7 +2,6 @@ import { Color } from "./color";
 import { Display } from "./display";
 import { HtmlColors } from "./htmlColors";
 import { GameOptions } from "./types/GameOptions";
-import terminalOverwrite from "terminal-overwrite";
 import _ from 'lodash';
 import { BattleRoyale, BattleRoyaleState } from "./mods/BattleRoyale";
 
@@ -176,10 +175,6 @@ export class Game {
             if (this.gameState.winner) {
                 resolve(this.gameState.winner);
                 return;
-            }
-
-            if (!this.display.isDisplay) {
-                terminalOverwrite(this.toString());
             }
 
             // Loop timing, keep at the end

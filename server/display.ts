@@ -9,7 +9,6 @@ export class Display {
     constructor(public size: number,
                 rootHost: string,
                 rootPort: number,
-                public isDisplay: boolean = true,
                 public invertOrientation: boolean = false) {
         this.displayApi = new DisplayAPI(size, rootHost, rootPort);
     }
@@ -18,15 +17,13 @@ export class Display {
     private nextFrame: Color[] = this.newBlackArray(this.size);
 
     public render(): void {
-        if (this.isDisplay) {
-            if (this.invertOrientation) {
-                this.nextFrame.reverse();
-            }
-
-            this.nextFrame.forEach(color => color.safe());
-
-            this.displayApi.set(this.nextFrame);
+        if (this.invertOrientation) {
+            this.nextFrame.reverse();
         }
+
+        this.nextFrame.forEach(color => color.safe());
+
+        this.displayApi.set(this.nextFrame);
 
         // Keep at the end
         this.previousFrame = this.nextFrame;

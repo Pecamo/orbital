@@ -92,15 +92,8 @@ const port: number = parseInt(process.argv[2]) || parseInt(process.env.ORBITAL_P
 app.listen(port);
 console.log(`Server listening on port ${port}`);
 
-let isDisplay: boolean = true;
-
-if (process.argv.includes('--no-display')) {
-    isDisplay = false;
-}
-
 const invertOrientation = process.argv.includes('--invert');
-export const display: Display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, isDisplay, invertOrientation);
-
+export const display: Display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
 displayServerStarted();
 
 // States of the Art

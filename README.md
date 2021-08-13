@@ -28,12 +28,6 @@ Run
 npm start
 ```
 
-### Run without a LED strip display:
-
-```sh
-npm start -- --no-display
-```
-
 ### Invert the LED strip display:
 
 ```sh
