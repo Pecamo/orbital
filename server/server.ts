@@ -36,11 +36,13 @@ let gameOptions: GameOptions = {
 
 const app = express();
 const expressWs = expressWsWrapper(app);
-export const NB_LED: number = parseInt(process.env.ORBITAL_NB_LED);
+export const NB_LED: number = parseInt(process.env.ORBITAL_NB_LED) || 300;
 const MINIMUM_PLAYERS = 2;
-const DISPLAY_API_ROOT_HOSTNAME = 'localhost';
-const DISPLAY_API_ROOT_PORT = 13335;
-const WAITING_TIME = 10 * 1000;
+const DISPLAY_API_HOSTNAME = process.env.DISPLAY_API_HOSTNAME || 'localhost';
+const DISPLAY_API_PORT = parseInt(process.env.DISPLAY_API_PORT) || 13335;
+const WAITING_TIME = parseInt(process.env.WAITING_TIME_SEC) * 1000;
+const GAME_FPS = parseInt(process.env.GAME_FPS) || 20;
+
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
 let game: Game = null;
@@ -91,8 +93,7 @@ app.listen(port);
 console.log(`Server listening on port ${port}`);
 
 const invertOrientation = process.argv.includes('--invert');
-export const display: Display = new Display(NB_LED, DISPLAY_API_ROOT_HOSTNAME, DISPLAY_API_ROOT_PORT, invertOrientation);
-
+export const display: Display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
 displayServerStarted();
 
 // States of the Art
@@ -166,7 +167,7 @@ function onNewState(newState: GameState) {
 function startGame() {
     state = State.GAME;
 
-    game = new Game(players.length, display, gameOptions, onDeath, onNewState);
+    game = new Game(GAME_FPS, players.length, display, gameOptions, onDeath, onNewState);
 
     players.forEach((c, i) => {c.character = game.gameState.characters[i];});
     players.forEach((c, i) => {

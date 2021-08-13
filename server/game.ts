@@ -44,13 +44,12 @@ export type Inputs = {
 type InputsState = Array<Partial<Inputs>>;
 
 export class Game {
-    public fps: number = 20;
     public stageSize: number;
     public gameState: GameState;
     public heldInputs: InputsState;
     public newInputs: Partial<InputsState>;
 
-    constructor(public numberOfPlayers: number, public display: Display, public gameOptions: GameOptions, public onCharacterDeathCallback?: (player: Character) => void, public onNewStateCallback?: (state: GameState) => void) {
+    constructor(public fps: number, public numberOfPlayers: number, public display: Display, public gameOptions: GameOptions, public onCharacterDeathCallback?: (player: Character) => void, public onNewStateCallback?: (state: GameState) => void) {
         this.display = display;
         this.stageSize = display.size;
         this.newInputs = [];

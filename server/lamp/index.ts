@@ -9,7 +9,7 @@ import * as convert from 'color-convert';
 export const lamp = express();
 lamp.use(express.json());
 
-const LAMP_FPS = 20;
+const LAMP_FPS: number = parseInt(process.env.LAMP_FPS);
 enum Animation {
     NONE = "None",
     STROBE = "Strobe",
