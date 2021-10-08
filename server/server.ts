@@ -1,8 +1,8 @@
-import * as dotenv from 'dotenv';
 import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { CSMessage, SCMessage } from './types/Message';
 import * as path from "path";
+import * as env from "./env";
 import { Character, Game, GameState, Inputs } from "./game";
 import { Display } from './display';
 import { Color } from './color';
@@ -10,8 +10,6 @@ import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
 import { lamp } from './lamp';
-
-dotenv.config({ path: "../.env" });
 
 let gameOptions: GameOptions = {
     BattleRoyale: {
@@ -36,12 +34,12 @@ let gameOptions: GameOptions = {
 
 const app = express();
 const expressWs = expressWsWrapper(app);
-export const NB_LED: number = parseInt(process.env.ORBITAL_NB_LED) || 300;
+export const NB_LED: number = env.ORBITAL_NB_LED || 300;
 const MINIMUM_PLAYERS = 2;
-const DISPLAY_API_HOSTNAME = process.env.DISPLAY_API_HOSTNAME || 'localhost';
-const DISPLAY_API_PORT = parseInt(process.env.DISPLAY_API_PORT) || 13335;
-const WAITING_TIME = parseInt(process.env.WAITING_TIME_SEC) * 1000;
-const GAME_FPS = parseInt(process.env.GAME_FPS) || 20;
+const DISPLAY_API_HOSTNAME = env.DISPLAY_API_HOSTNAME || 'localhost';
+const DISPLAY_API_PORT = env.DISPLAY_API_PORT || 13335;
+const WAITING_TIME = env.WAITING_TIME_SEC * 1000;
+const GAME_FPS = env.GAME_FPS || 20;
 
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
@@ -88,7 +86,7 @@ expressWs.app.ws('/', (ws, req) => {
     });
 });
 
-const port: number = parseInt(process.argv[2]) || parseInt(process.env.ORBITAL_PORT);
+const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
 app.listen(port);
 console.log(`Server listening on port ${port}`);
 

@@ -4,12 +4,12 @@ import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import * as convert from 'color-convert';
-
+import * as env from "../env";
 
 export const lamp = express();
 lamp.use(express.json());
 
-const LAMP_FPS: number = parseInt(process.env.LAMP_FPS);
+const LAMP_FPS: number = env.LAMP_FPS;
 enum Animation {
     NONE = "None",
     STROBE = "Strobe",
