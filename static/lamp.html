@@ -11,7 +11,20 @@
 <body>
     <div id="container">
         <h1>Lamp</h1>
-        <input type="color" id="color-picker">
+        Animation Mode<br>
+        <select name="animation" id="animation-picker">
+            <option value="none">None</option>
+            <option value="strobe">Strobe</option>
+            <option value="rainbow">Rainbow</option>
+        </select>
+        <br>
+        <br>
+        Color 1<br>
+        <input type="color" data-id="0" class="color-picker">
+        <br>
+        <br>
+        Color 2<br>
+        <input type="color" data-id="1" class="color-picker">
     </div>
     <script src="/static/lamp.js"></script>
 </body>
