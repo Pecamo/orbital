@@ -72,11 +72,7 @@ function startLamp() {
                 display.drawAll(getColor(0));
                 break;
             case Animation.STROBE:
-                if (t % 2 === 0) {
-                    display.drawAll(HtmlColors.black);
-                } else {
-                    display.drawAll(getColor(0));
-                }
+                display.drawAll(getColor(t % 2)); // Yeah!
                 break;
             case Animation.RAINBOW:
                 for (let n = 0; n < NB_LED; n++) {
