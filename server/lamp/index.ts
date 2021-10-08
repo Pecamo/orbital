@@ -4,7 +4,7 @@ import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import * as convert from 'color-convert';
-import { env } from 'process';
+import * as env from "../env";
 
 export const lamp = express();
 lamp.use(express.json());
