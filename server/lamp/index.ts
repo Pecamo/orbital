@@ -9,7 +9,7 @@ import * as env from "../env";
 export const lamp = express();
 lamp.use(express.json());
 
-const LAMP_FPS: number = parseInt(env.LAMP_FPS);
+const LAMP_FPS: number = env.LAMP_FPS;
 enum Animation {
     NONE = "None",
     STROBE = "Strobe",

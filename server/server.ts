@@ -34,12 +34,12 @@ let gameOptions: GameOptions = {
 
 const app = express();
 const expressWs = expressWsWrapper(app);
-export const NB_LED: number = parseInt(env.ORBITAL_NB_LED) || 300;
+export const NB_LED: number = env.ORBITAL_NB_LED || 300;
 const MINIMUM_PLAYERS = 2;
 const DISPLAY_API_HOSTNAME = env.DISPLAY_API_HOSTNAME || 'localhost';
-const DISPLAY_API_PORT = parseInt(env.DISPLAY_API_PORT) || 13335;
-const WAITING_TIME = parseInt(env.WAITING_TIME_SEC) * 1000;
-const GAME_FPS = parseInt(env.GAME_FPS) || 20;
+const DISPLAY_API_PORT = env.DISPLAY_API_PORT || 13335;
+const WAITING_TIME = env.WAITING_TIME_SEC * 1000;
+const GAME_FPS = env.GAME_FPS || 20;
 
 let players: {ws: WebSocket, character?: Character, inputs?: Partial<Inputs>}[] = [];
 let spectators: WebSocket[] = [];
@@ -86,7 +86,7 @@ expressWs.app.ws('/', (ws, req) => {
     });
 });
 
-const port: number = parseInt(process.argv[2]) || parseInt(env.ORBITAL_PORT);
+const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
 app.listen(port);
 console.log(`Server listening on port ${port}`);
 
