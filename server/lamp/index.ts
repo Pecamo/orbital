@@ -11,20 +11,26 @@ lamp.use(express.json());
 
 const LAMP_FPS: number = env.LAMP_FPS;
 enum Animation {
-    NONE = "None",
-    STROBE = "Strobe",
-    RAINBOW = "Rainbow",
+    NONE = "none",
+    STROBE = "strobe",
+    RAINBOW = "rainbow",
 }
 
 let currentAnimation: Animation = Animation.NONE;
+let isLampRunning = false;
+let currentColors: Color[] = [];
 
 lamp.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', '..', 'static', 'lamp.html'));
 });
 
-lamp.post('/color', (req, res) => {
-    const { r, g, b, w } = req.body;
-    currentColor = new Color(r, g, b, w);
+lamp.post('/colors', (req, res) => {
+    const colors = req.body;
+    currentColors = colors.map(color => {
+        const { r, g, b, w } = color;
+        return new Color(r, g, b, w);
+    });
+
     startLamp();
     res.send("OK");
 });
@@ -41,8 +47,14 @@ lamp.post('/brightness', (req, res) => {
     res.send("OK");
 });
 
-let isLampRunning = false;
-let currentColor: Color = HtmlColors.black;
+// Getter to avoid trying to read an undefined value
+function getColor(i): Color {
+    if (i < currentColors.length) {
+        return currentColors[i];
+    } else {
+        return HtmlColors.black;
+    }
+}
 
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
@@ -57,13 +69,10 @@ function startLamp() {
         // Animations
         switch (currentAnimation) {
             case Animation.NONE:
-                display.drawAll(currentColor);
+                display.drawAll(getColor(0));
                 break;
             case Animation.STROBE:
-                if (t % 2 === 0) {
-                    display.drawAll(HtmlColors.black);
-                } 
-                display.drawAll(currentColor);
+                display.drawAll(getColor(t % 2)); // Yeah!
                 break;
             case Animation.RAINBOW:
                 for (let n = 0; n < NB_LED; n++) {
