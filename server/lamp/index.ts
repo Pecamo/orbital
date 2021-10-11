@@ -3,9 +3,9 @@ import express from 'express';
 import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
+import { Fire } from './fire';
 import * as convert from 'color-convert';
 import * as env from '../env';
-import { temperatureToRgb } from '../utils';
 
 export const lamp = express();
 lamp.use(express.json());
@@ -58,10 +58,6 @@ function getColor(i): Color {
     }
 }
 
-let fireIntensity = 0.5;
-let previousTemperatures = [];
-let temperatures = [];
-
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
@@ -88,49 +84,7 @@ function startLamp() {
                 }
                 break;
             case Animation.FIRE:
-                // Magic numbers that works quite well
-                const minTemp = 1500;
-                const maxTemp = 2500;
-                const sourceVariationSpeed = 40 / NB_LED;
-                const meanTemperatureDecrease = 80 * (80 / NB_LED);
-                const temperatureDecreaseVariation = NB_LED;
-
-                for (let n = 1; n < NB_LED / 2; n++) {
-                    if (typeof previousTemperatures[n - 1] === 'undefined') {
-                        break;
-                    }
-
-                    const temperatureDecrease = (Math.random() - 0.5) * temperatureDecreaseVariation + meanTemperatureDecrease;
-                    const temp = Math.max(previousTemperatures[n - 1] - temperatureDecrease, 0);
-                    temperatures[n] = temp;
-                    const color = temperatureToRgb(temp);
-                    display.drawDot(n, color);
-                }
-
-                for (let n = NB_LED - 1; n >= NB_LED / 2; n--) {
-                    if (typeof previousTemperatures[n + 1] === 'undefined') {
-                        break;
-                    }
-
-                    const temperatureDecrease = (Math.random() - 0.5) * temperatureDecreaseVariation + meanTemperatureDecrease;
-                    const temp = Math.max(previousTemperatures[n + 1] - temperatureDecrease, 0);
-                    temperatures[n] = temp;
-                    const color = temperatureToRgb(temp);
-                    display.drawDot(n, color);
-                }
-
-                fireIntensity += (Math.random() - 0.5) * sourceVariationSpeed;
-                fireIntensity = Math.min(Math.max(fireIntensity, 0), 1);
-
-                temperatures[0] = (maxTemp - minTemp) * fireIntensity + minTemp;
-                temperatures[NB_LED] = (maxTemp - minTemp) * fireIntensity + minTemp;
-
-                const color = temperatureToRgb(temperatures[0]);
-
-                display.drawDot(0, color);
-                display.drawDot(NB_LED, color);
-
-                [...previousTemperatures] = [...temperatures];
+                Fire.animate(display);
                 break;
         }
 
