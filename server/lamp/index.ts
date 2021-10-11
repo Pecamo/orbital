@@ -5,7 +5,7 @@ import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import * as convert from 'color-convert';
 import * as env from '../env';
-import * as ct from 'color-temperature';
+import { temperatureToRgb } from '../utils';
 
 export const lamp = express();
 lamp.use(express.json());
@@ -58,6 +58,10 @@ function getColor(i): Color {
     }
 }
 
+let fireIntensity = 0.5;
+let previousTemperatures = [];
+let temperatures = [];
+
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
@@ -84,11 +88,49 @@ function startLamp() {
                 }
                 break;
             case Animation.FIRE:
-                for (let n = 0; n < NB_LED / 2; n++) {
-                    const color = temperatureToRgb(n * (2000 / (NB_LED / 2)));
-                    display.drawDot(n + NB_LED / 2, color);
-                    display.drawDot(NB_LED / 2 - n - 1, color);
+                // Magic numbers that works quite well
+                const minTemp = 1500;
+                const maxTemp = 2500;
+                const sourceVariationSpeed = 40 / NB_LED;
+                const meanTemperatureDecrease = 80 * (80 / NB_LED);
+                const temperatureDecreaseVariation = NB_LED;
+
+                for (let n = 1; n < NB_LED / 2; n++) {
+                    if (typeof previousTemperatures[n - 1] === 'undefined') {
+                        break;
+                    }
+
+                    const temperatureDecrease = (Math.random() - 0.5) * temperatureDecreaseVariation + meanTemperatureDecrease;
+                    const temp = Math.max(previousTemperatures[n - 1] - temperatureDecrease, 0);
+                    temperatures[n] = temp;
+                    const color = temperatureToRgb(temp);
+                    display.drawDot(n, color);
                 }
+
+                for (let n = NB_LED - 1; n >= NB_LED / 2; n--) {
+                    if (typeof previousTemperatures[n + 1] === 'undefined') {
+                        break;
+                    }
+
+                    const temperatureDecrease = (Math.random() - 0.5) * temperatureDecreaseVariation + meanTemperatureDecrease;
+                    const temp = Math.max(previousTemperatures[n + 1] - temperatureDecrease, 0);
+                    temperatures[n] = temp;
+                    const color = temperatureToRgb(temp);
+                    display.drawDot(n, color);
+                }
+
+                fireIntensity += (Math.random() - 0.5) * sourceVariationSpeed;
+                fireIntensity = Math.min(Math.max(fireIntensity, 0), 1);
+
+                temperatures[0] = (maxTemp - minTemp) * fireIntensity + minTemp;
+                temperatures[NB_LED] = (maxTemp - minTemp) * fireIntensity + minTemp;
+
+                const color = temperatureToRgb(temperatures[0]);
+
+                display.drawDot(0, color);
+                display.drawDot(NB_LED, color);
+
+                [...previousTemperatures] = [...temperatures];
                 break;
         }
 
@@ -103,26 +145,5 @@ function startLamp() {
         } else {
             isLampRunning = false;
         }
-    }
-}
-
-function temperatureToRgb(temperature): Color {
-    // Assume temperature in Kelvin
-    // 1st step: too cold to glow (theorically 798K (Draper point), but it looks quite better like this)
-    // 2nd step: the lib returns NaN or 0 for green under 652K
-    // 3rd step: starts to emit green ligth, we can count on the lib
-    const steps = [200, 652, 1000];
-    if (temperature < steps[0]) {
-        return HtmlColors.black;
-    } else if (temperature < steps[1]) {
-        const red = Math.round((temperature - steps[0]) * (255 / (steps[2] - steps[0])));
-        return new Color(red, 0, 0);
-    } else if (temperature < steps[2]) {
-        const red = Math.round((temperature - steps[0]) * (255 / (steps[2] - steps[0])));
-        const { green, blue } = ct.colorTemperature2rgb(temperature);
-        return new Color(red, green, blue);
-    } else {
-        const { red, green, blue } = ct.colorTemperature2rgb(temperature);
-        return new Color(red, green, blue);
     }
 }
