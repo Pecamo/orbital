@@ -16,6 +16,7 @@ enum Animation {
     STROBE = "strobe",
     RAINBOW = "rainbow",
     FIRE = "fire",
+    FIRE_WHEEL = "fire_wheel",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -84,7 +85,10 @@ function startLamp() {
                 }
                 break;
             case Animation.FIRE:
-                Fire.animate(display);
+                Fire.animate(t, display, false);
+                break;
+            case Animation.FIRE_WHEEL:
+                Fire.animate(t, display, true);
                 break;
         }
 

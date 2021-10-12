@@ -4,11 +4,12 @@ import { NB_LED } from "../server";
 import { normalize, temperatureToRgb } from "../utils";
 
 export class Fire {
-    static fireIntensity = 0.5;
+    static fireIntensityLeft = 0.5;
+    static fireIntensityRight = 0.5;
     static previousTemperatures: number[] = [];
     static temperatures: number[] = [];
 
-    static animate(display: Display): void {
+    static animate(t: number, display: Display, rotation: boolean): void {
         // Magic numbers that works quite well
         const minTemp = 1500;
         const maxTemp = 2500;
@@ -25,7 +26,12 @@ export class Fire {
             const temp = Math.max(Fire.previousTemperatures[n - 1] - temperatureDecrease, 0);
             Fire.temperatures[n] = temp;
             const color = temperatureToRgb(temp);
-            display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
+
+            if (!rotation) {
+                display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
+            } else {
+                display.drawDot(normalize(t - n + NB_LED / 2 + TOP_LED_NB), color);
+            }
         }
 
         for (let n = NB_LED - 1; n >= NB_LED / 2; n--) {
@@ -37,19 +43,33 @@ export class Fire {
             const temp = Math.max(Fire.previousTemperatures[n + 1] - temperatureDecrease, 0);
             Fire.temperatures[n] = temp;
             const color = temperatureToRgb(temp);
-            display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
+
+            if (!rotation) {
+                display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
+            } else {
+                display.drawDot(normalize(t + n + TOP_LED_NB), color);
+            }
         }
 
-        Fire.fireIntensity += (Math.random() - 0.5) * sourceVariationSpeed;
-        Fire.fireIntensity = Math.min(Math.max(Fire.fireIntensity, 0), 1);
+        Fire.fireIntensityLeft += (Math.random() - 0.5) * sourceVariationSpeed;
+        Fire.fireIntensityLeft = Math.min(Math.max(Fire.fireIntensityLeft, 0), 1);
+        Fire.fireIntensityRight += (Math.random() - 0.5) * sourceVariationSpeed;
+        Fire.fireIntensityRight = Math.min(Math.max(Fire.fireIntensityLeft, 0), 1);
 
-        Fire.temperatures[0] = (maxTemp - minTemp) * Fire.fireIntensity + minTemp;
-        Fire.temperatures[NB_LED] = (maxTemp - minTemp) * Fire.fireIntensity + minTemp;
+        Fire.temperatures[0] = (maxTemp - minTemp) * Fire.fireIntensityLeft + minTemp;
+        Fire.temperatures[NB_LED] = (maxTemp - minTemp) * Fire.fireIntensityRight + minTemp;
 
-        const color = temperatureToRgb(Fire.temperatures[0]);
+        if (!rotation) {
+            display.drawDot(normalize(NB_LED / 2 + TOP_LED_NB), temperatureToRgb(Fire.temperatures[0]));
+            display.drawDot(normalize(NB_LED / 2 + TOP_LED_NB - 1), temperatureToRgb(Fire.temperatures[NB_LED]));
+        } else {
+            display.drawDot(normalize(t + NB_LED / 2 + TOP_LED_NB), temperatureToRgb(Fire.temperatures[0]));
+            display.drawDot(normalize(t + TOP_LED_NB), temperatureToRgb(Fire.temperatures[NB_LED]));
 
-        display.drawDot(normalize(0 + NB_LED / 2 + TOP_LED_NB), color);
-        display.drawDot(normalize(NB_LED + NB_LED / 2 + TOP_LED_NB), color);
+            const colorFront = temperatureToRgb(Fire.temperatures[0] - 500);
+            display.drawDot(normalize(t + 1 + NB_LED / 2 + TOP_LED_NB), colorFront);
+            display.drawDot(normalize(t + 1 + TOP_LED_NB), colorFront);
+        }
 
         [...Fire.previousTemperatures] = [...Fire.temperatures];
     }
