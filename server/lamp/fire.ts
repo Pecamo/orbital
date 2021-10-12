@@ -1,6 +1,7 @@
 import { Display } from "../display";
+import { TOP_LED_NB } from "../env";
 import { NB_LED } from "../server";
-import { temperatureToRgb } from "../utils";
+import { normalize, temperatureToRgb } from "../utils";
 
 export class Fire {
     static fireIntensity = 0.5;
@@ -24,7 +25,7 @@ export class Fire {
             const temp = Math.max(Fire.previousTemperatures[n - 1] - temperatureDecrease, 0);
             Fire.temperatures[n] = temp;
             const color = temperatureToRgb(temp);
-            display.drawDot(n, color);
+            display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
         }
 
         for (let n = NB_LED - 1; n >= NB_LED / 2; n--) {
@@ -36,7 +37,7 @@ export class Fire {
             const temp = Math.max(Fire.previousTemperatures[n + 1] - temperatureDecrease, 0);
             Fire.temperatures[n] = temp;
             const color = temperatureToRgb(temp);
-            display.drawDot(n, color);
+            display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
         }
 
         Fire.fireIntensity += (Math.random() - 0.5) * sourceVariationSpeed;
@@ -47,8 +48,8 @@ export class Fire {
 
         const color = temperatureToRgb(Fire.temperatures[0]);
 
-        display.drawDot(0, color);
-        display.drawDot(NB_LED, color);
+        display.drawDot(normalize(0 + NB_LED / 2 + TOP_LED_NB), color);
+        display.drawDot(normalize(NB_LED + NB_LED / 2 + TOP_LED_NB), color);
 
         [...Fire.previousTemperatures] = [...Fire.temperatures];
     }
