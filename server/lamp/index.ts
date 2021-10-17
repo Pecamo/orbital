@@ -3,8 +3,9 @@ import express from 'express';
 import { NB_LED, State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
+import { Fire } from './fire';
 import * as convert from 'color-convert';
-import * as env from "../env";
+import * as env from '../env';
 
 export const lamp = express();
 lamp.use(express.json());
@@ -14,6 +15,8 @@ enum Animation {
     NONE = "none",
     STROBE = "strobe",
     RAINBOW = "rainbow",
+    FIRE = "fire",
+    FIRE_WHEEL = "fire_wheel",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -80,6 +83,12 @@ function startLamp() {
                     const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
                     display.drawDot(n, color);
                 }
+                break;
+            case Animation.FIRE:
+                Fire.animate(t, display, false);
+                break;
+            case Animation.FIRE_WHEEL:
+                Fire.animate(t, display, true);
                 break;
         }
 
