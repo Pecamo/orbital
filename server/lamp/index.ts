@@ -8,7 +8,7 @@ import * as convert from 'color-convert';
 import * as env from '../env';
 
 export const lamp = express();
-export let TOP_LED_NB = env.TOP_LED_NB;
+let TOP_LED_NB = env.TOP_LED_NB;
 
 lamp.use(express.json());
 
