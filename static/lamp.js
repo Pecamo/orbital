@@ -48,3 +48,17 @@ function sendAnimnation(animation) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(animation));
 }
+
+const topLedNumberInput = document.querySelector(".top-led-number");
+topLedNumberInput.addEventListener('change', () => {
+    const topLedNb = topLedNumberInput.value;
+    sendTopLedNb(topLedNb);
+});
+
+// Send top led number to the server
+function sendTopLedNb(topLedNb) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/lamp/set-top-led", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({ topLedNb }));
+}
