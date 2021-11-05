@@ -8,6 +8,8 @@ import * as convert from 'color-convert';
 import * as env from '../env';
 
 export const lamp = express();
+let TOP_LED_NB = env.TOP_LED_NB;
+
 lamp.use(express.json());
 
 const LAMP_FPS: number = env.LAMP_FPS;
@@ -50,6 +52,11 @@ lamp.post('/brightness', (req, res) => {
     res.send("OK");
 });
 
+lamp.post('/set-top-led', (req, res) => {
+    TOP_LED_NB = req.body.topLedNb;
+    res.send("OK");
+});
+
 // Getter to avoid trying to read an undefined value
 function getColor(i): Color {
     if (i < currentColors.length) {
@@ -85,10 +92,10 @@ function startLamp() {
                 }
                 break;
             case Animation.FIRE:
-                Fire.animate(t, display, false);
+                Fire.animate(t, display, false, TOP_LED_NB);
                 break;
             case Animation.FIRE_WHEEL:
-                Fire.animate(t, display, true);
+                Fire.animate(t, display, true, TOP_LED_NB);
                 break;
         }
 
