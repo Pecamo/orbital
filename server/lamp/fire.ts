@@ -1,5 +1,4 @@
 import { Display } from "../display";
-import { TOP_LED_NB } from "../env";
 import { NB_LED } from "../server";
 import { normalize, temperatureToRgb } from "../utils";
 
@@ -9,7 +8,7 @@ export class Fire {
     static previousTemperatures: number[] = [];
     static temperatures: number[] = [];
 
-    static animate(t: number, display: Display, rotation: boolean): void {
+    static animate(t: number, display: Display, rotation: boolean, topLedNb: number): void {
         // Magic numbers that works quite well
         const minTemp = 1500;
         const maxTemp = 2500;
@@ -28,9 +27,9 @@ export class Fire {
             const color = temperatureToRgb(temp);
 
             if (!rotation) {
-                display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
+                display.drawDot(normalize(n + NB_LED / 2 + topLedNb), color);
             } else {
-                display.drawDot(normalize(t - n + NB_LED / 2 + TOP_LED_NB), color);
+                display.drawDot(normalize(t - n + NB_LED / 2 + topLedNb), color);
             }
         }
 
@@ -45,9 +44,9 @@ export class Fire {
             const color = temperatureToRgb(temp);
 
             if (!rotation) {
-                display.drawDot(normalize(n + NB_LED / 2 + TOP_LED_NB), color);
+                display.drawDot(normalize(n + NB_LED / 2 + topLedNb), color);
             } else {
-                display.drawDot(normalize(t + n + TOP_LED_NB), color);
+                display.drawDot(normalize(t + n + topLedNb), color);
             }
         }
 
@@ -60,15 +59,15 @@ export class Fire {
         Fire.temperatures[NB_LED] = (maxTemp - minTemp) * Fire.fireIntensityRight + minTemp;
 
         if (!rotation) {
-            display.drawDot(normalize(NB_LED / 2 + TOP_LED_NB), temperatureToRgb(Fire.temperatures[0]));
-            display.drawDot(normalize(NB_LED / 2 + TOP_LED_NB - 1), temperatureToRgb(Fire.temperatures[NB_LED]));
+            display.drawDot(normalize(NB_LED / 2 + topLedNb), temperatureToRgb(Fire.temperatures[0]));
+            display.drawDot(normalize(NB_LED / 2 + topLedNb - 1), temperatureToRgb(Fire.temperatures[NB_LED]));
         } else {
-            display.drawDot(normalize(t + NB_LED / 2 + TOP_LED_NB), temperatureToRgb(Fire.temperatures[0]));
-            display.drawDot(normalize(t + TOP_LED_NB), temperatureToRgb(Fire.temperatures[NB_LED]));
+            display.drawDot(normalize(t + NB_LED / 2 + topLedNb), temperatureToRgb(Fire.temperatures[0]));
+            display.drawDot(normalize(t + topLedNb), temperatureToRgb(Fire.temperatures[NB_LED]));
 
             const colorFront = temperatureToRgb(Fire.temperatures[0] - 500);
-            display.drawDot(normalize(t + 1 + NB_LED / 2 + TOP_LED_NB), colorFront);
-            display.drawDot(normalize(t + 1 + TOP_LED_NB), colorFront);
+            display.drawDot(normalize(t + 1 + NB_LED / 2 + topLedNb), colorFront);
+            display.drawDot(normalize(t + 1 + topLedNb), colorFront);
         }
 
         [...Fire.previousTemperatures] = [...Fire.temperatures];
