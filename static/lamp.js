@@ -51,7 +51,7 @@ function sendAnimnation(animation) {
 
 const topLedNumberInput = document.querySelector(".top-led-number");
 topLedNumberInput.addEventListener('change', () => {
-    const topLedNb = topLedNumberInput.value;
+    const topLedNb = parseInt(topLedNumberInput.value, 10);
     sendTopLedNb(topLedNb);
 });
 
