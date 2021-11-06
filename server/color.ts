@@ -1,4 +1,7 @@
 export class Color {
+    public static WHITE = new Color(255, 255, 255);
+    public static BLACK = new Color(0, 0, 0);
+
     public static getRandom(): Color {
         return new Color(Color.getRandom255(), Color.getRandom255(), Color.getRandom255());
     }
@@ -23,7 +26,7 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
-    public withOpacitiy(opacity): Color {
+    public withOpacitiy(opacity: number): Color {
         return new Color(
             Math.round(this.r * opacity),
             Math.round(this.g * opacity),
