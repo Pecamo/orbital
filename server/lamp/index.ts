@@ -6,6 +6,8 @@ import { HtmlColors } from '../htmlColors';
 import { Fire } from './fire';
 import * as convert from 'color-convert';
 import * as env from '../env';
+import animateStars from './stars';
+import animateMatrix from './matrix';
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -19,6 +21,8 @@ enum Animation {
     RAINBOW = "rainbow",
     FIRE = "fire",
     FIRE_WHEEL = "fire_wheel",
+    STARS = "stars",
+    MATRIX_WHEEL = "matrix_wheel",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -96,6 +100,12 @@ function startLamp() {
                 break;
             case Animation.FIRE_WHEEL:
                 Fire.animate(t, display, true, TOP_LED_NB);
+                break;
+            case Animation.STARS:
+                animateStars(display, getColor(0), getColor(1));
+                break;
+            case Animation.MATRIX_WHEEL:
+                animateMatrix(display, getColor(0), getColor(1));
                 break;
         }
 
