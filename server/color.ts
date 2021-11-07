@@ -1,7 +1,4 @@
 export class Color {
-    public static WHITE = new Color(255, 255, 255);
-    public static BLACK = new Color(0, 0, 0);
-
     public static getRandom(): Color {
         return new Color(Color.getRandom255(), Color.getRandom255(), Color.getRandom255());
     }

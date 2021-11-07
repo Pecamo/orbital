@@ -1,8 +1,9 @@
 import { Display } from "../display";
 import { NB_LED } from "../server";
-import {Color} from "../color";
+import { Color } from "../color";
+import { HtmlColors } from "../htmlColors";
 
-const initial = { color: Color.BLACK, life: 0 };
+const initial = { color: HtmlColors.white, life: 0 };
 let stars: Array<{ color: Color, life: number }> = null;
 
 const STAR_LIFE = 120;
