@@ -15,30 +15,40 @@
     <link href="/static/lamp.css" rel="stylesheet">
 </head>
 <body>
-    <div id="container">
-        <h1>Lamp</h1>
-        Animation Mode<br>
-        <select name="animation" id="animation-picker">
-            <option value="none">None</option>
-            <option value="strobe">Strobe</option>
-            <option value="rainbow">Rainbow</option>
-            <option value="fire">Fire</option>
-            <option value="fire_wheel">Fire Wheel</option>
-            <option value="stars">Stars</option>
-            <option value="matrix_wheel">Matrix Wheel</option>
-        </select>
-        <br>
-        <br>
-        Color 1<br>
-        <input type="color" data-id="0" class="color-picker">
-        <br>
-        <br>
-        Color 2<br>
-        <input type="color" data-id="1" class="color-picker">
-        <br>
-        <br>
-        Top Led Number<br>
-        <input type="number" class="top-led-number" min="0" step="1">
+    <div id="container" class="page-grid">
+        <div class="line">
+            <h1>Lamp</h1>
+        </div>
+        <div class="line">
+            <label>Animation Mode</label>
+            <select name="animation" id="animation-picker">
+                <option value="none">None</option>
+                <option value="strobe">Strobe</option>
+                <option value="rainbow">Rainbow</option>
+                <option value="fire">Fire</option>
+                <option value="fire_wheel">Fire Wheel</option>
+                <option value="stars">Stars</option>
+                <option value="matrix_wheel">Matrix Wheel</option>
+            </select>
+        </div>
+        <div class="line">
+            <label>Color 1</label>
+            <div>
+                <input type="color" data-id="0" class="color-picker">
+            </div>
+        </div>
+        <div class="line">
+            <label>Color 2</label>
+            <div>
+                <input type="color" data-id="1" class="color-picker">
+            </div>
+        </div>
+        <div class="line">
+            <label>Top Led Number</label>
+            <div>
+                <input type="number" class="top-led-number" min="0" step="1">
+            </div>
+        </div>
     </div>
     <script src="/static/lamp.js"></script>
 </body>
