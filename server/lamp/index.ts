@@ -18,6 +18,7 @@ const LAMP_FPS: number = env.LAMP_FPS;
 enum Animation {
     NONE = "none",
     STROBE = "strobe",
+    ALTERNATING = "alternating",
     RAINBOW = "rainbow",
     FIRE = "fire",
     FIRE_WHEEL = "fire_wheel",
@@ -87,6 +88,14 @@ function startLamp() {
                 break;
             case Animation.STROBE:
                 display.drawAll(getColor(t % 2)); // Yeah!
+                break;
+            case Animation.ALTERNATING:
+                const ALTERNATE_EACH = 20;
+                const offset = Math.floor(t / ALTERNATE_EACH) % 2;
+                for (let n = 0; n < NB_LED; n++) {
+                    const colorParam = (Math.floor(n / 2) + offset) % 2;
+                    display.drawDot(n, getColor(colorParam));
+                }
                 break;
             case Animation.RAINBOW:
                 for (let n = 0; n < NB_LED; n++) {
