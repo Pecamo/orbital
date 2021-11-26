@@ -19,6 +19,12 @@ Compile typescript:
 npm run build
 ```
 
+Copy .env configuration:
+
+```sh
+cp .env.dist .env
+```
+
 [Install and run the display server on your Raspberry Pi with some SK6812/ws2812b RGBW LED strips](https://github.com/BinaryBrain/Rpi-SK6812-ws2812b-RGBW-http-server)
 
 Run
