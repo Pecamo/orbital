@@ -6,8 +6,8 @@ import { HtmlColors } from '../htmlColors';
 import { Fire } from './fire';
 import * as convert from 'color-convert';
 import * as env from '../env';
-import animateStars from './stars';
 import animateMatrix from './matrix';
+import StarsAnimation from "./stars";
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -71,6 +71,8 @@ function getColor(i): Color {
     }
 }
 
+const stars = new StarsAnimation();
+
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
@@ -111,7 +113,7 @@ function startLamp() {
                 Fire.animate(t, display, true, TOP_LED_NB);
                 break;
             case Animation.STARS:
-                animateStars(display, getColor(0), getColor(1));
+                stars.animate(0, display, [getColor(0), getColor(1)]);
                 break;
             case Animation.MATRIX_WHEEL:
                 animateMatrix(display, getColor(0), getColor(1));

@@ -1,23 +1,34 @@
-import { Display } from "../display";
 import { NB_LED } from "../server";
 import { Color } from "../color";
 import { HtmlColors } from "../htmlColors";
+import { LampAnimation } from "../types/LampAnimation";
 
 const initial = { color: HtmlColors.white, life: 0 };
 let stars: Array<{ color: Color, life: number }> = null;
 
-const STAR_LIFE = 120;
+export default class StarsAnimation implements LampAnimation {
+    name: "Stars";
+    options: [
+        { name: "Color 1", type: "color", default: HtmlColors.cyan },
+        { name: "Color 2", type: "color", default: HtmlColors.magenta },
+        { name: "Star life", type: "number", default: 120, min: 0, max: 10000, step: 1, display: 'range' },
+    ];
 
-export default function animate(display: Display, color1: Color, color2: Color): void {
-    if (stars === null) {
+    stars = [];
+
+    constructor() {
         stars = new Array(NB_LED).fill(initial);
     }
-    const newStar = Math.floor(Math.random() * NB_LED);
-    const newColor = Color.overlap(color1, color2, Math.random());
-    stars[newStar] = { color: newColor, life: STAR_LIFE };
-    for (let n = 0; n < NB_LED; n++) {
-        const star = stars[n];
-        display.drawDot(n, star.color.withOpacitiy(star.life / STAR_LIFE))
-        stars[n].life = Math.max(0, star.life - 1);
+
+    animate(t, display, options) {
+        const [color1, color2, star_life] = options;
+        const newStar = Math.floor(Math.random() * NB_LED);
+        const newColor = Color.overlap(color1, color2, Math.random());
+        stars[newStar] = { color: newColor, life: star_life };
+        for (let n = 0; n < NB_LED; n++) {
+            const star = stars[n];
+            display.drawDot(n, star.color.withOpacitiy(star.life / star_life))
+            stars[n].life = Math.max(0, star.life - 1);
+        }
     }
 }
