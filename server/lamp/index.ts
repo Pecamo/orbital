@@ -8,6 +8,7 @@ import * as convert from 'color-convert';
 import * as env from '../env';
 import animateMatrix from './matrix';
 import StarsAnimation from "./stars";
+import { normalize } from '../utils';
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -24,6 +25,7 @@ enum Animation {
     FIRE_WHEEL = "fire_wheel",
     STARS = "stars",
     MATRIX_WHEEL = "matrix_wheel",
+    SLIDING_WINDOW = "sliding_window",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -117,6 +119,14 @@ function startLamp() {
                 break;
             case Animation.MATRIX_WHEEL:
                 animateMatrix(display, getColor(0), getColor(1));
+                break;
+            case Animation.SLIDING_WINDOW:
+                const speed = NB_LED / 30;
+                for (let n = 0; n < NB_LED / 3; n++) {
+                    const rgb = convert.hsv.rgb([(n + Math.floor(t * speed)) * 360 / NB_LED, 100, 100]);
+                    const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
+                    display.drawDot(normalize(n + Math.floor(t * speed)), color);
+                }
                 break;
         }
 
