@@ -4,7 +4,6 @@ import { HtmlColors } from "../htmlColors";
 import { LampAnimation } from "../types/LampAnimation";
 
 const initial = { color: HtmlColors.white, life: 0 };
-let stars: Array<{ color: Color, life: number }> = null;
 
 export default class StarsAnimation implements LampAnimation {
     name: "Stars";
@@ -14,21 +13,21 @@ export default class StarsAnimation implements LampAnimation {
         { name: "Star life", type: "number", default: 120, min: 0, max: 10000, step: 1, display: 'range' },
     ];
 
-    stars = [];
+    public stars: Array<{ color: Color, life: number }> = [];
 
     constructor() {
-        stars = new Array(NB_LED).fill(initial);
+        this.stars = new Array(NB_LED).fill(initial);
     }
 
     animate(t, display, options) {
         const [color1, color2, star_life] = options;
         const newStar = Math.floor(Math.random() * NB_LED);
         const newColor = Color.overlap(color1, color2, Math.random());
-        stars[newStar] = { color: newColor, life: star_life };
+        this.stars[newStar] = { color: newColor, life: star_life };
         for (let n = 0; n < NB_LED; n++) {
-            const star = stars[n];
+            const star = this.stars[n];
             display.drawDot(n, star.color.withOpacitiy(star.life / star_life))
-            stars[n].life = Math.max(0, star.life - 1);
+            this.stars[n].life = Math.max(0, star.life - 1);
         }
     }
 }
