@@ -1,6 +1,6 @@
 import { Display } from "../display"
 
-type NumberOption = {
+export type NumberOption = {
     type: 'number',
     min: number,
     max: number,
@@ -9,12 +9,12 @@ type NumberOption = {
     display: 'range' | 'input',
 };
 
-type ColorOption = {
+export type ColorOption = {
     type: 'color',
     default: string,
 };
 
-type SelectOption = {
+export type SelectOption = {
     type: 'select',
     options: Array<{
         value: string,
@@ -27,8 +27,12 @@ type TypeOfOption<O extends Option> = O['default'];
 
 type Option = NumberOption | ColorOption | SelectOption;
 
-export interface LampAnimation {
+type Unpacked<T> = T extends Array<{value: infer U}> ? Array<U> : T;
+
+type TypeOfOptions<T extends Array<Option>> = Array<Unpacked<Option>>;
+
+export interface LampAnimation<T extends Array<Option>> {
     name: string;
-    options: Array<Option>;
-    animate(t: number, display: Display, options: Array<TypeOfOption<Option>>): void;
+    options: T;
+    animate(t: number, display: Display, options: TypeOfOptions<T>): void;
 }
