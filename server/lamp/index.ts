@@ -89,7 +89,7 @@ function startLamp() {
                 display.drawAll(getColor(0));
                 break;
             case Animation.STROBE:
-                display.drawAll(getColor(t % 2)); // Yeah!
+                display.drawAll(getColor(Math.floor(t * 10 / LAMP_FPS) % 2)); // Yeah!
                 break;
             case Animation.ALTERNATING:
                 const ALTERNATE_EACH = 20;
