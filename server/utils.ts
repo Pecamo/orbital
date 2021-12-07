@@ -1,6 +1,6 @@
 import * as ct from 'color-temperature';
 import { Color } from "./color";
-import { ORBITAL_NB_LED } from './env';
+import { NB_LED } from './NB_LED';
 import { HtmlColors } from "./htmlColors";
 
 export function mod(x, n) {
@@ -29,5 +29,5 @@ export function temperatureToRgb(temperature): Color {
 }
 
 export function normalize(n) {
-    return mod(n, ORBITAL_NB_LED);
+    return mod(n, NB_LED);
 }

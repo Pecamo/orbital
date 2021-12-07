@@ -1,6 +1,6 @@
 import * as path from 'path';
 import express from 'express';
-import { NB_LED, State, state, display } from '../server';
+import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import { Fire } from './fire';
@@ -9,6 +9,7 @@ import * as env from '../env';
 import animateStars from './stars';
 import animateMatrix from './matrix';
 import { normalize } from '../utils';
+import { NB_LED } from '../NB_LED';
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
