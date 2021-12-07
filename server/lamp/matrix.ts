@@ -1,5 +1,5 @@
 import { Display } from "../display";
-import { NB_LED } from "../server";
+import { NB_LED } from '../NB_LED';
 import {Color} from "../color";
 import {normalize} from "../utils";
 
