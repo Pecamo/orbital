@@ -9,7 +9,7 @@ export class OldSchoolSegments {
     static segmentsLife = [];
 
     static animate(t: number, display: Display, color: Color, topLedNb: number): void {
-        const nbSegments = 12;
+        const nbSegments = 8; // TODO set as parameter
         const blockLength = Math.round(NB_LED / nbSegments);
         const separatorsLength = 2;
         const marginsLength = 2;
