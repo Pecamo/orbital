@@ -16,7 +16,6 @@ export class OldSchoolSegments {
         const segmentsLength = blockLength - separatorsLength - marginsLength * 2;
         const maxLife = LAMP_FPS * 2;
 
-        // if (Math.random() < (t % LAMP_FPS) / 100) {
         if (t % Math.floor(LAMP_FPS / 3) === 0) {
             const n = randomInt(0, nbSegments - 1);
 
