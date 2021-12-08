@@ -4,6 +4,7 @@ import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import { Fire } from './fire';
+import { OldSchoolSegments } from './OldSchoolSegments';
 import * as convert from 'color-convert';
 import * as env from '../env';
 import animateStars from './stars';
@@ -27,6 +28,7 @@ enum Animation {
     STARS = "stars",
     MATRIX_WHEEL = "matrix_wheel",
     SLIDING_WINDOW = "sliding_window",
+    OLD_SCHOOL_SEGMENTS = "old_school_segments",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -126,6 +128,9 @@ function startLamp() {
                     const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
                     display.drawDot(normalize(n + Math.floor(t * speed)), color);
                 }
+                break;
+            case Animation.OLD_SCHOOL_SEGMENTS:
+                OldSchoolSegments.animate(t, display, getColor(0), TOP_LED_NB);
                 break;
         }
 
