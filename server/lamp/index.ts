@@ -4,6 +4,7 @@ import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import { Fire } from './fire';
+import { GameOfLife } from './gameOfLife';
 import * as convert from 'color-convert';
 import * as env from '../env';
 import animateStars from './stars';
@@ -27,6 +28,7 @@ enum Animation {
     STARS = "stars",
     MATRIX_WHEEL = "matrix_wheel",
     SLIDING_WINDOW = "sliding_window",
+    GAME_OF_LIFE = "game_of_life",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -118,6 +120,9 @@ function startLamp() {
                 break;
             case Animation.MATRIX_WHEEL:
                 animateMatrix(display, getColor(0), getColor(1));
+                break;
+            case Animation.GAME_OF_LIFE:
+                GameOfLife.animate(t, display, getColor(0));
                 break;
             case Animation.SLIDING_WINDOW:
                 const speed = NB_LED / 30;
