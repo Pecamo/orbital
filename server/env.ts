@@ -8,3 +8,5 @@ export const WAITING_TIME_SEC: number = parseInt(process.env.WAITING_TIME_SEC);
 export const GAME_FPS: number = parseInt(process.env.GAME_FPS);
 export const ORBITAL_PORT: number = parseInt(process.env.ORBITAL_PORT);
 export const TOP_LED_NB: number = parseInt(process.env.TOP_LED_NB);
+export const SPECTATE_MODE_ENABLED: boolean = process.env.SPECTATE_MODE_ENABLED.toLowerCase() === 'true';
+export const LAMP_MODE_ENABLED: boolean = process.env.LAMP_MODE_ENABLED.toLowerCase() === 'true';
