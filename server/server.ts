@@ -10,6 +10,63 @@ import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
 import { lamp } from './lamp';
+import { NB_LED, fetchNB_LED } from './NB_LED';
+
+export enum State {
+    IDLE,
+    WAITING,
+    GAME,
+    END,
+}
+
+export let state: State = State.IDLE;
+let cooldown;
+let ledAnim;
+export let display: Display;
+
+fetchNB_LED().then(() => init());
+
+function init() {
+    const app = express();
+    const expressWs = expressWsWrapper(app);
+
+    app.use('/lamp', lamp);
+
+    app.use('/static', express.static(__dirname + '/../static'));
+
+    app.get('/', (req, res, next) => {
+        res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
+    });
+
+    app.use('/', express.static(__dirname + '/../staticRoot'));
+
+
+    expressWs.app.ws('/', (ws, req) => {
+        ws.on('message', (data) => {
+            const msg: CSMessage = JSON.parse(data.toString());
+            handleMessage(msg as CSMessage, ws as any as WebSocket);
+        });
+
+        ws.on('close', () => {
+            players = players.filter(c => c.ws !== ws as any as WebSocket);
+
+            if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
+                state = State.IDLE;
+                players = [];
+                game = null;
+            }
+        });
+    });
+
+    const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
+    app.listen(port);
+    console.log(`Server listening on port ${port}`);
+
+    const invertOrientation = process.argv.includes('--invert');
+    display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
+
+    displayServerStarted();
+}
 
 let gameOptions: GameOptions = {
     BattleRoyale: {
@@ -32,12 +89,9 @@ let gameOptions: GameOptions = {
     }
 };
 
-const app = express();
-const expressWs = expressWsWrapper(app);
-export const NB_LED: number = env.ORBITAL_NB_LED || 300;
 const MINIMUM_PLAYERS = 2;
 const DISPLAY_API_HOSTNAME = env.DISPLAY_API_HOSTNAME || 'localhost';
-const DISPLAY_API_PORT = env.DISPLAY_API_PORT || 13335;
+const DISPLAY_API_PORT = env.DISPLAY_API_PORT || 13334;
 const WAITING_TIME = env.WAITING_TIME_SEC * 1000;
 const GAME_FPS = env.GAME_FPS || 20;
 
@@ -46,53 +100,6 @@ let spectators: WebSocket[] = [];
 let game: Game = null;
 let startTime = Date.now();
 let currentDisplayAnim;
-
-export enum State {
-    IDLE,
-    WAITING,
-    GAME,
-    END,
-}
-
-export let state: State = State.IDLE;
-let cooldown;
-let ledAnim;
-
-app.use('/lamp', lamp);
-
-app.use('/static', express.static(__dirname + '/../static'));
-
-app.get('/', (req, res, next) => {
-    res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
-});
-
-app.use('/', express.static(__dirname + '/../staticRoot'));
-
-
-expressWs.app.ws('/', (ws, req) => {
-    ws.on('message', (data) => {
-        const msg: CSMessage = JSON.parse(data.toString());
-        handleMessage(msg as CSMessage, ws as any as WebSocket);
-    });
-
-    ws.on('close', () => {
-        players = players.filter(c => c.ws !== ws as any as WebSocket);
-
-        if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
-            state = State.IDLE;
-            players = [];
-            game = null;
-        }
-    });
-});
-
-const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
-app.listen(port);
-console.log(`Server listening on port ${port}`);
-
-const invertOrientation = process.argv.includes('--invert');
-export const display: Display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
-displayServerStarted();
 
 // States of the Art
 function startWaiting() {

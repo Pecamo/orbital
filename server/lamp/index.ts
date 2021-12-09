@@ -1,6 +1,6 @@
 import * as path from 'path';
 import express from 'express';
-import { NB_LED, State, state, display } from '../server';
+import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import { Fire } from './fire';
@@ -9,6 +9,7 @@ import * as env from '../env';
 import animateMatrix from './matrix';
 import StarsAnimation from "./stars";
 import { normalize } from '../utils';
+import { NB_LED } from '../NB_LED';
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -91,7 +92,7 @@ function startLamp() {
                 display.drawAll(getColor(0));
                 break;
             case Animation.STROBE:
-                display.drawAll(getColor(t % 2)); // Yeah!
+                display.drawAll(getColor(Math.floor(t * 10 / LAMP_FPS) % 2)); // Yeah!
                 break;
             case Animation.ALTERNATING:
                 const ALTERNATE_EACH = 20;

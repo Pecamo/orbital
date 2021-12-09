@@ -1,4 +1,4 @@
-import { NB_LED } from "../server";
+import { NB_LED } from '../NB_LED';
 import { Color } from "../color";
 import { HtmlColors } from "../htmlColors";
 import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
