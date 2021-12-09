@@ -1,7 +1,9 @@
+import { Color } from "../color";
 import { Display } from "../display"
 
 export type NumberOption = {
     type: 'number',
+    name: string,
     min: number,
     max: number,
     step: number,
@@ -11,7 +13,8 @@ export type NumberOption = {
 
 export type ColorOption = {
     type: 'color',
-    default: string,
+    default: Color,
+    name: string,
 };
 
 export type SelectOption = {

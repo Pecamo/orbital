@@ -7,7 +7,7 @@ const initial = { color: HtmlColors.white, life: 0 };
 
 export default class StarsAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
     public name = "Stars";
-    public options = [
+    public options: [ColorOption, ColorOption, NumberOption] = [
         { name: "Color 1", type: "color", default: HtmlColors.cyan },
         { name: "Color 2", type: "color", default: HtmlColors.magenta },
         { name: "Star life", type: "number", default: 120, min: 0, max: 10000, step: 1, display: 'range' },
