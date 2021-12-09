@@ -144,6 +144,10 @@ body {
     filter: brightness(0.4);
 }
 
+a.button {
+    text-decoration: none;
+}
+
 #welcome .orbital {
     font-size: 4vw;
     margin-bottom: 2vw;

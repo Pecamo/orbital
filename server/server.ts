@@ -30,7 +30,13 @@ function init() {
     const app = express();
     const expressWs = expressWsWrapper(app);
 
-    app.use('/lamp', lamp);
+    if (env.LAMP_MODE_ENABLED) {
+        app.use('/lamp', lamp);
+    } else {
+        app.get('/lamp', (req, res) => {
+            res.redirect('/');
+        });
+    }
 
     app.use('/static', express.static(__dirname + '/../static'));
 
@@ -255,7 +261,11 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'spectate': {
-            spectators.push(ws);
+            if (env.SPECTATE_MODE_ENABLED) {
+                spectators.push(ws);
+            } else {
+                sendMsg(ws, { cmd: 'welcome' });
+            }
             break;
         }
         case 'queryGameOptions': {
