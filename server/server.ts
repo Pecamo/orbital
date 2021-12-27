@@ -1,6 +1,9 @@
 import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { CSMessage, SCMessage } from './types/Message';
+import https from 'https';
+import http from 'http';
+import fs from 'fs';
 import * as path from "path";
 import * as env from "./env";
 import { Character, Game, GameState, Inputs } from "./game";
@@ -40,7 +43,6 @@ function init() {
 
     app.use('/', express.static(__dirname + '/../staticRoot'));
 
-
     expressWs.app.ws('/', (ws, req) => {
         ws.on('message', (data) => {
             const msg: CSMessage = JSON.parse(data.toString());
@@ -59,13 +61,29 @@ function init() {
     });
 
     const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
-    app.listen(port);
+    http.createServer(app).listen(port);
+    createSslServer(app);
     console.log(`Server listening on port ${port}`);
 
     const invertOrientation = process.argv.includes('--invert');
     display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
 
     displayServerStarted();
+}
+
+function createSslServer(app: express.Express) {
+    const certDir = env.SSL_CERT_PATH;
+    if (!certDir || !fs.existsSync(certDir)) {
+        console.warn(`Cannot find SSL certificates. Running in HTTP only.`)
+        return;
+    }
+
+    const sslPort: number = env.SSL_ORBITAL_PORT || 443;
+    https.createServer({
+        key: fs.readFileSync(`${certDir}/key.pem`),
+        cert: fs.readFileSync(`${certDir}/cert.pem`),
+        ca: fs.readFileSync(`${certDir}/chain.pem`),
+    }, app).listen(sslPort);
 }
 
 let gameOptions: GameOptions = {
