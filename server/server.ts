@@ -86,8 +86,8 @@ function createSslServer(app: express.Express) {
 
     const sslPort: number = env.SSL_ORBITAL_PORT || 443;
     https.createServer({
-        key: fs.readFileSync(`${certDir}/key.pem`),
-        cert: fs.readFileSync(`${certDir}/cert.pem`),
+        key: fs.readFileSync(`${certDir}/privkey.pem`),
+        cert: fs.readFileSync(`${certDir}/fullchain.pem`),
         ca: fs.readFileSync(`${certDir}/chain.pem`),
     }, app).listen(sslPort);
 }
