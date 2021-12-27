@@ -68,8 +68,8 @@ function init() {
 
     const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
     http.createServer(app).listen(port);
-    createSslServer(app);
     console.log(`Server listening on port ${port}`);
+    createSslServer(app);
 
     const invertOrientation = process.argv.includes('--invert');
     display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
@@ -90,6 +90,7 @@ function createSslServer(app: express.Express) {
         cert: fs.readFileSync(`${certDir}/fullchain.pem`),
         ca: fs.readFileSync(`${certDir}/chain.pem`),
     }, app).listen(sslPort);
+    console.log(`Server listening on port ${sslPort}`);
 }
 
 let gameOptions: GameOptions = {
