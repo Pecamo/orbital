@@ -31,7 +31,6 @@ fetchNB_LED().then(() => init());
 
 function init() {
     const app = express();
-    const expressWs = expressWsWrapper(app);
 
     if (env.LAMP_MODE_ENABLED) {
         app.use('/lamp', lamp);
@@ -49,27 +48,15 @@ function init() {
 
     app.use('/', express.static(__dirname + '/../staticRoot'));
 
-    expressWs.app.ws('/', (ws, req) => {
-        ws.on('message', (data) => {
-            const msg: CSMessage = JSON.parse(data.toString());
-            handleMessage(msg as CSMessage, ws as any as WebSocket);
-        });
-
-        ws.on('close', () => {
-            players = players.filter(c => c.ws !== ws as any as WebSocket);
-
-            if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
-                state = State.IDLE;
-                players = [];
-                game = null;
-            }
-        });
-    });
-
     const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
-    http.createServer(app).listen(port);
+    const httpServer = http.createServer(app).listen(port);
     console.log(`Server listening on port ${port}`);
     createSslServer(app);
+
+    const expressWs = expressWsWrapper(app, httpServer);
+    expressWs.app.ws('/', (ws, req) => {
+        handleWs(ws, req);
+    });
 
     const invertOrientation = process.argv.includes('--invert');
     display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
@@ -85,12 +72,34 @@ function createSslServer(app: express.Express) {
     }
 
     const sslPort: number = env.SSL_ORBITAL_PORT || 443;
-    https.createServer({
+    const httpsServer = https.createServer({
         key: fs.readFileSync(`${certDir}/privkey.pem`),
         cert: fs.readFileSync(`${certDir}/fullchain.pem`),
         ca: fs.readFileSync(`${certDir}/chain.pem`),
     }, app).listen(sslPort);
     console.log(`Server listening on port ${sslPort}`);
+
+    const expressWs = expressWsWrapper(app, httpsServer);
+    expressWs.app.ws('/', (ws, req) => {
+        handleWs(ws, req);
+    });
+}
+
+function handleWs(ws, data) {
+    ws.on('message', (data) => {
+        const msg: CSMessage = JSON.parse(data.toString());
+        handleMessage(msg as CSMessage, ws as any as WebSocket);
+    });
+
+    ws.on('close', () => {
+        players = players.filter(c => c.ws !== ws as any as WebSocket);
+
+        if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
+            state = State.IDLE;
+            players = [];
+            game = null;
+        }
+    });
 }
 
 let gameOptions: GameOptions = {
