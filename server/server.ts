@@ -14,6 +14,7 @@ import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
 import { lamp } from './lamp';
 import { NB_LED, fetchNB_LED } from './NB_LED';
+import cors from 'cors';
 
 export enum State {
     IDLE,
@@ -31,6 +32,7 @@ fetchNB_LED().then(() => init());
 
 function init() {
     const app = express();
+    app.options('*', cors());
 
     if (env.LAMP_MODE_ENABLED) {
         app.use('/lamp', lamp);
