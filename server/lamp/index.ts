@@ -12,9 +12,12 @@ import animateStars from './stars';
 import animateMatrix from './matrix';
 import { normalize } from '../utils';
 import { NB_LED } from '../NB_LED';
+import cors from 'cors';
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
+
+lamp.options('*', cors())
 
 lamp.use(express.json());
 
