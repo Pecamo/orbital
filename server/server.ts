@@ -32,7 +32,7 @@ fetchNB_LED().then(() => init());
 
 function init() {
     const app = express();
-    app.options('*', cors());
+    app.use(cors());
 
     if (env.LAMP_MODE_ENABLED) {
         app.use('/lamp', lamp);

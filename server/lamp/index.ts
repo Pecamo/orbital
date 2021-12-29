@@ -17,7 +17,7 @@ import cors from 'cors';
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
 
-lamp.options('*', cors());
+lamp.use(cors());
 
 lamp.use(express.json());
 
