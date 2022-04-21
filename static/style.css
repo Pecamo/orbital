@@ -129,8 +129,8 @@ body {
 #welcome .button {
     font-size: 6vw;
     padding: 2vw;
-    margin-top: 6vh;
-    margin-bottom: 6vh;
+    margin-top: 4vh;
+    margin-bottom: 4vh;
 }
 
 #welcome .button.mini {
@@ -151,6 +151,11 @@ a.button {
 #welcome .orbital {
     font-size: 4vw;
     margin-bottom: 2vw;
+    margin-top: 4vw;
+}
+
+#welcome .orbital img {
+    height: 15vh;
 }
 
 #play .button {
