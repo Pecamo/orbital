@@ -3,7 +3,7 @@ import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
-import { Fire } from './fire';
+import FireAnimation from './fire';
 import * as convert from 'color-convert';
 import * as env from '../env';
 import animateMatrix from './matrix';
@@ -75,6 +75,8 @@ function getColor(i): Color {
 }
 
 const stars = new StarsAnimation();
+const fire = new FireAnimation(false);
+const fireWheel = new FireAnimation(true);
 
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
@@ -110,13 +112,13 @@ function startLamp() {
                 }
                 break;
             case Animation.FIRE:
-                Fire.animate(t, display, false, TOP_LED_NB);
+                fire.animate(t, display, [TOP_LED_NB]);
                 break;
             case Animation.FIRE_WHEEL:
-                Fire.animate(t, display, true, TOP_LED_NB);
+                fireWheel.animate(t, display, [TOP_LED_NB]);
                 break;
             case Animation.STARS:
-                stars.animate(0, display, [getColor(0), getColor(1)]);
+                stars.animate(t, display, [getColor(0), getColor(1)]);
                 break;
             case Animation.MATRIX_WHEEL:
                 animateMatrix(display, getColor(0), getColor(1));
