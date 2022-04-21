@@ -81,15 +81,15 @@ function getColor(i): Color {
     }
 }
 
-const stars = new StarsAnimation();
-const fire = new FireAnimation(false);
-const fireWheel = new FireAnimation(true);
-
 function startLamp() {
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
         tick(0);
     }
+
+    const stars = new StarsAnimation();
+    const fire = new FireAnimation(false);
+    const fireWheel = new FireAnimation(true);
 
     function tick(t: number) {
         // Loop timing, keep at the beginning
@@ -125,7 +125,7 @@ function startLamp() {
                 fireWheel.animate(t, display, [TOP_LED_NB]);
                 break;
             case Animation.STARS:
-                stars.animate(t, display, [getColor(0), getColor(1)]);
+                stars.animate(t, display, [getColor(0), getColor(1), 120]);
                 break;
             case Animation.MATRIX_WHEEL:
                 animateMatrix(display, getColor(0), getColor(1));

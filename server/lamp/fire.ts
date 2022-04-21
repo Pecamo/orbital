@@ -22,7 +22,7 @@ export default class FireAnimation implements LampAnimation<[NumberOption]> {
         const meanTemperatureDecrease = 80 * (80 / NB_LED);
         const temperatureDecreaseVariation = NB_LED;
 
-        const topLedNb = options[0].value;
+        const topLedNb = options[0];
 
         for (let n = 1; n < NB_LED / 2; n++) {
             if (typeof this.previousTemperatures[n - 1] === 'undefined') {
