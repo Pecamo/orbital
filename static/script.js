@@ -411,3 +411,5 @@ var protectator = '<a href="https://twitter.com/Protectator">Protectator</a>';
 var binary_brain = '<a href="https://twitter.com/Binary_Brain">Binary Brain</a>';
 document.querySelector('.names').innerHTML =
   [[protectator, binary_brain], [binary_brain, protectator]][Math.floor(Math.random() * 2)].join(' and ');
+
+document.querySelector('.currentYear').innerHTML = (new Date()).getFullYear();
