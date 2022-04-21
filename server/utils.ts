@@ -31,3 +31,7 @@ export function temperatureToRgb(temperature): Color {
 export function normalize(n) {
     return mod(n, NB_LED);
 }
+
+export function randomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max + 1 - min) + min);
+}

@@ -29,10 +29,10 @@ export class DisplayAPI {
         const message = [header];
 
         sendData.colors.forEach(color => {
+            message.push(color.w);
             message.push(color.r);
             message.push(color.g);
             message.push(color.b);
-            message.push(color.w);
         });
 
         const messageBuffer = Buffer.from(message);

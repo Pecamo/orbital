@@ -1,6 +1,9 @@
 import express from 'express';
 import expressWsWrapper from 'express-ws';
 import { CSMessage, SCMessage } from './types/Message';
+import https from 'https';
+import http from 'http';
+import fs from 'fs';
 import * as path from "path";
 import * as env from "./env";
 import { Character, Game, GameState, Inputs } from "./game";
@@ -11,6 +14,7 @@ import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
 import { lamp } from './lamp';
 import { NB_LED, fetchNB_LED } from './NB_LED';
+import cors from 'cors';
 
 export enum State {
     IDLE,
@@ -28,9 +32,15 @@ fetchNB_LED().then(() => init());
 
 function init() {
     const app = express();
-    const expressWs = expressWsWrapper(app);
+    app.use(cors());
 
-    app.use('/lamp', lamp);
+    if (env.LAMP_MODE_ENABLED) {
+        app.use('/lamp', lamp);
+    } else {
+        app.get('/lamp', (req, res) => {
+            res.redirect('/');
+        });
+    }
 
     app.use('/static', express.static(__dirname + '/../static'));
 
@@ -40,32 +50,58 @@ function init() {
 
     app.use('/', express.static(__dirname + '/../staticRoot'));
 
-
-    expressWs.app.ws('/', (ws, req) => {
-        ws.on('message', (data) => {
-            const msg: CSMessage = JSON.parse(data.toString());
-            handleMessage(msg as CSMessage, ws as any as WebSocket);
-        });
-
-        ws.on('close', () => {
-            players = players.filter(c => c.ws !== ws as any as WebSocket);
-
-            if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
-                state = State.IDLE;
-                players = [];
-                game = null;
-            }
-        });
-    });
-
     const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
-    app.listen(port);
+    const httpServer = http.createServer(app).listen(port);
     console.log(`Server listening on port ${port}`);
+    createSslServer(app);
+
+    const expressWs = expressWsWrapper(app, httpServer);
+    expressWs.app.ws('/', (ws, req) => {
+        handleWs(ws, req);
+    });
 
     const invertOrientation = process.argv.includes('--invert');
     display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
 
     displayServerStarted();
+}
+
+function createSslServer(app: express.Express) {
+    const certDir = env.SSL_CERT_PATH;
+    if (!certDir || !fs.existsSync(certDir)) {
+        console.warn(`Cannot find SSL certificates. Running in HTTP only.`)
+        return;
+    }
+
+    const sslPort: number = env.SSL_ORBITAL_PORT || 443;
+    const httpsServer = https.createServer({
+        key: fs.readFileSync(`${certDir}/privkey.pem`),
+        cert: fs.readFileSync(`${certDir}/fullchain.pem`),
+        ca: fs.readFileSync(`${certDir}/chain.pem`),
+    }, app).listen(sslPort);
+    console.log(`Server listening on port ${sslPort}`);
+
+    const expressWs = expressWsWrapper(app, httpsServer);
+    expressWs.app.ws('/', (ws, req) => {
+        handleWs(ws, req);
+    });
+}
+
+function handleWs(ws, data) {
+    ws.on('message', (data) => {
+        const msg: CSMessage = JSON.parse(data.toString());
+        handleMessage(msg as CSMessage, ws as any as WebSocket);
+    });
+
+    ws.on('close', () => {
+        players = players.filter(c => c.ws !== ws as any as WebSocket);
+
+        if (players.length === 0 || players.filter(c => c.ws.readyState === 1).length === 0) {
+            state = State.IDLE;
+            players = [];
+            game = null;
+        }
+    });
 }
 
 let gameOptions: GameOptions = {
@@ -255,7 +291,11 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'spectate': {
-            spectators.push(ws);
+            if (env.SPECTATE_MODE_ENABLED) {
+                spectators.push(ws);
+            } else {
+                sendMsg(ws, { cmd: 'welcome' });
+            }
             break;
         }
         case 'queryGameOptions': {

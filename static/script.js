@@ -15,7 +15,8 @@ state = {
   activeScene: 'welcome'
 };
 
-ws = new WebSocket("ws://" + location.host + "/");
+const wsProtocol = (window.location.protocol === 'https:') ? 'wss://' : 'ws://';
+ws = new WebSocket(wsProtocol + location.host + "/");
 
 sendJSON = (message) => (data) => {
   if (data && !message.data) {

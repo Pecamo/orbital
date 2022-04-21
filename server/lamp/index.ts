@@ -4,15 +4,20 @@ import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import FireAnimation from './fire';
+import { OldSchoolSegments } from './OldSchoolSegments';
+import { GameOfLife } from './gameOfLife';
 import * as convert from 'color-convert';
 import * as env from '../env';
 import animateMatrix from './matrix';
 import StarsAnimation from "./stars";
 import { normalize } from '../utils';
 import { NB_LED } from '../NB_LED';
+import cors from 'cors';
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
+
+lamp.use(cors());
 
 lamp.use(express.json());
 
@@ -27,6 +32,8 @@ enum Animation {
     STARS = "stars",
     MATRIX_WHEEL = "matrix_wheel",
     SLIDING_WINDOW = "sliding_window",
+    OLD_SCHOOL_SEGMENTS = "old_school_segments",
+    GAME_OF_LIFE = "game_of_life",
 }
 
 let currentAnimation: Animation = Animation.NONE;
@@ -123,6 +130,9 @@ function startLamp() {
             case Animation.MATRIX_WHEEL:
                 animateMatrix(display, getColor(0), getColor(1));
                 break;
+            case Animation.GAME_OF_LIFE:
+                GameOfLife.animate(t, display, getColor(0));
+                break;
             case Animation.SLIDING_WINDOW:
                 const speed = NB_LED / 30;
                 for (let n = 0; n < NB_LED / 3; n++) {
@@ -130,6 +140,9 @@ function startLamp() {
                     const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
                     display.drawDot(normalize(n + Math.floor(t * speed)), color);
                 }
+                break;
+            case Animation.OLD_SCHOOL_SEGMENTS:
+                OldSchoolSegments.animate(t, display, getColor(0), TOP_LED_NB);
                 break;
         }
 
