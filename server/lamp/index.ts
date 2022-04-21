@@ -13,6 +13,9 @@ import StarsAnimation from "./stars";
 import { normalize } from '../utils';
 import { NB_LED } from '../NB_LED';
 import cors from 'cors';
+import RainbowAnimation from "./rainbow";
+import NoneAnimation from "./none";
+import StrobeAnimation from "./strobe";
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -90,6 +93,9 @@ function startLamp() {
     const stars = new StarsAnimation();
     const fire = new FireAnimation(false);
     const fireWheel = new FireAnimation(true);
+    const rainbow = new RainbowAnimation();
+    const none = new NoneAnimation();
+    const strobe = new StrobeAnimation();
 
     function tick(t: number) {
         // Loop timing, keep at the beginning
@@ -98,10 +104,10 @@ function startLamp() {
         // Animations
         switch (currentAnimation) {
             case Animation.NONE:
-                display.drawAll(getColor(0));
+                none.animate(t, display, [getColor(0)]);
                 break;
             case Animation.STROBE:
-                display.drawAll(getColor(Math.floor(t * 10 / LAMP_FPS) % 2)); // Yeah!
+                strobe.animate(t, display, [getColor(0), getColor(1), LAMP_FPS]);
                 break;
             case Animation.ALTERNATING:
                 const ALTERNATE_EACH = 20;
@@ -112,11 +118,7 @@ function startLamp() {
                 }
                 break;
             case Animation.RAINBOW:
-                for (let n = 0; n < NB_LED; n++) {
-                    const rgb = convert.hsv.rgb([(n + t) * 360 / NB_LED, 100, 100]);
-                    const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
-                    display.drawDot(n, color);
-                }
+                rainbow.animate(t, display, []);
                 break;
             case Animation.FIRE:
                 fire.animate(t, display, [TOP_LED_NB]);
