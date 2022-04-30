@@ -85,17 +85,17 @@ function getColor(i): Color {
 }
 
 function startLamp() {
-    if (!isLampRunning && state === State.IDLE) {
-        isLampRunning = true;
-        tick(0);
-    }
-
     const stars = new StarsAnimation();
     const fire = new FireAnimation(false);
     const fireWheel = new FireAnimation(true);
     const rainbow = new RainbowAnimation();
     const none = new NoneAnimation();
     const strobe = new StrobeAnimation();
+
+    if (!isLampRunning && state === State.IDLE) {
+        isLampRunning = true;
+        tick(0);
+    }
 
     function tick(t: number) {
         // Loop timing, keep at the beginning
