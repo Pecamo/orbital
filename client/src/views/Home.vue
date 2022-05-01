@@ -181,22 +181,8 @@ export default {
     box-shadow: 0 0 10px 5px var(--base-color-fg);
 }
 
-:root {
-    --base-color-bg: #666666;
-    --base-color-fg: #ffffff;
-}
-
 img.img {
     pointer-events: none;
-}
-
-body {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    font-size: 4vw;
-    font-family: Montserrat, sans-serif;
 }
 
 .background {
@@ -254,10 +240,6 @@ body {
 
 #welcome .button:disabled {
     filter: brightness(0.4);
-}
-
-a.button {
-    text-decoration: none;
 }
 
 #welcome .orbital {
