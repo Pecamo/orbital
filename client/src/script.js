@@ -236,34 +236,6 @@ function resizeCanvas() {
 }
 resizeCanvas();
 
-dataToString = (data) => {
-  let world = "";
-
-  for (let x = 0; x < data.stageSize; x++) {
-    let char = "_";
-    for (let playerId in data.players) {
-      const player = data.players[playerId];
-      if (player.x === x && player.alive) {
-        char = "" + playerId;
-      }
-    }
-    for (let shotId in data.shots) {
-      const shot = data.shots[shotId];
-      if (shot.x === x) {
-        char = shot.facesRight ? "⯈" : "⯇";
-      }
-      if (shot.x === this.move(x, 1) && shot.facesRight) {
-        char = "⬩";
-      }
-      if (shot.x === this.move(x, -1) && !shot.facesRight) {
-        char = "⬩";
-      }
-    }
-    world += char;
-  }
-  return world;
-};
-
 baseGray = "#777777";
 waitTime = 60;
 
@@ -417,16 +389,6 @@ ws.onmessage = (evt) => {
   onRecieve(evt.data);
 };
 
-playSound = (soundName) => {
+function playSound(soundName: string) {
   document.getElementById("sound-" + soundName).play();
-};
-
-var protectator = '<a href="https://twitter.com/Protectator">Protectator</a>';
-var binary_brain =
-  '<a href="https://twitter.com/Binary_Brain">Binary Brain</a>';
-document.querySelector(".names").innerHTML = [
-  [protectator, binary_brain],
-  [binary_brain, protectator],
-][Math.floor(Math.random() * 2)].join(" and ");
-
-document.querySelector(".currentYear").innerHTML = new Date().getFullYear();
+}

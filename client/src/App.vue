@@ -9,8 +9,7 @@
       Orbital is <a href="https://github.com/Pecamo/orbital">open source</a>
     </div>
     <div style="text-align: right">
-      Orbital, 2020 - <span class="currentYear"></span>, by
-      <span class="names"></span>
+      Orbital, 2020 - {{ currentYear }}, by <span v-html="names"></span>
     </div>
   </div>
 </template>
@@ -21,6 +20,15 @@ import { RouterView } from "vue-router";
 console.log("Starting connection to WebSocket Server");
 const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 const ws = new WebSocket(wsProtocol + location.host + "/");
+
+const protectator = '<a href="https://twitter.com/Protectator">Protectator</a>';
+const binary_brain =
+  '<a href="https://twitter.com/Binary_Brain">Binary Brain</a>';
+const names = [
+  [protectator, binary_brain],
+  [binary_brain, protectator],
+][Math.floor(Math.random() * 2)].join(" and ");
+const currentYear = new Date().getFullYear();
 </script>
 
 <style>
