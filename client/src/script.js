@@ -1,3 +1,4 @@
+// BACKGROUND
 for (var s = 0; s < 10; s++) {
   var strip = document.createElement("div");
   strip.classList.add("strip");
@@ -10,6 +11,7 @@ for (var s = 0; s < 10; s++) {
 
   document.querySelector("#allBackground").appendChild(strip);
 }
+// ---
 
 spectateLastData = null;
 

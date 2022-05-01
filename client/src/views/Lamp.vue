@@ -1,22 +1,22 @@
 <template>
-  <div id="container" class="page-grid">
+  <div class="page-grid">
     <div class="line">
       <h1>Lamp</h1>
     </div>
     <div class="line">
       <label>Animation Mode</label>
       <select name="animation" id="animation-picker">
-        <option value="none">None</option>
-        <option value="strobe">Strobe</option>
-        <option value="alternating">Alternating</option>
-        <option value="rainbow">Rainbow</option>
-        <option value="fire">Fire</option>
-        <option value="fire_wheel">Fire Wheel</option>
-        <option value="stars">Stars</option>
-        <option value="matrix_wheel">Matrix Wheel</option>
-        <option value="sliding_window">Sliding Window</option>
-        <option value="old_school_segments">Old School Segments</option>
-        <option value="game_of_life">Game of Life</option>
+        <option value="None">None</option>
+        <option value="Strobe">Strobe</option>
+        <option value="Alternating">Alternating</option>
+        <option value="Rainbow">Rainbow</option>
+        <option value="Fire">Fire</option>
+        <option value="Fire rotating">Fire Wheel</option>
+        <option value="Stars">Stars</option>
+        <option value="Matrix">Matrix Wheel</option>
+        <option value="Sliding Window">Sliding Window</option>
+        <option value="Old School Segments">Old School Segments</option>
+        <option value="Game of Life">Game of Life</option>
       </select>
     </div>
     <div class="line">
