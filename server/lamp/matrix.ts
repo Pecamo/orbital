@@ -12,8 +12,6 @@ const MAX_LINE_LENGTH = 30;
 const LINE_EACH = 8;
 const CCW = false;
 
-let t = 0;
-
 export default class MatrixAnimation implements LampAnimation<[ColorOption, ColorOption]> {
     public name = "Matrix";
     public options: [ColorOption, ColorOption] = [

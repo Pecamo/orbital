@@ -5,10 +5,9 @@ import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
 import FireAnimation from './fire';
 import { OldSchoolSegments } from './OldSchoolSegments';
-import { GameOfLife } from './gameOfLife';
+import { GameOfLifeAnimation} from './gameOfLife';
 import * as convert from 'color-convert';
 import * as env from '../env';
-import animateMatrix from './matrix';
 import StarsAnimation from "./stars";
 import { normalize } from '../utils';
 import { NB_LED } from '../NB_LED';
@@ -95,6 +94,7 @@ function startLamp() {
     const strobe = new StrobeAnimation();
     const alternating = new AlternatingAnimation();
     const matrix = new MatrixAnimation();
+    const gameOfLife = new GameOfLifeAnimation();
 
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
@@ -129,10 +129,10 @@ function startLamp() {
                 stars.animate(t, display, [getColor(0), getColor(1), 120]);
                 break;
             case Animation.MATRIX_WHEEL:
-                matrix.animate(display, getColor(0), getColor(1));
+                matrix.animate(t, display, [getColor(0), getColor(1)]);
                 break;
             case Animation.GAME_OF_LIFE:
-                GameOfLife.animate(t, display, getColor(0));
+                gameOfLife.animate(t, display, getColor(0));
                 break;
             case Animation.SLIDING_WINDOW:
                 const speed = NB_LED / 30;
