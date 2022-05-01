@@ -23,7 +23,6 @@ export default class MatrixAnimation implements LampAnimation<[ColorOption, Colo
         const [color1, color2] = options;
 
         if (t++ >= LINE_EACH) {
-            t = 0;
             lines.push({
                 led: Math.floor(Math.random() * NB_LED),
                 life: MIN_LINE_LENGTH + Math.random() * (MAX_LINE_LENGTH - MIN_LINE_LENGTH),
