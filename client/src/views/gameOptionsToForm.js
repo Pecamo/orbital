@@ -1,4 +1,4 @@
-gameOptions = null;
+let gameOptions = null;
 
 function gameOptionsToForm() {
     let html = `<form method="post" action="javascript:void(0);">`;
