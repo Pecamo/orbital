@@ -16,6 +16,7 @@ import cors from 'cors';
 import RainbowAnimation from "./rainbow";
 import NoneAnimation from "./none";
 import StrobeAnimation from "./strobe";
+import AlternatingAnimation from "./alternating";
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -91,6 +92,7 @@ function startLamp() {
     const rainbow = new RainbowAnimation();
     const none = new NoneAnimation();
     const strobe = new StrobeAnimation();
+    const alternating = new AlternatingAnimation();
 
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
@@ -110,12 +112,7 @@ function startLamp() {
                 strobe.animate(t, display, [getColor(0), getColor(1), LAMP_FPS]);
                 break;
             case Animation.ALTERNATING:
-                const ALTERNATE_EACH = 20;
-                const offset = Math.floor(t / ALTERNATE_EACH) % 2;
-                for (let n = 0; n < NB_LED; n++) {
-                    const colorParam = (Math.floor(n / 2) + offset) % 2;
-                    display.drawDot(n, getColor(colorParam));
-                }
+                alternating.animate(t, display, [getColor(0), getColor(1), 20]);
                 break;
             case Animation.RAINBOW:
                 rainbow.animate(t, display, []);
