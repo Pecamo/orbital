@@ -5,27 +5,19 @@
       <div class="background"></div>
       Welcome to
       <div class="orbital"><img src="@/assets/logo/Orbital-white.svg" /></div>
-      <button class="button" id="joinButton" onmouseup="onJoinRelease()">
-        Join a game
-      </button>
-      <button
-        class="button mini"
-        id="changeOptionsButton"
-        onmouseup="onChangeOptionsRelease()"
+      <RouterLink to="/join" class="button" id="joinButton"
+        >Join a game</RouterLink
       >
-        Change game settings
-      </button>
-      <button class="button mini" id="howButton" onmouseup="onHowRelease()">
-        How to play
-      </button>
-      <button
-        class="button mini"
-        id="spectateButton"
-        onmouseup="onSpectateRelease()"
+      <RouterLink to="/settings" class="button mini" id="changeOptionsButton"
+        >Change game settings</RouterLink
       >
-        Spectate mode
-        <div id="spectate-viz"></div>
-      </button>
+      <RouterLink to="/howto" class="button mini" id="howButton"
+        >How to play</RouterLink
+      >
+      <RouterLink to="/spectate" class="button mini" id="spectateButton"
+        >Spectate mode
+        <div id="spectate-viz"></div
+      ></RouterLink>
       <RouterLink to="/lamp" class="button mini" id="lampButton">
         Lamp mode
       </RouterLink>
@@ -39,98 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="scene" id="how">
-      <div class="background"></div>
-      <p>How to play Orbital :</p>
-      <p>
-        You control a colored LED<br />
-        Your goal is to <b>survive</b> the longest<br />
-        Move with the
-        <img class="img" src="@/assets/left-arrow.svg" style="height: 3vw" />
-        and
-        <img class="img" src="@/assets/right-arrow.svg" style="height: 3vw" />
-        arrows<br />
-        Shoot others with the middle
-        <img class="img" src="@/assets/target.svg" style="height: 3vw" /> button
-      </p>
-      <button class="button retry" onclick="activateSceneWelcome()">
-        Back
-      </button>
-    </div>
-    <div class="scene" id="spectate">
-      <div class="background"></div>
-      <canvas id="spectateCanvas" width="600" height="600"></canvas>
-      <div id="spectateResult"></div>
-    </div>
-    <div class="scene" id="changeGameOptions">
-      <div class="background"></div>
-      <h1>Change Game Settings</h1>
-      <div id="gameOptionsScene"></div>
-    </div>
-    <div class="scene" id="wait">
-      <div class="background"></div>
-      <p>Waiting for an opponent to connect...</p>
-      <button class="button" id="cancelButton" onmouseup="onCancelRelease()">
-        Cancel
-      </button>
-    </div>
-    <div class="scene" id="getReady">
-      <div class="background"></div>
-      <p>Waiting for eventual other players...</p>
-      <p>Starting in <span id="startsIn">20</span> sec</p>
-      <p
-        style="
-          padding: 2vw;
-          background-color: var(--base-color-bg);
-          color: black;
-        "
-      >
-        Remember your color !
-      </p>
-    </div>
-    <div class="scene" id="play">
-      <div class="background"></div>
-      <button class="left button" id="leftButton">
-        <img class="img" src="@/assets/left-arrow.svg" />
-      </button>
-      <button class="fire button" id="fireButton">
-        <img class="img" src="@/assets/target.svg" />
-      </button>
-      <button class="right button" id="rightButton">
-        <img class="img" src="@/assets/right-arrow.svg" />
-      </button>
-    </div>
-    <div class="scene" id="won">
-      <div class="background"></div>
-      <p style="color: var(--base-color-bg)">CONGRATULATIONS</p>
-      <p>You won !</p>
-      <button class="button retry" onclick="activateSceneWelcome()">
-        Play again
-      </button>
-    </div>
-    <div class="scene" id="lost">
-      <div class="background"></div>
-      <p>GAME OVER</p>
-      <p>You died.</p>
-      <button class="button retry" onclick="activateSceneWelcome()">
-        Play again
-      </button>
-    </div>
-    <div class="scene" id="gameInProgress">
-      <div class="background"></div>
-      <p>A game is currently in progress.</p>
-      <p>Spectate and be ready for the next game !</p>
-      <button class="button retry" onclick="activateSceneWelcome()">
-        Try again
-      </button>
-    </div>
   </div>
-  <audio id="sound-fire" src="./assets/sounds/fire.mp3"></audio>
-  <audio id="sound-victory" src="./assets/sounds/victory.mp3"></audio>
-  <audio id="sound-defeat" src="./assets/sounds/defeat.mp3"></audio>
-  <audio id="sound-confirm" src="./assets/sounds/confirm.wav"></audio>
-  <audio id="sound-start" src="./assets/sounds/start.wav"></audio>
-  <audio id="sound-button" src="./assets/sounds/button.wav"></audio>
 </template>
 
 <script lang="ts"></script>
@@ -179,20 +80,6 @@
 
 img.img {
   pointer-events: none;
-}
-
-.scene {
-  width: 100%;
-  height: 100%;
-  display: none;
-  position: relative;
-  justify-content: space-between;
-  color: var(--base-color-fg);
-}
-
-.scene.active {
-  display: flex !important;
-  align-items: center;
 }
 
 #welcome {
@@ -362,29 +249,5 @@ img.img {
 
 #spectate .background {
   background-color: #444444;
-}
-
-canvas.spectateCanvas {
-  height: 100%;
-}
-
-input[type="checkbox"] {
-  width: 2vw;
-  height: 2vw;
-}
-
-input[type="radio"] {
-  width: 1.4vw;
-  height: 1.4vw;
-}
-
-input[type="number"] {
-  font-size: 2vw;
-  text-align: right;
-  max-width: 5vw;
-}
-
-label {
-  font-size: 2vw;
 }
 </style>
