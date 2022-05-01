@@ -17,6 +17,7 @@ import RainbowAnimation from "./rainbow";
 import NoneAnimation from "./none";
 import StrobeAnimation from "./strobe";
 import AlternatingAnimation from "./alternating";
+import MatrixAnimation from "./matrix";
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -93,6 +94,7 @@ function startLamp() {
     const none = new NoneAnimation();
     const strobe = new StrobeAnimation();
     const alternating = new AlternatingAnimation();
+    const matrix = new MatrixAnimation();
 
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
@@ -127,7 +129,7 @@ function startLamp() {
                 stars.animate(t, display, [getColor(0), getColor(1), 120]);
                 break;
             case Animation.MATRIX_WHEEL:
-                animateMatrix(display, getColor(0), getColor(1));
+                matrix.animate(display, getColor(0), getColor(1));
                 break;
             case Animation.GAME_OF_LIFE:
                 GameOfLife.animate(t, display, getColor(0));
