@@ -27,8 +27,8 @@ const LAMP_FPS: number = env.LAMP_FPS;
 const animations = [
     new NoneAnimation(),
     new StarsAnimation(120, 100),
-    new FireAnimation(false, TOP_LED_NB),
-    new FireAnimation(true, TOP_LED_NB),
+    new FireAnimation(false),
+    new FireAnimation(true),
     new RainbowAnimation(),
     new StrobeAnimation(LAMP_FPS),
     new AlternatingAnimation(20),
@@ -100,7 +100,7 @@ function startLamp() {
 
         // Get the current animation
         const animation = animationStore[currentAnimation];
-        const options = [getColor(0), getColor(1), LAMP_FPS];
+        const options = [getColor(0), getColor(1), TOP_LED_NB];
         animation.animate(t, display, options);
 
         display.render();
