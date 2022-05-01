@@ -1,14 +1,21 @@
-import { Color } from "../color";
-import { Display } from "../display";
 import { LAMP_FPS } from "../env";
 import { NB_LED } from '../NB_LED';
 import { Line } from "../types/Line";
 import { randomInt } from "../utils";
+import {ColorOption, LampAnimation} from "../types/LampAnimation";
+import {HtmlColors} from "../htmlColors";
 
-export class OldSchoolSegments {
-    static segmentsLife = [];
+export class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption]> {
+    public name = "Old School Segments";
+    public options: [ColorOption] = [
+        { name: "Color", type: "color", default: HtmlColors.cyan },
+    ];
 
-    static animate(t: number, display: Display, color: Color, topLedNb: number): void {
+    constructor(public segmentsLife = []) {
+    }
+
+    public animate(t, display, options): void {
+        const [color] = options;
         const nbSegments = 8; // TODO set as parameter
         const blockLength = Math.round(NB_LED / nbSegments);
         const separatorsLength = 2;
@@ -31,7 +38,7 @@ export class OldSchoolSegments {
             pos += marginsLength;
 
             if (this.segmentsLife[i] && this.segmentsLife[i] > 0) {
-                const opacity = this.computeOpacity(this.segmentsLife[i], maxLife);
+                const opacity = OldSchoolSegmentsAnimation.computeOpacity(this.segmentsLife[i], maxLife);
                 display.drawLine(new Line(NB_LED, pos, pos + segmentsLength - 1), color.withOpacitiy(opacity));
                 this.segmentsLife[i]--;
             }
