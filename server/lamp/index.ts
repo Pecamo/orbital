@@ -3,16 +3,18 @@ import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
-import { Fire } from './fire';
-import { OldSchoolSegments } from './OldSchoolSegments';
-import { GameOfLife } from './gameOfLife';
-import * as convert from 'color-convert';
+import FireAnimation from './fire';
+import {OldSchoolSegmentsAnimation} from './oldSchoolSegments';
+import { GameOfLifeAnimation} from './gameOfLife';
 import * as env from '../env';
-import animateStars from './stars';
-import animateMatrix from './matrix';
-import { normalize } from '../utils';
-import { NB_LED } from '../NB_LED';
+import StarsAnimation from "./stars";
 import cors from 'cors';
+import RainbowAnimation from "./rainbow";
+import NoneAnimation from "./none";
+import StrobeAnimation from "./strobe";
+import AlternatingAnimation from "./alternating";
+import MatrixAnimation from "./matrix";
+import SlidingWindowAnimation from "./slidingWindow";
 
 export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
@@ -82,6 +84,18 @@ function getColor(i): Color {
 }
 
 function startLamp() {
+    const stars = new StarsAnimation();
+    const fire = new FireAnimation(false);
+    const fireWheel = new FireAnimation(true);
+    const rainbow = new RainbowAnimation();
+    const none = new NoneAnimation();
+    const strobe = new StrobeAnimation();
+    const alternating = new AlternatingAnimation();
+    const matrix = new MatrixAnimation();
+    const gameOfLife = new GameOfLifeAnimation();
+    const slidingWindow = new SlidingWindowAnimation();
+    const oldSchoolSegments = new OldSchoolSegmentsAnimation();
+
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
         tick(0);
@@ -94,51 +108,37 @@ function startLamp() {
         // Animations
         switch (currentAnimation) {
             case Animation.NONE:
-                display.drawAll(getColor(0));
+                none.animate(t, display, [getColor(0)]);
                 break;
             case Animation.STROBE:
-                display.drawAll(getColor(Math.floor(t * 10 / LAMP_FPS) % 2)); // Yeah!
+                strobe.animate(t, display, [getColor(0), getColor(1), LAMP_FPS]);
                 break;
             case Animation.ALTERNATING:
-                const ALTERNATE_EACH = 20;
-                const offset = Math.floor(t / ALTERNATE_EACH) % 2;
-                for (let n = 0; n < NB_LED; n++) {
-                    const colorParam = (Math.floor(n / 2) + offset) % 2;
-                    display.drawDot(n, getColor(colorParam));
-                }
+                alternating.animate(t, display, [getColor(0), getColor(1), 20]);
                 break;
             case Animation.RAINBOW:
-                for (let n = 0; n < NB_LED; n++) {
-                    const rgb = convert.hsv.rgb([(n + t) * 360 / NB_LED, 100, 100]);
-                    const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
-                    display.drawDot(n, color);
-                }
+                rainbow.animate(t, display, []);
                 break;
             case Animation.FIRE:
-                Fire.animate(t, display, false, TOP_LED_NB);
+                fire.animate(t, display, [TOP_LED_NB]);
                 break;
             case Animation.FIRE_WHEEL:
-                Fire.animate(t, display, true, TOP_LED_NB);
+                fireWheel.animate(t, display, [TOP_LED_NB]);
                 break;
             case Animation.STARS:
-                animateStars(display, getColor(0), getColor(1));
+                stars.animate(t, display, [getColor(0), getColor(1), 120]);
                 break;
             case Animation.MATRIX_WHEEL:
-                animateMatrix(display, getColor(0), getColor(1));
+                matrix.animate(t, display, [getColor(0), getColor(1)]);
                 break;
             case Animation.GAME_OF_LIFE:
-                GameOfLife.animate(t, display, getColor(0));
+                gameOfLife.animate(t, display, [getColor(0)]);
                 break;
             case Animation.SLIDING_WINDOW:
-                const speed = NB_LED / 30;
-                for (let n = 0; n < NB_LED / 3; n++) {
-                    const rgb = convert.hsv.rgb([(n + Math.floor(t * speed)) * 360 / NB_LED, 100, 100]);
-                    const color: Color = new Color(rgb[0], rgb[1], rgb[2]);
-                    display.drawDot(normalize(n + Math.floor(t * speed)), color);
-                }
+                slidingWindow.animate(t, display, [])
                 break;
             case Animation.OLD_SCHOOL_SEGMENTS:
-                OldSchoolSegments.animate(t, display, getColor(0), TOP_LED_NB);
+                oldSchoolSegments.animate(t, display, [getColor(0), TOP_LED_NB]);
                 break;
         }
 
