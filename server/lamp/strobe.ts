@@ -9,7 +9,9 @@ export default class StrobeAnimation implements LampAnimation<[ColorOption, Colo
         { name: "Color duration", type: "number", default: 2, min: 0, max: 20, step: 1, display: 'input' }
     ];
 
+    constructor(public duration: number) {}
+
     public animate(t, display, options) {
-        display.drawAll(options[Math.floor(t * 10 / options[2]) % 2]); // Yeah!
+        display.drawAll(options[Math.floor(t * 10 / this.duration) % 2]); // Yeah!
     }
 }

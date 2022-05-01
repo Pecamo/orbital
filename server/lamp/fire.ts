@@ -1,10 +1,15 @@
 import { NB_LED } from '../NB_LED';
 import { normalize, temperatureToRgb } from "../utils";
-import { LampAnimation, NumberOption } from "../types/LampAnimation";
+import {ColorOption, LampAnimation, NumberOption} from "../types/LampAnimation";
+import {HtmlColors} from "../htmlColors";
 
-export default class FireAnimation implements LampAnimation<[NumberOption]> {
+export default class FireAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
     public name = "Fire";
-    public options: [NumberOption] = [{ name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }];
+    public options: [ColorOption, ColorOption, NumberOption] = [
+      { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
+      { name: "Color 2", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
+      { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
+    ];
 
     private fireIntensityLeft = 0.5;
     private fireIntensityRight = 0.5;
@@ -12,6 +17,7 @@ export default class FireAnimation implements LampAnimation<[NumberOption]> {
     private temperatures: number[] = [];
 
     constructor(private rotation: boolean) {
+        this.name += rotation ? " rotating" : "";
     }
 
     public animate(t, display, options) {
@@ -22,7 +28,7 @@ export default class FireAnimation implements LampAnimation<[NumberOption]> {
         const meanTemperatureDecrease = 80 * (80 / NB_LED);
         const temperatureDecreaseVariation = NB_LED;
 
-        const topLedNb = options[0];
+        const topLedNb = options[2];
 
         for (let n = 1; n < NB_LED / 2; n++) {
             if (typeof this.previousTemperatures[n - 1] === 'undefined') {

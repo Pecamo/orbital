@@ -2,20 +2,22 @@ import { LAMP_FPS } from "../env";
 import { NB_LED } from '../NB_LED';
 import { Line } from "../types/Line";
 import { randomInt } from "../utils";
-import {ColorOption, LampAnimation} from "../types/LampAnimation";
+import {ColorOption, LampAnimation, NumberOption} from "../types/LampAnimation";
 import {HtmlColors} from "../htmlColors";
 
-export class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption]> {
+export class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
     public name = "Old School Segments";
-    public options: [ColorOption] = [
-        { name: "Color", type: "color", default: HtmlColors.cyan },
+    public options: [ColorOption, ColorOption, NumberOption] = [
+        { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
+        { name: "Color 2", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
+        { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
     ];
 
     constructor(public segmentsLife = []) {
     }
 
     public animate(t, display, options): void {
-        const [color] = options;
+        const [color, _, topLed] = options;
         const nbSegments = 8; // TODO set as parameter
         const blockLength = Math.round(NB_LED / nbSegments);
         const separatorsLength = 2;

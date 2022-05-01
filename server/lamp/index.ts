@@ -20,25 +20,30 @@ export const lamp = express();
 let TOP_LED_NB = env.TOP_LED_NB;
 
 lamp.use(cors());
-
 lamp.use(express.json());
 
 const LAMP_FPS: number = env.LAMP_FPS;
-enum Animation {
-    NONE = "none",
-    STROBE = "strobe",
-    ALTERNATING = "alternating",
-    RAINBOW = "rainbow",
-    FIRE = "fire",
-    FIRE_WHEEL = "fire_wheel",
-    STARS = "stars",
-    MATRIX_WHEEL = "matrix_wheel",
-    SLIDING_WINDOW = "sliding_window",
-    OLD_SCHOOL_SEGMENTS = "old_school_segments",
-    GAME_OF_LIFE = "game_of_life",
-}
 
-let currentAnimation: Animation = Animation.NONE;
+const animations = [
+    new NoneAnimation(),
+    new StarsAnimation(120, 100),
+    new FireAnimation(false),
+    new FireAnimation(true),
+    new RainbowAnimation(),
+    new StrobeAnimation(LAMP_FPS),
+    new AlternatingAnimation(20),
+    new MatrixAnimation(),
+    new GameOfLifeAnimation(),
+    new SlidingWindowAnimation(),
+    new OldSchoolSegmentsAnimation(),
+];
+
+const animationStore = {};
+for (const animation of animations) {
+    animationStore[animation.name] = animation;
+}
+let currentAnimation = animations[0].name;
+
 let isLampRunning = false;
 let currentColors: Color[] = [];
 
@@ -84,18 +89,6 @@ function getColor(i): Color {
 }
 
 function startLamp() {
-    const stars = new StarsAnimation();
-    const fire = new FireAnimation(false);
-    const fireWheel = new FireAnimation(true);
-    const rainbow = new RainbowAnimation();
-    const none = new NoneAnimation();
-    const strobe = new StrobeAnimation();
-    const alternating = new AlternatingAnimation();
-    const matrix = new MatrixAnimation();
-    const gameOfLife = new GameOfLifeAnimation();
-    const slidingWindow = new SlidingWindowAnimation();
-    const oldSchoolSegments = new OldSchoolSegmentsAnimation();
-
     if (!isLampRunning && state === State.IDLE) {
         isLampRunning = true;
         tick(0);
@@ -105,42 +98,10 @@ function startLamp() {
         // Loop timing, keep at the beginning
         const tickStart = Date.now();
 
-        // Animations
-        switch (currentAnimation) {
-            case Animation.NONE:
-                none.animate(t, display, [getColor(0)]);
-                break;
-            case Animation.STROBE:
-                strobe.animate(t, display, [getColor(0), getColor(1), LAMP_FPS]);
-                break;
-            case Animation.ALTERNATING:
-                alternating.animate(t, display, [getColor(0), getColor(1), 20]);
-                break;
-            case Animation.RAINBOW:
-                rainbow.animate(t, display, []);
-                break;
-            case Animation.FIRE:
-                fire.animate(t, display, [TOP_LED_NB]);
-                break;
-            case Animation.FIRE_WHEEL:
-                fireWheel.animate(t, display, [TOP_LED_NB]);
-                break;
-            case Animation.STARS:
-                stars.animate(t, display, [getColor(0), getColor(1), 120]);
-                break;
-            case Animation.MATRIX_WHEEL:
-                matrix.animate(t, display, [getColor(0), getColor(1)]);
-                break;
-            case Animation.GAME_OF_LIFE:
-                gameOfLife.animate(t, display, [getColor(0)]);
-                break;
-            case Animation.SLIDING_WINDOW:
-                slidingWindow.animate(t, display, [])
-                break;
-            case Animation.OLD_SCHOOL_SEGMENTS:
-                oldSchoolSegments.animate(t, display, [getColor(0), TOP_LED_NB]);
-                break;
-        }
+        // Get the current animation
+        const animation = animationStore[currentAnimation];
+        const options = [getColor(0), getColor(1), TOP_LED_NB];
+        animation.animate(t, display, options);
 
         display.render();
 
