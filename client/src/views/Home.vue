@@ -26,7 +26,9 @@
         Spectate mode
         <div id="spectate-viz"></div>
       </button>
-      <RouterLink to="/lamp" class="button mini" id="lampButton"> Lamp mode </RouterLink>
+      <RouterLink to="/lamp" class="button mini" id="lampButton">
+        Lamp mode
+      </RouterLink>
       <div class="credits">
         <div>
           Orbital is <a href="https://github.com/Pecamo/orbital">open source</a>
@@ -44,7 +46,8 @@
         You control a colored LED<br />
         Your goal is to <b>survive</b> the longest<br />
         Move with the
-        <img class="img" src="@/assets/left-arrow.svg" style="height: 3vw" /> and
+        <img class="img" src="@/assets/left-arrow.svg" style="height: 3vw" />
+        and
         <img class="img" src="@/assets/right-arrow.svg" style="height: 3vw" />
         arrows<br />
         Shoot others with the middle
@@ -130,224 +133,179 @@
   <audio id="sound-button" src="./assets/sounds/button.wav"></audio>
 </template>
 
-<script lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-// import "./gameOptionsToForm.js";
-
-export default {
-  methods: {},
-};
-</script>
+<script lang="ts"></script>
 <style scoped>
 #allBackground {
-    position: absolute;
-    width: 120%;
-    margin-left: -20%;
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: space-around;
-    opacity: 0.2;
-    overflow: hidden;
+  position: absolute;
+  width: 120%;
+  margin-left: -20%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-around;
+  opacity: 0.2;
+  overflow: hidden;
 }
 
 #allBackground * {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 #allBackground .strip {
-    width: 100%;
-    height: 5vh;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    justify-content: space-around;
-    animation: slowMove 4s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
+  width: 100%;
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  animation: slowMove 4s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 #allBackground .led {
-    height: 2.5vh;
-    width: 1.5vw;
-    background-color: var(--base-color-bg);
-    box-shadow: 0 0 10px 5px var(--base-color-bg);
-    transition: all 1s;
+  height: 2.5vh;
+  width: 1.5vw;
+  background-color: var(--base-color-bg);
+  box-shadow: 0 0 10px 5px var(--base-color-bg);
+  transition: all 1s;
 }
 
 #allBackground .led:hover {
-    background-color: var(--base-color-fg);
-    box-shadow: 0 0 10px 5px var(--base-color-fg);
+  background-color: var(--base-color-fg);
+  box-shadow: 0 0 10px 5px var(--base-color-fg);
 }
 
 img.img {
-    pointer-events: none;
-}
-
-.background {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #000000;
-    transition: 1s all;
-    position: absolute;
-    z-index: -1;
+  pointer-events: none;
 }
 
 .scene {
-    width: 100%;
-    height: 100%;
-    display: none;
-    position: relative;
-    justify-content: space-between;
-    color: var(--base-color-fg);
+  width: 100%;
+  height: 100%;
+  display: none;
+  position: relative;
+  justify-content: space-between;
+  color: var(--base-color-fg);
 }
 
 .scene.active {
-    display: flex !important;
-    align-items: center;
-}
-
-#container {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+  display: flex !important;
+  align-items: center;
 }
 
 #welcome {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    color: var(--base-color-fg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: var(--base-color-fg);
 }
 
 #welcome .button {
-    font-size: 6vw;
-    padding: 2vw;
-    margin-top: 4vh;
-    margin-bottom: 4vh;
+  font-size: 6vw;
+  padding: 2vw;
+  margin-top: 4vh;
+  margin-bottom: 4vh;
 }
 
 #welcome .button.mini {
-    font-size: 2vw;
-    margin-top: 1vh;
-    padding: 1vw;
-    margin-bottom: 2vh;
+  font-size: 2vw;
+  margin-top: 1vh;
+  padding: 1vw;
+  margin-bottom: 2vh;
 }
 
 #welcome .button:disabled {
-    filter: brightness(0.4);
+  filter: brightness(0.4);
 }
 
 #welcome .orbital {
-    font-size: 4vw;
-    margin-bottom: 2vw;
-    margin-top: 4vw;
+  font-size: 4vw;
+  margin-bottom: 2vw;
+  margin-top: 4vw;
 }
 
 #welcome .orbital img {
-    height: 15vh;
+  height: 15vh;
 }
 
 #play .button {
-    background-color: var(--base-color-bg);
-    color: var(--base-color-fg);
-    justify-content: center;
-    align-items: center;
-    font-size: 20vw;
-    flex-grow: 1;
-    height: 100%;
-    border: 0;
-    max-width: 32%;
-    max-height: 98%;
-    fill: white;
+  background-color: var(--base-color-bg);
+  color: var(--base-color-fg);
+  justify-content: center;
+  align-items: center;
+  font-size: 20vw;
+  flex-grow: 1;
+  height: 100%;
+  border: 0;
+  max-width: 32%;
+  max-height: 98%;
+  fill: white;
 }
 
 #play .button:active {
-    filter: contrast(0.5);
+  filter: contrast(0.5);
 }
 
-#wait, #getReady, #won, #lost, #gameInProgress, #how, #spectate {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+#wait,
+#getReady,
+#won,
+#lost,
+#gameInProgress,
+#how,
+#spectate {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #wait .button {
-    font-size: 3vw;
-    padding: 1vw;
-    margin-top: 6vh;
-    margin-bottom: 6vh;
+  font-size: 3vw;
+  padding: 1vw;
+  margin-top: 6vh;
+  margin-bottom: 6vh;
 }
 
 #how {
-    line-height: 140%;
+  line-height: 140%;
 }
 
 #changeGameOptions {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    color: var(--base-color-fg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: var(--base-color-fg);
 }
 
 #changeGameOptions .name {
-    margin-top: 3vw;
-    margin-bottom: 2vw;
-    font-size: 3vw;
+  margin-top: 3vw;
+  margin-bottom: 2vw;
+  font-size: 3vw;
 }
 
 #changeGameOptions .radio-inputs {
-    display: flex;
-    justify-content: space-around;
-    text-transform: capitalize;
+  display: flex;
+  justify-content: space-around;
+  text-transform: capitalize;
 }
 
 #changeGameOptions .button {
-    font-size: 3vw;
-    padding: 1vw;
-    margin: 3vw auto;
+  font-size: 3vw;
+  padding: 1vw;
+  margin: 3vw auto;
 }
 
-#changeGameOptions [type="checkbox"], #changeGameOptions [type="radio"] {
-    transform: scale(1.3);
-    margin: 0 1vw;
-}
-
-.button {
-    background-color: var(--base-color-bg);
-    font-family: Montserrat, sans-serif;
-    display: flex;
-    color: var(--base-color-fg);
-    justify-content: center;
-    align-items: center;
-    border: 0;
-}
-
-.button.retry {
-    padding: 10px;
-    font-size: 2vw;
-}
-
-.button:active {
-    filter: brightness(1.2);
-}
-
-.button:focus {
-    border: 0;
-    outline: 0;
-}
-
-.button img {
-    max-width: 80%;
+#changeGameOptions [type="checkbox"],
+#changeGameOptions [type="radio"] {
+  transform: scale(1.3);
+  margin: 0 1vw;
 }
 
 .fire {
-    font-size: 25vw;
+  font-size: 25vw;
 }
 
 .left {
@@ -357,76 +315,76 @@ img.img {
 }
 
 .credits {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 10px;
-    opacity: 0.3;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 20px);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  opacity: 0.3;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 20px);
 }
 
 .credits a {
-    color: inherit;
+  color: inherit;
 }
 
 #spectateResult {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .s-strip {
 }
 
 .s-led {
-    position: absolute;
-    padding-top: 100px;
-    height: calc(40% - 40px);
-    width: 1px;
-    overflow-x: visible;
-    transform-origin: top;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+  position: absolute;
+  padding-top: 100px;
+  height: calc(40% - 40px);
+  width: 1px;
+  overflow-x: visible;
+  transform-origin: top;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .s-led .light {
-    height: 20px;
-    width: 100%;
-    min-width: 20px;
-    background-color: black;
+  height: 20px;
+  width: 100%;
+  min-width: 20px;
+  background-color: black;
 }
 
 #spectate .background {
-    background-color: #444444;
+  background-color: #444444;
 }
 
 canvas.spectateCanvas {
-    height: 100%;
+  height: 100%;
 }
 
 input[type="checkbox"] {
-    width: 2vw;
-    height: 2vw;
+  width: 2vw;
+  height: 2vw;
 }
 
 input[type="radio"] {
-    width: 1.4vw;
-    height: 1.4vw;
+  width: 1.4vw;
+  height: 1.4vw;
 }
 
 input[type="number"] {
-    font-size: 2vw;
-    text-align: right;
-    max-width: 5vw;
+  font-size: 2vw;
+  text-align: right;
+  max-width: 5vw;
 }
 
 label {
-    font-size: 2vw;
+  font-size: 2vw;
 }
 </style>
