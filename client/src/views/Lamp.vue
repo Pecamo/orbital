@@ -5,44 +5,139 @@
     </div>
     <div class="line">
       <label>Animation Mode</label>
-      <select name="animation" id="animation-picker">
-        <option value="None">None</option>
-        <option value="Strobe">Strobe</option>
-        <option value="Alternating">Alternating</option>
-        <option value="Rainbow">Rainbow</option>
-        <option value="Fire">Fire</option>
-        <option value="Fire rotating">Fire Wheel</option>
-        <option value="Stars">Stars</option>
-        <option value="Matrix">Matrix Wheel</option>
-        <option value="Sliding Window">Sliding Window</option>
-        <option value="Old School Segments">Old School Segments</option>
-        <option value="Game of Life">Game of Life</option>
+      <select
+        v-model="selectedAnimation"
+        @change="onNewAnimation"
+        name="animation"
+        id="animation-picker"
+      >
+        <option v-for="option in animationOptions" :value="option">
+          {{ option }}
+        </option>
       </select>
     </div>
     <div class="line">
       <label>Color 1</label>
       <div>
-        <input type="color" data-id="0" class="color-picker" />
+        <input
+          v-model="hexColors[0]"
+          @change="onNewColor"
+          type="color"
+          class="color-picker"
+        />
       </div>
     </div>
     <div class="line">
       <label>Color 2</label>
       <div>
-        <input type="color" data-id="1" class="color-picker" />
+        <input
+          v-model="hexColors[1]"
+          @change="onNewColor"
+          type="color"
+          class="color-picker"
+        />
       </div>
     </div>
     <div class="line">
       <label>Top Led Number</label>
       <div>
-        <input type="number" class="top-led-number" min="0" step="1" />
+        <input
+          v-model="topLedNb"
+          @change="onNewTopLed"
+          type="number"
+          class="top-led-number"
+          min="0"
+          step="1"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-export default {};
+import { defineComponent } from "vue";
+import { Color } from "../../../server/color";
+
+export default defineComponent({
+  data() {
+    return {
+      // TODO fetch current color
+      hexColors: ["#000000", "#000000"] as string[],
+      selectedAnimation: "",
+      // TODO Query from server
+      animationOptions: [
+        "None",
+        "Strobe",
+        "Alternating",
+        "Rainbow",
+        "Fire",
+        "Fire rotating",
+        "Stars",
+        "Matrix",
+        "Sliding Window",
+        "Old School Segments",
+        "Game of Life",
+      ],
+      topLedNb: 0,
+    };
+  },
+
+  computed: {
+    colors: {
+      get(): Color[] {
+        return this.hexColors.map((hex: string) => Color.fromHex(hex));
+      },
+      set(colors: Color[]) {
+        this.hexColors = colors.map((c) => Color.toHex(c));
+      },
+    },
+  },
+
+  mounted() {
+    // TODO
+  },
+
+  methods: {
+    // Color Picker
+    onNewColor() {
+      this.sendColors(this.colors);
+    },
+
+    onNewAnimation() {
+      this.sendAnimnation(this.selectedAnimation);
+    },
+
+    onNewTopLed() {
+      this.sendTopLedNb(this.topLedNb);
+    },
+
+    // Send colors to the server
+    sendColors(colors: Color[]) {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/lamp/colors", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify(colors));
+    },
+
+    // Send animation mode to the server
+    sendAnimnation(animationName: string) {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/lamp/animation", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({ animation: animationName }));
+    },
+
+    // Send top led number to the server
+    sendTopLedNb(topLedNb: number) {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/lamp/set-top-led", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({ topLedNb }));
+    },
+  },
+});
 </script>
+
 <style scoped>
 input {
   height: 100%;

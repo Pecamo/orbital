@@ -1,7 +1,7 @@
 <template>
   <div id="container">
-    <div id="allBackground"></div>
     <RouterView />
+    <div id="allBackground"></div>
   </div>
 
   <div class="credits">
@@ -35,6 +35,14 @@ const currentYear = new Date().getFullYear();
 @import "@/assets/base.css";
 #app {
   height: 100%;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #333333;
+  color: white;
 }
 
 #allBackground {

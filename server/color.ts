@@ -63,6 +63,22 @@ export class Color {
         });
     }
 
+    public static fromHex(hexString: string): Color {
+        return new Color(
+            parseInt(hexString.substring(1, 3), 16),
+            parseInt(hexString.substring(3, 5), 16),
+            parseInt(hexString.substring(5, 7), 16),
+            0
+        );
+    }
+
+    public static toHex(color: Color): string {
+        return "#" +
+            color.r.toString(16) +
+            color.g.toString(16) +
+            color.b.toString(16);
+    }
+
     constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
 }
 

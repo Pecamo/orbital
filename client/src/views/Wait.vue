@@ -9,11 +9,8 @@
 </template>
 
 <script lang="ts">
-export default {
-  data() {
-    return {};
-  },
-};
+import { defineComponent } from "vue";
+export default defineComponent({});
 </script>
 <style scoped>
 #wait {
