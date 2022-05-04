@@ -2,18 +2,20 @@
   <div class="scene" id="play">
     <div class="background"></div>
     <button class="left button" id="leftButton">
-      <img class="img" src="/static/left-arrow.svg" />
+      <img class="img" src="@/assets/left-arrow.svg" />
     </button>
     <button class="fire button" id="fireButton">
-      <img class="img" src="/static/target.svg" />
+      <img class="img" src="@/assets/target.svg" />
     </button>
     <button class="right button" id="rightButton">
-      <img class="img" src="/static/right-arrow.svg" />
+      <img class="img" src="@/assets/right-arrow.svg" />
     </button>
   </div>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+export default {};
+</script>
 <style scoped>
 #play .button {
   background-color: var(--base-color-bg);

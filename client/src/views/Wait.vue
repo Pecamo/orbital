@@ -8,7 +8,13 @@
   </div>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+export default {
+  data() {
+    return {};
+  },
+};
+</script>
 <style scoped>
 #wait {
   flex-direction: column;
