@@ -1,3 +1,4 @@
+import { NB_LED } from '../NB_LED';
 import { Color } from "../color";
 import { HtmlColors } from "../htmlColors";
 import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
@@ -14,18 +15,18 @@ export default class StarsAnimation implements LampAnimation<[ColorOption, Color
 
     private readonly stars: Array<{ color: Color, life: number }> = [];
 
-    constructor(public star_life: number, public NB_LED: number) {
-        this.stars = new Array(this.NB_LED).fill(initial);
+    constructor(public star_life: number) {
+        this.stars = new Array(NB_LED).fill(initial);
         console.log('NB_LED', NB_LED);
         console.log('star_life', star_life);
     }
 
     public animate(t, display, options) {
         const [color1, color2] = options;
-        const newStar = Math.floor(Math.random() * this.NB_LED);
+        const newStar = Math.floor(Math.random() * NB_LED);
         const newColor = Color.overlap(color1, color2, Math.random());
         this.stars[newStar] = { color: newColor, life: this.star_life };
-        for (let n = 0; n < this.NB_LED; n++) {
+        for (let n = 0; n < NB_LED; n++) {
             const star = this.stars[n];
             display.drawDot(n, star.color.withOpacitiy(star.life / this.star_life))
             this.stars[n].life = Math.max(0, star.life - 1);
