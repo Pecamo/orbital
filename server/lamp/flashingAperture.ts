@@ -4,7 +4,7 @@ import { NB_LED } from "../NB_LED";
 import { Display } from "../display";
 import { Line } from "../types/Line";
 import { Color } from "../color";
-import { randomInt } from "crypto";
+import { randomInt } from "../utils";
 
 export default class FlashingAperture implements LampAnimation<[ColorOption]> {
     public name = "Flashing Aperture";
