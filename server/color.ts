@@ -24,6 +24,8 @@ export class Color {
     }
 
     public withOpacitiy(opacity: number): Color {
+        opacity = Math.min(Math.max(opacity, 0), 1);
+
         return new Color(
             Math.round(this.r * opacity),
             Math.round(this.g * opacity),

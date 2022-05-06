@@ -21,6 +21,7 @@ export class Line {
 
     set from(x: number) {
         this._from = mod(x, this.stageSize + 1);
+        this._isLooping = this.from > this.to;
     }
 
     get to(): number {
@@ -29,6 +30,15 @@ export class Line {
 
     set to(x: number) {
         this._to = mod(x, this.stageSize + 1);
+        this._isLooping = this.from > this.to;
+    }
+
+    public getLength(): number {
+        if (this.isLooping) {
+            return (this.stageSize - this.from) + this.to;
+        } else {
+            return this.to - this.from;
+        }
     }
 
     public includes(x: number): boolean {

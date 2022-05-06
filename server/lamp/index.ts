@@ -15,6 +15,7 @@ import StrobeAnimation from "./strobe";
 import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
+import FlashingAperture from './flashingAperture';
 
 export const lamp = express();
 
@@ -37,6 +38,7 @@ export function initLamp() {
         new GameOfLifeAnimation(),
         new SlidingWindowAnimation(),
         new OldSchoolSegmentsAnimation(),
+        new FlashingAperture(),
     ];
 
     const animationStore = {};
