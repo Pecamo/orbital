@@ -20,6 +20,9 @@ export default class FlashingAperture implements LampAnimation<[ColorOption]> {
     private lines: Line[] = [];
     private shift: number = 0;
 
+    private segments = [this.FLASH_DUR, this.APERTURE_DUR, this.OFF_DUR];
+    private totalDuration = this.segments.reduce((a, c) => a + c, 0);
+
     constructor() {
         this.lines = [];
         for (let i = 0; i < this.NB_OF_SEGMENTS; i++) {
@@ -30,30 +33,48 @@ export default class FlashingAperture implements LampAnimation<[ColorOption]> {
         }
     }
 
+    private getSegment(t: number) {
+        let acc = 0;
+        for (let i = 0; i < this.segments.length; i++) {
+            acc += this.segments[i];
+            if (acc >= t) {
+                return i;
+            }
+        }
+        return this.segments.length - 1;
+    }
+
     public animate(t, display: Display, options) {
         const color: Color = options[0];
-        const step = t % (this.FLASH_DUR + this.APERTURE_DUR + this.OFF_DUR);
+
+        const step = t % this.totalDuration;
+        const segment = this.getSegment(step);
 
         // Randomize segments positions
-        if (step === 0) {
+        if (t === 0) {
             this.shift = randomInt(0, this.SEG_LENGTH - 1);
             this.lines.forEach(l => l.from += this.shift);
         }
 
-        if (step < this.FLASH_DUR) {
-            // Flash
-            display.drawAll(color);
-        } else if (step < this.FLASH_DUR + this.APERTURE_DUR) {
-            // Aperture
-            for (let i = 0; i < this.lines.length; i++) {
-                const ratio = 1 - (step - this.FLASH_DUR) / this.APERTURE_DUR;
-                const length = ratio * this.SEG_LENGTH;
-                this.lines[i].to = this.lines[i].from + length - 1;
-                display.drawGradient(this.lines[i], color.withOpacitiy(ratio * 2), color.withOpacitiy(ratio));
+        switch (segment) {
+            case 0: {
+                // All lights
+                display.drawAll(color);
+                break;
             }
-        } else {
-            // Off
-            display.drawAll(HtmlColors.black);
+            case 1: {
+                // Aperture
+                for (let i = 0; i < this.lines.length; i++) {
+                    const ratio = 1 - (step - this.FLASH_DUR) / this.APERTURE_DUR;
+                    const length = ratio * this.SEG_LENGTH;
+                    this.lines[i].to = this.lines[i].from + length - 1;
+                    display.drawGradient(this.lines[i], color.withOpacitiy(ratio * 2), color.withOpacitiy(ratio));
+                }
+            }
+            case 2: {
+                // Off
+                display.drawAll(HtmlColors.black);
+            }
         }
     }
 }
