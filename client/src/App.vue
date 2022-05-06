@@ -17,6 +17,8 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 
+console.log(import.meta.env);
+
 console.log("Starting connection to WebSocket Server");
 const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 const ws = new WebSocket(wsProtocol + location.host + "/");
