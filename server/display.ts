@@ -49,10 +49,23 @@ export class Display {
         }
     }
 
-    public drawGradient(from: number, to: number, colorFrom: Color, colorTo: Color): void {
-        for (let i = from; i <= to; i++) {
-            const ratio = (i - from) / to;
-            this.nextFrame[i] = Color.overlap(colorFrom, colorTo, ratio);
+    public drawGradient(line: Line, colorFrom: Color, colorTo: Color): void {
+        const length = line.getLength();
+
+        if (line.isLooping) {
+            for (let i = line.from; i <= this.size; i++) {
+                const ratio = (i - line.from) / length;
+                this.nextFrame[i] = Color.overlap(colorFrom, colorTo, ratio);
+            }
+            for (let i = 0; i <= line.to; i++) {
+                const ratio = (i + this.size - line.from) / length;
+                this.nextFrame[i] = Color.overlap(colorFrom, colorTo, ratio);
+            }
+        } else {
+            for (let i = line.from; i <= line.to; i++) {
+                const ratio = (i - line.from) / length;
+                this.nextFrame[i] = Color.overlap(colorFrom, colorTo, ratio);
+            }
         }
     }
 
