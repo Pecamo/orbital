@@ -1,7 +1,7 @@
 import { NB_LED } from '../NB_LED';
 import { normalize, temperatureToRgb } from "../utils";
-import {ColorOption, LampAnimation, NumberOption} from "../types/LampAnimation";
-import {HtmlColors} from "../htmlColors";
+import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
+import { HtmlColors } from "../htmlColors";
 
 export default class FireAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
     public name = "Fire";

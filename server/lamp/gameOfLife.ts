@@ -1,8 +1,7 @@
-import { Color } from "../color";
 import { LAMP_FPS } from "../env";
 import { NB_LED } from '../NB_LED';
-import {ColorOption, LampAnimation} from "../types/LampAnimation";
-import {HtmlColors} from "../htmlColors";
+import { ColorOption, LampAnimation } from "../types/LampAnimation";
+import { HtmlColors } from "../htmlColors";
 
 export class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
     public name = "Game of Life";
@@ -15,7 +14,7 @@ export class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
     }
 
     public animate(t, display, options): void {
-        const speed = LAMP_FPS / 2;
+        const speed = LAMP_FPS / 6;
         const [color] = options;
 
         // init
