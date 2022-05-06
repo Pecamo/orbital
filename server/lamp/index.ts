@@ -12,6 +12,7 @@ import cors from 'cors';
 import RainbowAnimation from "./rainbow";
 import NoneAnimation from "./none";
 import StrobeAnimation from "./strobe";
+import Strobe2Animation from './strobe2';
 import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
@@ -33,6 +34,7 @@ export function initLamp() {
         new FireAnimation(true),
         new RainbowAnimation(),
         new StrobeAnimation(LAMP_FPS),
+        new Strobe2Animation(),
         new AlternatingAnimation(20),
         new MatrixAnimation(),
         new GameOfLifeAnimation(),

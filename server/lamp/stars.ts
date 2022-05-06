@@ -17,8 +17,6 @@ export default class StarsAnimation implements LampAnimation<[ColorOption, Color
 
     constructor(public star_life: number) {
         this.stars = new Array(NB_LED).fill(initial);
-        console.log('NB_LED', NB_LED);
-        console.log('star_life', star_life);
     }
 
     public animate(t, display, options) {
