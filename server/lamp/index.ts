@@ -54,6 +54,7 @@ export function initLamp() {
     let currentAnimation = animations[0].name;
 
     let isLampRunning = false;
+    let lampShouldStop = false;
     let currentColors: Color[] = [];
 
     lamp.get('/', (req, res) => {
@@ -72,7 +73,13 @@ export function initLamp() {
     });
 
     lamp.post('/animation', (req, res) => {
-        const { animation } = req.body;
+        const animation: string = req.body.animation;
+
+        if (animation.toLowerCase() === "off") {
+            lampShouldStop = true;
+            res.send("OK");
+            return;
+        }
 
         if (typeof animationStore[animation] === "undefined") {
             res.status(400).send(`Animation "${animation}" not found.`);
@@ -118,16 +125,19 @@ export function initLamp() {
             const options = [getColor(0), getColor(1), TOP_LED_NB];
             animation.animate(t, display, options);
 
-            display.render();
-
             // Loop timing, keep at the end
-            if (state === State.IDLE) {
+            if (state === State.IDLE && !lampShouldStop) {
+                display.render();
+
                 const tickEnd = Date.now();
                 const diff = tickStart - tickEnd;
                 const waitingTime = 1 / LAMP_FPS * 1000 + diff;
                 setTimeout(() => tick(t + 1), waitingTime);
             } else {
                 isLampRunning = false;
+                lampShouldStop = false;
+                display.drawAll(HtmlColors.black);
+                display.render();
             }
         }
     }
