@@ -3,12 +3,13 @@ import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
 import { HtmlColors } from '../htmlColors';
-import FireAnimation from './fire';
-import { OldSchoolSegmentsAnimation } from './oldSchoolSegments';
-import { GameOfLifeAnimation} from './gameOfLife';
 import * as env from '../env';
 import StarsAnimation from "./stars";
 import cors from 'cors';
+
+import FireAnimation from './fire';
+import OldSchoolSegmentsAnimation from './oldSchoolSegments';
+import GameOfLifeAnimation from './gameOfLife';
 import RainbowAnimation from "./rainbow";
 import NoneAnimation from "./none";
 import StrobeAnimation from "./strobe";
@@ -17,8 +18,9 @@ import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
 import RainbowSlidingWindowAnimation from './rainboxSlidingWindow';
-import FlashingAperture from './flashingAperture';
+import FlashingApertureAnimation from './flashingAperture';
 import BlueFireAnimation from './blueFire';
+import FlashingSegmentsAnimation from './flashingSegments';
 
 export const lamp = express();
 
@@ -44,7 +46,8 @@ export function initLamp() {
         new SlidingWindowAnimation(),
         new RainbowSlidingWindowAnimation(),
         new OldSchoolSegmentsAnimation(),
-        new FlashingAperture(),
+        new FlashingApertureAnimation(),
+        new FlashingSegmentsAnimation(),
     ];
 
     const animationStore = {};
