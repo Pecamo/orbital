@@ -1,4 +1,6 @@
 export class Color {
+    constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
+
     public static getRandom(): Color {
         return new Color(Color.getRandom255(), Color.getRandom255(), Color.getRandom255());
     }
@@ -64,8 +66,6 @@ export class Color {
             return new Color(255, 0, 255 - phase);
         });
     }
-
-    constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
 }
 
 export type LEDStrip = Color[];
