@@ -71,6 +71,12 @@ export function initLamp() {
 
     lamp.post('/animation', (req, res) => {
         const { animation } = req.body;
+
+        if (typeof animationStore[animation] === "undefined") {
+            res.status(400).send(`Animation "${animation}" not found.`);
+            return;
+        }
+
         currentAnimation = animation;
         startLamp();
         res.send("OK");
