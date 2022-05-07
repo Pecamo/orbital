@@ -18,6 +18,7 @@ import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
 import RainbowSlidingWindowAnimation from './rainboxSlidingWindow';
 import FlashingAperture from './flashingAperture';
+import BlueFireAnimation from './blueFire';
 
 export const lamp = express();
 
@@ -33,6 +34,7 @@ export function initLamp() {
         new StarsAnimation(120),
         new FireAnimation(false),
         new FireAnimation(true),
+        new BlueFireAnimation(true),
         new RainbowAnimation(),
         new StrobeAnimation(LAMP_FPS),
         new Strobe2Animation(),
