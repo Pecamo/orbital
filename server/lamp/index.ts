@@ -21,6 +21,7 @@ import RainbowSlidingWindowAnimation from './rainboxSlidingWindow';
 import FlashingApertureAnimation from './flashingAperture';
 import BlueFireAnimation from './blueFire';
 import FlashingSegmentsAnimation from './flashingSegments';
+import ParticleWaveAnimation from "./particleWave";
 
 export const lamp = express();
 
@@ -48,6 +49,7 @@ export function initLamp() {
         new OldSchoolSegmentsAnimation(),
         new FlashingApertureAnimation(),
         new FlashingSegmentsAnimation(),
+        new ParticleWaveAnimation(),
     ];
 
     const animationStore = {};
