@@ -56,6 +56,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { axiosInstance } from "../axios-common";
 import { Color } from "../../../server/color";
 
 export default defineComponent({
@@ -63,7 +64,7 @@ export default defineComponent({
     return {
       // TODO fetch current color
       hexColors: ["#000000", "#000000"] as string[],
-      selectedAnimation: "",
+      selectedAnimation: "None",
       // TODO Query from server
       animationOptions: [
         "None",
@@ -100,39 +101,15 @@ export default defineComponent({
   methods: {
     // Color Picker
     onNewColor() {
-      this.sendColors(this.colors);
+      axiosInstance.post("/lamp/colors", this.colors);
     },
 
     onNewAnimation() {
-      this.sendAnimnation(this.selectedAnimation);
+      axiosInstance.post("/lamp/animation", { animation: this.selectedAnimation });
     },
 
     onNewTopLed() {
-      this.sendTopLedNb(this.topLedNb);
-    },
-
-    // Send colors to the server
-    sendColors(colors: Color[]) {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/lamp/colors", true);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify(colors));
-    },
-
-    // Send animation mode to the server
-    sendAnimnation(animationName: string) {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/lamp/animation", true);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify({ animation: animationName }));
-    },
-
-    // Send top led number to the server
-    sendTopLedNb(topLedNb: number) {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/lamp/set-top-led", true);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify({ topLedNb }));
+      axiosInstance.post("/lamp/set-top-led", { topLedNb: this.topLedNb });
     },
   },
 });

@@ -9,6 +9,9 @@ export default defineConfig({
   build: {
     outDir: "../static",
   },
+  server: {
+    port: 3001,
+  },
   plugins: [vue(), vueJsx()],
   resolve: {
     alias: {
