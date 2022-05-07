@@ -40,6 +40,11 @@ let currentAnimation: Animation = Animation.NONE;
 let isLampRunning = false;
 let currentColors: Color[] = [];
 
+// Hacky: we need to send index.html because Vue mangage routes
+lamp.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'static', 'index.html'));;
+});
+
 lamp.post('/colors', (req, res) => {
     const colors = req.body;
     currentColors = colors.map(color => {
