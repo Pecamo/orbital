@@ -6,7 +6,7 @@ import { Line } from "../types/Line";
 import { Color } from "../color";
 import { randomInt } from "../utils";
 
-export default class FlashingAperture implements LampAnimation<[ColorOption]> {
+export default class FlashingApertureAnimation implements LampAnimation<[ColorOption]> {
     public name = "Flashing Aperture";
     public options: [ColorOption] = [
         { name: "Static Color", type: "color", default: HtmlColors.orange }

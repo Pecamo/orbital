@@ -3,7 +3,7 @@ import { NB_LED } from '../NB_LED';
 import { ColorOption, LampAnimation } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
 
-export class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
+export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
     public name = "Game of Life";
     public options: [ColorOption] = [
         { name: "Color", type: "color", default: HtmlColors.cyan },

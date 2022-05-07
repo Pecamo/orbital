@@ -5,7 +5,7 @@ import { randomInt } from "../utils";
 import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
 
-export class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+export default class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
     public name = "Old School Segments";
     public options: [ColorOption, ColorOption, NumberOption] = [
         { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
