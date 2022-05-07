@@ -40,10 +40,6 @@ let currentAnimation: Animation = Animation.NONE;
 let isLampRunning = false;
 let currentColors: Color[] = [];
 
-lamp.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', '..', 'static', 'lamp.html'));
-});
-
 lamp.post('/colors', (req, res) => {
     const colors = req.body;
     currentColors = colors.map(color => {

@@ -48,8 +48,6 @@ function init() {
         res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
     });
 
-    app.use('/', express.static(__dirname + '/../staticRoot'));
-
     const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
     const httpServer = http.createServer(app).listen(port);
     console.log(`Server listening on port ${port}`);
