@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <div id="container">
-      <RouterView />
-      <div id="allBackground"></div>
-    </div>
+  <div id="container">
+    <RouterView />
+    <!--div id="allBackground"></div-->
 
     <div class="credits">
       <div>
