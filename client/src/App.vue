@@ -1,23 +1,23 @@
 <template>
-  <div id="container">
-    <RouterView />
-    <div id="allBackground"></div>
-  </div>
-
-  <div class="credits">
-    <div>
-      Orbital is <a href="https://github.com/Pecamo/orbital">open source</a>
+  <div>
+    <div id="container">
+      <RouterView />
+      <div id="allBackground"></div>
     </div>
-    <div style="text-align: right">
-      Orbital, 2020 - {{ currentYear }}, by <span v-html="names"></span>
+
+    <div class="credits">
+      <div>
+        Orbital is <a href="https://github.com/Pecamo/orbital">open source</a>
+      </div>
+      <div style="text-align: right">
+        Orbital, 2020 - {{ currentYear }}, by <span v-html="names"></span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-
-console.log(import.meta.env);
 
 console.log("Starting connection to WebSocket Server");
 const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";

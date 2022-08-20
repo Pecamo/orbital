@@ -6,12 +6,16 @@
     <div class="line">
       <label>Animation Mode</label>
       <select
-        v-model="selectedAnimation"
+        v-model="currentConfig.selectedAnimation"
         @change="onNewAnimation"
         name="animation"
         id="animation-picker"
       >
-        <option v-for="option in animationOptions" :value="option">
+        <option
+          v-for="option in currentConfig.animationOptions"
+          :key="option"
+          :value="option"
+        >
           {{ option }}
         </option>
       </select>
@@ -20,7 +24,7 @@
       <label>Color 1</label>
       <div>
         <input
-          v-model="hexColors[0]"
+          v-model="currentConfig.hexColors[0]"
           @change="onNewColor"
           type="color"
           class="color-picker"
@@ -31,7 +35,7 @@
       <label>Color 2</label>
       <div>
         <input
-          v-model="hexColors[1]"
+          v-model="currentConfig.hexColors[1]"
           @change="onNewColor"
           type="color"
           class="color-picker"
@@ -42,7 +46,7 @@
       <label>Top Led Number</label>
       <div>
         <input
-          v-model="topLedNb"
+          v-model="currentConfig.topLedNb"
           @change="onNewTopLed"
           type="number"
           class="top-led-number"
@@ -54,65 +58,55 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { axiosInstance } from "../axios-common";
 import { Color } from "../../../server/color";
+import { reactive } from "@vue/reactivity";
 
-export default defineComponent({
-  data() {
-    return {
-      // TODO fetch current color
-      hexColors: ["#000000", "#000000"] as string[],
-      selectedAnimation: "None",
-      // TODO Query from server
-      animationOptions: [
-        "None",
-        "Strobe",
-        "Alternating",
-        "Rainbow",
-        "Fire",
-        "Fire rotating",
-        "Stars",
-        "Matrix",
-        "Sliding Window",
-        "Old School Segments",
-        "Game of Life",
-      ],
-      topLedNb: 0,
-    };
+const currentConfig = reactive({
+  // TODO fetch current color
+  hexColors: ["#000000", "#000000"] as string[],
+  selectedAnimation: "None",
+  // TODO Query from server
+  animationOptions: [
+    "None",
+    "Strobe",
+    "Alternating",
+    "Rainbow",
+    "Fire",
+    "Fire rotating",
+    "Stars",
+    "Matrix",
+    "Sliding Window",
+    "Old School Segments",
+    "Game of Life",
+  ],
+  topLedNb: 0,
+});
+
+const colors = reactive({
+  get(): Color[] {
+    return currentConfig.hexColors.map((hex: string) => Color.fromHex(hex));
   },
-
-  computed: {
-    colors: {
-      get(): Color[] {
-        return this.hexColors.map((hex: string) => Color.fromHex(hex));
-      },
-      set(colors: Color[]) {
-        this.hexColors = colors.map((c) => Color.toHex(c));
-      },
-    },
-  },
-
-  mounted() {
-    // TODO
-  },
-
-  methods: {
-    // Color Picker
-    onNewColor() {
-      axiosInstance.post("/lamp/colors", this.colors);
-    },
-
-    onNewAnimation() {
-      axiosInstance.post("/lamp/animation", { animation: this.selectedAnimation });
-    },
-
-    onNewTopLed() {
-      axiosInstance.post("/lamp/set-top-led", { topLedNb: this.topLedNb });
-    },
+  set(colors: Color[]) {
+    currentConfig.hexColors = colors.map((c) => Color.toHex(c));
   },
 });
+
+// Color Picker
+function onNewColor() {
+  axiosInstance.post("/lamp/colors", colors);
+}
+
+function onNewAnimation() {
+  axiosInstance.post("/lamp/animation", {
+    animation: currentConfig.selectedAnimation,
+  });
+}
+
+function onNewTopLed() {
+  axiosInstance.post("/lamp/set-top-led", { topLedNb: currentConfig.topLedNb });
+}
 </script>
 
 <style scoped>
