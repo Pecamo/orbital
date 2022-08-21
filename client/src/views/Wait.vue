@@ -2,13 +2,27 @@
   <div class="scene" id="wait">
     <div class="background"></div>
     <p>Waiting for an opponent to connect...</p>
-    <button class="button" id="cancelButton" onmouseup="onCancelRelease()">
+    <button class="button" id="cancelButton" @click="cancelClicked">
       Cancel
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+import { WebSocketHandler } from "../ws";
+
+const router = useRouter();
+
+function cancelClicked() {
+  WebSocketHandler.onCancel();
+  router.replace({ path: "/" });
+}
+
+onMounted(() => {
+  WebSocketHandler.onJoin();
+});
 </script>
 
 <style scoped>

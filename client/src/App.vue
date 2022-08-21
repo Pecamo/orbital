@@ -15,11 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { onMounted } from "@vue/runtime-core";
+import { WebSocketHandler } from "./ws";
 
-console.log("Starting connection to WebSocket Server");
-const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-const ws = new WebSocket(wsProtocol + location.host + "/");
+onMounted(() => {
+  WebSocketHandler.connect();
+});
 
 const protectator = '<a href="https://twitter.com/Protectator">Protectator</a>';
 const binary_brain =
