@@ -1,5 +1,18 @@
 export const WebSocketHandler = {
   ws: null as WebSocket | null,
+  subscribe: (command: string, callback: (data: any) => void) => {
+    if (!WebSocketHandler.subscriptions[command]) {
+      WebSocketHandler.subscriptions[command] = [];
+    }
+    WebSocketHandler.subscriptions[command].push(callback);
+  },
+  unsubscribe: (command: string, callback: (data: any) => void) => {
+    WebSocketHandler.subscriptions[command].splice(
+      WebSocketHandler.subscriptions[command].indexOf(callback),
+      1
+    );
+  },
+  subscriptions: {} as { [key: string]: ((data: any) => void)[] },
   connect: () => {
     if (WebSocketHandler.ws) {
       return;
@@ -14,11 +27,18 @@ export const WebSocketHandler = {
     WebSocketHandler.ws = new WebSocket(wsProtocol + wsUrl.host + "/");
 
     WebSocketHandler.ws.onopen = (evt) => console.log("WS OPEN");
-    WebSocketHandler.ws.onerror = (evt) => console.log("WS ERROR", evt);
-    WebSocketHandler.ws.onclose = (evt) => console.log("WS CLOSE");
+    WebSocketHandler.ws.onerror = (evt) => console.error("WS ERROR", evt);
+    WebSocketHandler.ws.onclose = (evt) => console.error("WS CLOSE");
 
     WebSocketHandler.ws.onmessage = (evt) => {
-      console.log(evt.data);
+      const msg = JSON.parse(evt.data);
+      console.log(msg);
+
+      if (!WebSocketHandler.subscriptions[msg.cmd]) {
+        return;
+      }
+
+      WebSocketHandler.subscriptions[msg.cmd].forEach((sub) => sub(msg));
     };
   },
 
