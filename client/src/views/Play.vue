@@ -6,7 +6,7 @@
       :startsIn="startsIn"
       :color="color"
     ></get-ready>
-    <controls v-show="currentState === States.PLAY" :color="color"></controls>
+    <controls v-if="currentState === States.PLAY" :color="color"></controls>
     <game-over
       v-show="currentState === States.GAME_OVER"
       :isWon="isWon"

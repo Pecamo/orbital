@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="{{ isWon ? 'CONGRATULATIONS' : 'SO SAD' }}">
+  <div class="scene" id="game-over">
     <div class="background"></div>
     <p style="color: var(--base-color-bg)">
       {{ isWon ? "CONGRATULATIONS" : "SO SAD" }}
@@ -22,8 +22,7 @@ function playAgainClicked() {
 <style scoped>
 #wait,
 #getReady,
-#won,
-#lost,
+#game-over,
 #gameInProgress,
 #spectate {
   flex-direction: column;

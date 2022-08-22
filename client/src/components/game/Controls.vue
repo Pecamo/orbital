@@ -1,20 +1,98 @@
 <template>
   <div class="scene" id="play">
     <div class="background"></div>
-    <button class="left button" id="leftButton">
+    <button
+      class="left button"
+      id="leftButton"
+      @mousedown="onLeftPress"
+      @mouseup="onLeftRelease"
+    >
       <img class="img" src="@/assets/left-arrow.svg" />
     </button>
-    <button class="fire button" id="fireButton">
+    <button
+      class="fire button"
+      id="fireButton"
+      @mousedown="onFirePress"
+      @mouseup="onFireRelease"
+    >
       <img class="img" src="@/assets/target.svg" />
     </button>
-    <button class="right button" id="rightButton">
+    <button
+      class="right button"
+      id="rightButton"
+      @mousedown="onRightPress"
+      @mouseup="onRightRelease"
+    >
       <img class="img" src="@/assets/right-arrow.svg" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from "@vue/runtime-core";
+import { WebSocketHandler } from "../../ws";
 defineProps(["color"]);
+
+const bindings = {
+  ArrowLeft: [onLeftPress, onLeftRelease],
+  a: [onLeftPress, onLeftRelease],
+
+  ArrowRight: [onRightPress, onRightRelease],
+  d: [onRightPress, onRightRelease],
+
+  " ": [onFirePress, onFireRelease],
+  Control: [onFirePress, onFireRelease],
+  Shift: [onFirePress, onFireRelease],
+  Alt: [onFirePress, onFireRelease],
+  y: [onFirePress, onFireRelease],
+};
+
+function onKeyDown(event: { key: string }) {
+  if (event.key in bindings) {
+    bindings[event.key as keyof typeof bindings][0]();
+  }
+}
+
+function onKeyUp(event: { key: string }) {
+  if (event.key in bindings) {
+    bindings[event.key as keyof typeof bindings][1]();
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keyup", onKeyUp);
+});
+
+// Warning! This is global so to ensure that this component gets unmounted, it should be in a v-if, not v-show.
+onUnmounted(() => {
+  document.removeEventListener("keydown", onKeyDown);
+  document.removeEventListener("keyup", onKeyUp);
+});
+
+function onLeftPress() {
+  WebSocketHandler.onLeftPress();
+}
+
+function onLeftRelease() {
+  WebSocketHandler.onLeftRelease();
+}
+
+function onRightPress() {
+  WebSocketHandler.onRightPress();
+}
+
+function onRightRelease() {
+  WebSocketHandler.onRightRelease();
+}
+
+function onFirePress() {
+  WebSocketHandler.onFirePress();
+}
+
+function onFireRelease() {
+  WebSocketHandler.onFireRelease();
+}
 </script>
 
 <style scoped>
