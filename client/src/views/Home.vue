@@ -3,7 +3,7 @@
     <div class="background"></div>
     Welcome to
     <div class="orbital"><img src="@/assets/logo/Orbital-white.svg" /></div>
-    <RouterLink to="/wait" class="button" id="joinButton"
+    <RouterLink to="/play" class="button" id="joinButton"
       >Join a game</RouterLink
     >
     <RouterLink to="/settings" class="button mini" id="changeOptionsButton"

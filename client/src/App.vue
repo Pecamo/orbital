@@ -15,19 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "@vue/runtime-core";
-import { WebSocketHandler } from "./ws";
-
-onMounted(() => {
-  WebSocketHandler.connect();
-});
-
-const protectator = '<a href="https://twitter.com/Protectator">Protectator</a>';
-const binary_brain =
-  '<a href="https://twitter.com/Binary_Brain">Binary Brain</a>';
+const protectator = '<a href="https://github.com/Protectator">Protectator</a>';
+const binarybrain = '<a href="https://github.com/BinaryBrain">Binary Brain</a>';
 const names = [
-  [protectator, binary_brain],
-  [binary_brain, protectator],
+  [protectator, binarybrain],
+  [binarybrain, protectator],
 ][Math.floor(Math.random() * 2)].join(" and ");
 const currentYear = new Date().getFullYear();
 </script>

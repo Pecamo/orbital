@@ -15,24 +15,9 @@ const router = createRouter({
       component: () => import("../views/Lamp.vue"),
     },
     {
-      path: "/wait",
-      name: "wait",
-      component: () => import("../views/Wait.vue"),
-    },
-    {
-      path: "/getready",
-      name: "getready",
-      component: () => import("../views/GetReady.vue"),
-    },
-    {
       path: "/play",
       name: "play",
       component: () => import("../views/Play.vue"),
-    },
-    {
-      path: "/gameover",
-      name: "gameover",
-      component: () => import("../views/GameOver.vue"),
     },
     {
       path: "/howto",

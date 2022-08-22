@@ -1,41 +1,78 @@
 <template>
-  <div class="scene" id="play">
-    <div class="background"></div>
-    <button class="left button" id="leftButton">
-      <img class="img" src="@/assets/left-arrow.svg" />
-    </button>
-    <button class="fire button" id="fireButton">
-      <img class="img" src="@/assets/target.svg" />
-    </button>
-    <button class="right button" id="rightButton">
-      <img class="img" src="@/assets/right-arrow.svg" />
-    </button>
+  <div>
+    <wait v-show="currentState === States.WAIT"></wait>
+    <get-ready
+      v-show="currentState === States.GET_READY"
+      :startsIn="startsIn"
+      :color="color"
+    ></get-ready>
+    <controls v-show="currentState === States.PLAY" :color="color"></controls>
+    <game-over
+      v-show="currentState === States.GAME_OVER"
+      :isWon="isWon"
+    ></game-over>
   </div>
 </template>
 
 <script setup lang="ts">
+import Wait from "@/components/game/Wait.vue";
+import GetReady from "@/components/game/GetReady.vue";
+import Controls from "@/components/game/Controls.vue";
+import GameOver from "@/components/game/GameOver.vue";
+
+import { onMounted, onUnmounted } from "@vue/runtime-core";
+import { WebSocketHandler } from "../ws";
+import { ref } from "@vue/reactivity";
+
+const enum States {
+  WAIT = "wait",
+  GET_READY = "getReady",
+  PLAY = "play",
+  GAME_OVER = "gameOver",
+}
+
+const currentState = ref(States.WAIT);
+const startsIn = ref(20);
+const color = ref("rgb(50,50,50)");
+const isWon = ref(false);
+
+function onWait() {
+  currentState.value = States.WAIT;
+}
+
+function onGetReady(data: any) {
+  currentState.value = States.GET_READY;
+  startsIn.value = data.data;
+  color.value = data.color;
+  // TODO Handle this in a proper Vue way
+  document.documentElement.style.setProperty("--base-color-bg", data.color);
+  const metaThemeColor = document.querySelector("meta[name=theme-color]");
+  metaThemeColor?.setAttribute("content", data.color);
+}
+
+function onPlay(data: any) {
+  color.value = data.color;
+  currentState.value = States.PLAY;
+}
+
+function onGameOver(isVictory: boolean) {
+  isWon.value = isVictory;
+  currentState.value = States.GAME_OVER;
+}
+
+onMounted(async () => {
+  await WebSocketHandler.connect();
+  WebSocketHandler.subscribe("wait", onWait);
+  WebSocketHandler.subscribe("getReady", onGetReady);
+  WebSocketHandler.subscribe("play", onPlay);
+  WebSocketHandler.subscribe("won", () => onGameOver(true));
+  WebSocketHandler.subscribe("lost", () => onGameOver(false));
+  WebSocketHandler.onJoin();
+});
+
+onUnmounted(() => {
+  WebSocketHandler.disconnect();
+});
 </script>
 
-<style scoped>
-#play .button {
-  background-color: var(--base-color-bg);
-  color: var(--base-color-fg);
-  justify-content: center;
-  align-items: center;
-  font-size: 20vw;
-  flex-grow: 1;
-  height: 100%;
-  border: 0;
-  max-width: 32%;
-  max-height: 98%;
-  fill: white;
-}
-
-#play .button:active {
-  filter: contrast(0.5);
-}
-
-.fire {
-  font-size: 25vw;
-}
-</style>
+<style scoped></style>

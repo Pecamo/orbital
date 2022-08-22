@@ -10,8 +10,7 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { onMounted, onUnmounted } from "vue";
-import { WebSocketHandler } from "../ws";
+import { WebSocketHandler } from "../../ws";
 
 const router = useRouter();
 
@@ -19,19 +18,6 @@ function cancelClicked() {
   WebSocketHandler.onCancel();
   router.replace({ path: "/" });
 }
-
-function onGetReady() {
-  router.replace({ path: "/getready" });
-}
-
-onMounted(() => {
-  WebSocketHandler.subscribe("getReady", onGetReady);
-  WebSocketHandler.onJoin();
-});
-
-onUnmounted(() => {
-  WebSocketHandler.unsubscribe("getReady", onGetReady);
-});
 </script>
 
 <style scoped>
