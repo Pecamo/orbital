@@ -58,6 +58,12 @@ function init() {
         handleWs(ws, req);
     });
 
+    // Catch-all fallback for vue history to be beautiful
+    // It must exists after ws handler or it will crash
+    app.get('*', (req, res, next) => {
+        res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
+    });
+
     const invertOrientation = process.argv.includes('--invert');
     display = new Display(NB_LED, DISPLAY_API_HOSTNAME, DISPLAY_API_PORT, invertOrientation);
 

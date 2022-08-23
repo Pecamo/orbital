@@ -7,6 +7,10 @@ export const WebSocketHandler = {
     WebSocketHandler.subscriptions[command].push(callback);
   },
   unsubscribe: (command: string, callback: (data: any) => void) => {
+    if (!WebSocketHandler.subscriptions[command]) {
+      return;
+    }
+
     WebSocketHandler.subscriptions[command].splice(
       WebSocketHandler.subscriptions[command].indexOf(callback),
       1
