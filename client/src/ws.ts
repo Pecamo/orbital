@@ -20,6 +20,7 @@ export const WebSocketHandler = {
   connect: () => {
     return new Promise<void>((resolve, reject) => {
       if (WebSocketHandler.ws) {
+        resolve();
         return;
       }
 
