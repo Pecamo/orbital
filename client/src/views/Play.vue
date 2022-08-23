@@ -55,8 +55,13 @@ function onPlay(data: any) {
   currentState.value = States.PLAY;
 }
 
-function onGameOver(isVictory: boolean) {
-  isWon.value = isVictory;
+function onGameOverWon() {
+  isWon.value = true;
+  currentState.value = States.GAME_OVER;
+}
+
+function onGameOverLost() {
+  isWon.value = false;
   currentState.value = States.GAME_OVER;
 }
 
@@ -65,12 +70,17 @@ onMounted(async () => {
   WebSocketHandler.subscribe("wait", onWait);
   WebSocketHandler.subscribe("getReady", onGetReady);
   WebSocketHandler.subscribe("play", onPlay);
-  WebSocketHandler.subscribe("won", () => onGameOver(true));
-  WebSocketHandler.subscribe("lost", () => onGameOver(false));
+  WebSocketHandler.subscribe("won", onGameOverWon);
+  WebSocketHandler.subscribe("lost", onGameOverLost);
   WebSocketHandler.onJoin();
 });
 
 onUnmounted(() => {
+  WebSocketHandler.unsubscribe("wait", onWait);
+  WebSocketHandler.unsubscribe("getReady", onGetReady);
+  WebSocketHandler.unsubscribe("play", onPlay);
+  WebSocketHandler.unsubscribe("won", onGameOverWon);
+  WebSocketHandler.unsubscribe("lost", onGameOverLost);
   WebSocketHandler.disconnect();
 });
 </script>
