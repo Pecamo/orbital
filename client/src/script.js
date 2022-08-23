@@ -15,13 +15,6 @@ for (var s = 0; s < 10; s++) {
 
 spectateLastData = null;
 
-state = {
-  activeScene: "welcome",
-};
-
-const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-ws = new WebSocket(wsProtocol + location.host + "/");
-
 sendJSON = (message) => (data) => {
   if (data && !message.data) {
     message.data = data;
@@ -30,15 +23,7 @@ sendJSON = (message) => (data) => {
   ws.send(JSON.stringify(message));
 };
 
-onJoin = sendJSON({ cmd: "join" });
-onCancel = sendJSON({ cmd: "cancel" });
 onSpectate = sendJSON({ cmd: "spectate" });
-onLeftPress = sendJSON({ cmd: "press", data: "left" });
-onLeftRelease = sendJSON({ cmd: "release", data: "left" });
-onRightPress = sendJSON({ cmd: "press", data: "right" });
-onRightRelease = sendJSON({ cmd: "release", data: "right" });
-onFirePress = sendJSON({ cmd: "press", data: "fire" });
-onFireRelease = sendJSON({ cmd: "release", data: "fire" });
 onQueryGameOptions = sendJSON({ cmd: "queryGameOptions" });
 onWriteGameOptions = sendJSON({ cmd: "writeGameOptions" });
 
@@ -53,25 +38,6 @@ changeBaseColorFG = (color) => {
 changeBaseColorBG = (color) => {
   document.documentElement.style.setProperty("--base-color-bg", color);
   changeThemeColor(color);
-};
-
-onJoinRelease = () => {
-  document.querySelector("#joinButton").setAttribute("disabled", true);
-  playSound("button");
-  onJoin();
-};
-
-onCancelRelease = () => {
-  playSound("button");
-  onCancel();
-};
-
-onJoinDisappear = () => {
-  document.querySelector("#joinButton").removeAttribute("disabled");
-};
-onHowRelease = () => {
-  playSound("button");
-  activateScene("how");
 };
 
 onSpectateRelease = () => {
@@ -97,53 +63,51 @@ onChangeOptionsValidate = () => {
   activateScene("welcome");
 };
 
-activateSceneWelcome = () => {
-  activateScene("welcome");
-  playSound("button");
-};
+window.addEventListener("resize", resizeCanvas, false);
 
-activateScene = (scene) => {
-  onJoinDisappear();
-  if (
-    ![
-      "welcome",
-      "how",
-      "spectate",
-      "wait",
-      "getReady",
-      "play",
-      "won",
-      "lost",
-      "gameInProgress",
-      "changeGameOptions",
-    ].includes(scene)
-  ) {
-    console.error("This scene doesn't exist");
+function resizeCanvas() {
+  var canvas = document.getElementById("spectateCanvas");
+  var min = Math.min(window.innerWidth, window.innerHeight);
+  canvas.width = min;
+  canvas.height = min;
+
+  spectateData();
+}
+resizeCanvas();
+
+baseGray = "#777777";
+waitTime = 60;
+
+onRecieve = (message) => {
+  var json = JSON.parse(message);
+  if (!json.cmd) {
+    console.error("Invalid message recieved");
     return;
   }
-  if (scene === "lost") {
-    playSound("defeat");
-  }
-  if (scene === "won") {
-    playSound("victory");
-  }
-  if (scene === "lost" || scene === "won") {
-    if ("vibrate" in window.navigator) {
-      navigator.vibrate(200);
+  joinPressed = false;
+  switch (json.cmd) {
+
+
+    case "readGameOptions": {
+      json.data;
+      gameOptions = json.data;
+      document.querySelector("#gameOptionsScene").innerHTML =
+        gameOptionsToForm();
+      activateScene("changeGameOptions");
+      break;
+    }
+
+    case "spectateData": {
+      spectateLastData = json.data;
+      spectateData();
+      break;
     }
   }
-  if (scene === "welcome") {
-    changeBaseColorBG(baseGray);
-  }
-  if (scene === "play") {
-    playSound("start");
-  }
-  state.activeScene = scene;
-  document
-    .querySelectorAll(".scene")
-    .forEach((e) => e.classList.remove("active"));
-  document.querySelector("#" + scene).classList.add("active");
 };
+
+function playSound(soundName: string) {
+  document.getElementById("sound-" + soundName).play();
+}
 
 spectateData = () => {
   var data = spectateLastData;
@@ -223,172 +187,3 @@ spectateData = () => {
   document.querySelector("#spectateResult").innerHTML = "";
   document.querySelector("#spectateResult").appendChild(node);
 };
-
-window.addEventListener("resize", resizeCanvas, false);
-
-function resizeCanvas() {
-  var canvas = document.getElementById("spectateCanvas");
-  var min = Math.min(window.innerWidth, window.innerHeight);
-  canvas.width = min;
-  canvas.height = min;
-
-  spectateData();
-}
-resizeCanvas();
-
-baseGray = "#777777";
-waitTime = 60;
-
-var leftDown = (e) => {
-  return onLeftPress(e);
-};
-var rightDown = (e) => {
-  return onRightPress(e);
-};
-var fireDown = (e) => {
-  return onFirePress(e);
-};
-
-var leftUp = (e) => {
-  e.target.blur();
-  return onLeftRelease(e);
-};
-var rightUp = (e) => {
-  e.target.blur();
-  return onRightRelease(e);
-};
-var fireUp = (e) => {
-  e.target.blur();
-  return onFireRelease(e);
-};
-document.querySelector("#leftButton").addEventListener("mousedown", leftDown);
-document.querySelector("#leftButton").addEventListener("touchstart", leftDown);
-
-document.querySelector("#fireButton").addEventListener("mousedown", fireDown);
-document.querySelector("#fireButton").addEventListener("touchstart", fireDown);
-
-document.querySelector("#rightButton").addEventListener("mousedown", rightDown);
-document
-  .querySelector("#rightButton")
-  .addEventListener("touchstart", rightDown);
-
-document.querySelector("#leftButton").addEventListener("mouseup", leftUp);
-document.querySelector("#leftButton").addEventListener("touchend", leftUp);
-
-document.querySelector("#fireButton").addEventListener("mouseup", fireUp);
-document.querySelector("#fireButton").addEventListener("touchend", fireUp);
-
-document.querySelector("#rightButton").addEventListener("mouseup", rightUp);
-document.querySelector("#rightButton").addEventListener("touchend", rightUp);
-
-setWaitTime = (newTime) => {
-  waitTime = newTime;
-  document.querySelector("#startsIn").innerHTML = newTime;
-};
-
-var bindings = {
-  ArrowLeft: [onLeftPress, onLeftRelease],
-  a: [onLeftPress, onLeftRelease],
-
-  ArrowRight: [onRightPress, onRightRelease],
-  d: [onRightPress, onRightRelease],
-
-  " ": [onFirePress, onFireRelease],
-  Control: [onFirePress, onFireRelease],
-  Shift: [onFirePress, onFireRelease],
-  Alt: [onFirePress, onFireRelease],
-  y: [onFirePress, onFireRelease],
-};
-
-onKeyDown = (e) => {
-  if (state.activeScene !== "play") {
-    return;
-  }
-  if (e.key in bindings) {
-    bindings[e.key][0]();
-  }
-};
-
-onKeyUp = (e) => {
-  if (state.activeScene !== "play") {
-    return;
-  }
-  if (e.key in bindings) {
-    bindings[e.key][1]();
-  }
-};
-
-document.addEventListener("keydown", onKeyDown);
-document.addEventListener("keyup", onKeyUp);
-
-onRecieve = (message) => {
-  var json = JSON.parse(message);
-  if (!json.cmd) {
-    console.error("Invalid message recieved");
-    return;
-  }
-  joinPressed = false;
-  switch (json.cmd) {
-    case "welcome": {
-      activateScene("welcome");
-      changeBaseColorBG(baseGray);
-      break;
-    }
-
-    case "wait": {
-      activateScene("wait");
-      break;
-    }
-
-    case "getReady": {
-      activateScene("getReady");
-      setWaitTime(json.data);
-      changeBaseColorBG(json.color);
-      break;
-    }
-
-    case "play": {
-      activateScene("play");
-      changeBaseColorBG(json.color);
-      break;
-    }
-
-    case "won": {
-      activateScene("won");
-      break;
-    }
-
-    case "lost": {
-      activateScene("lost");
-      break;
-    }
-
-    case "gameInProgress": {
-      activateScene("gameInProgress");
-      break;
-    }
-
-    case "readGameOptions": {
-      json.data;
-      gameOptions = json.data;
-      document.querySelector("#gameOptionsScene").innerHTML =
-        gameOptionsToForm();
-      activateScene("changeGameOptions");
-      break;
-    }
-
-    case "spectateData": {
-      spectateLastData = json.data;
-      spectateData();
-      break;
-    }
-  }
-};
-
-ws.onmessage = (evt) => {
-  onRecieve(evt.data);
-};
-
-function playSound(soundName: string) {
-  document.getElementById("sound-" + soundName).play();
-}

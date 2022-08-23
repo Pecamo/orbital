@@ -4,7 +4,8 @@
     <p>Waiting for eventual other players...</p>
     <p>Starting in {{ startsIn }} sec</p>
     <p
-      style="padding: 2vw; background-color: var(--base-color-bg); color: black"
+      style="padding: 2vw; color: black"
+      :style="{ 'background-color': color }"
     >
       Remember your color!
     </p>
@@ -13,7 +14,6 @@
 
 <script setup lang="ts">
 defineProps(["startsIn", "color"]);
-// TODO define button color from props
 </script>
 <style scoped>
 #getReady {

@@ -1,6 +1,9 @@
 <template>
   <div>
     <wait v-show="currentState === States.WAIT"></wait>
+    <game-in-progress
+      v-show="currentState === States.GAME_IN_PROGRESS"
+    ></game-in-progress>
     <get-ready
       v-show="currentState === States.GET_READY"
       :startsIn="startsIn"
@@ -16,6 +19,7 @@
 
 <script setup lang="ts">
 import Wait from "@/components/game/Wait.vue";
+import GameInProgress from "@/components/game/GameInProgress.vue";
 import GetReady from "@/components/game/GetReady.vue";
 import Controls from "@/components/game/Controls.vue";
 import GameOver from "@/components/game/GameOver.vue";
@@ -26,6 +30,7 @@ import { ref } from "@vue/reactivity";
 
 const enum States {
   WAIT = "wait",
+  GAME_IN_PROGRESS = "gameInProgress",
   GET_READY = "getReady",
   PLAY = "play",
   GAME_OVER = "gameOver",
@@ -40,12 +45,16 @@ function onWait() {
   currentState.value = States.WAIT;
 }
 
+function onGameInProgress() {
+  currentState.value = States.GAME_IN_PROGRESS;
+}
+
 function onGetReady(data: any) {
   currentState.value = States.GET_READY;
   startsIn.value = data.data;
   color.value = data.color;
   // TODO Handle this in a proper Vue way
-  document.documentElement.style.setProperty("--base-color-bg", data.color);
+  // document.documentElement.style.setProperty("--base-color-bg", data.color);
   const metaThemeColor = document.querySelector("meta[name=theme-color]");
   metaThemeColor?.setAttribute("content", data.color);
 }
@@ -68,6 +77,7 @@ function onGameOverLost() {
 onMounted(async () => {
   await WebSocketHandler.connect();
   WebSocketHandler.subscribe("wait", onWait);
+  WebSocketHandler.subscribe("gameInProgress", onGameInProgress);
   WebSocketHandler.subscribe("getReady", onGetReady);
   WebSocketHandler.subscribe("play", onPlay);
   WebSocketHandler.subscribe("won", onGameOverWon);
@@ -77,6 +87,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   WebSocketHandler.unsubscribe("wait", onWait);
+  WebSocketHandler.unsubscribe("gameInProgress", onGameInProgress);
   WebSocketHandler.unsubscribe("getReady", onGetReady);
   WebSocketHandler.unsubscribe("play", onPlay);
   WebSocketHandler.unsubscribe("won", onGameOverWon);

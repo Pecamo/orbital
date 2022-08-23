@@ -4,24 +4,33 @@
     <button
       class="left button"
       id="leftButton"
+      :style="{ 'background-color': color }"
       @mousedown="onLeftPress"
       @mouseup="onLeftRelease"
+      @touchstart="onLeftPress"
+      @touchend="onLeftRelease"
     >
       <img class="img" src="@/assets/left-arrow.svg" />
     </button>
     <button
       class="fire button"
       id="fireButton"
+      :style="{ 'background-color': color }"
       @mousedown="onFirePress"
       @mouseup="onFireRelease"
+      @touchstart="onFirePress"
+      @touchend="onFireRelease"
     >
       <img class="img" src="@/assets/target.svg" />
     </button>
     <button
       class="right button"
       id="rightButton"
+      :style="{ 'background-color': color }"
       @mousedown="onRightPress"
       @mouseup="onRightRelease"
+      @touchstart="onRightPress"
+      @touchend="onRightRelease"
     >
       <img class="img" src="@/assets/right-arrow.svg" />
     </button>
