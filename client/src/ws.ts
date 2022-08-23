@@ -44,6 +44,8 @@ export const WebSocketHandler = {
     });
   },
   disconnect: () => {
+    WebSocketHandler.subscriptions = {};
+
     const ws = WebSocketHandler.ws;
     if (ws && ws.readyState === ws.OPEN) {
       WebSocketHandler.ws?.close();
