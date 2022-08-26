@@ -295,6 +295,7 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'spectate': {
+            // FIXME this condition won't work with Vue without proper handling
             if (env.SPECTATE_MODE_ENABLED) {
                 spectators.push(ws);
             } else {
