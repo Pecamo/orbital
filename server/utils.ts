@@ -11,7 +11,7 @@ export function temperatureToRgb(temperature): Color {
     // Assume temperature in Kelvin
     // 1st step: too cold to glow (theorically 798K (Draper point), but it looks quite better like this)
     // 2nd step: the lib returns NaN or 0 for green under 652K
-    // 3rd step: starts to emit green ligth, we can count on the lib
+    // 3rd step: starts to emit green light, we can count on the lib
     const steps = [200, 652, 1000];
     if (temperature < steps[0]) {
         return HtmlColors.black;

@@ -1,4 +1,6 @@
 export class Color {
+    constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
+
     public static getRandom(): Color {
         return new Color(Color.getRandom255(), Color.getRandom255(), Color.getRandom255());
     }
@@ -24,6 +26,8 @@ export class Color {
     }
 
     public withOpacitiy(opacity: number): Color {
+        opacity = Math.min(Math.max(opacity, 0), 1);
+
         return new Color(
             Math.round(this.r * opacity),
             Math.round(this.g * opacity),
@@ -78,8 +82,6 @@ export class Color {
             color.g.toString(16) +
             color.b.toString(16);
     }
-
-    constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
 }
 
 export type LEDStrip = Color[];

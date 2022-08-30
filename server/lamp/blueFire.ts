@@ -2,9 +2,10 @@ import { NB_LED } from '../NB_LED';
 import { normalize, temperatureToRgb } from "../utils";
 import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
+import { Color } from '../color';
 
-export default class FireAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
-    public name = "Fire";
+export default class BlueFireAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+    public name = "Blue Fire";
     public options: [ColorOption, ColorOption, NumberOption] = [
       { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
       { name: "Color 2", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
@@ -18,6 +19,10 @@ export default class FireAnimation implements LampAnimation<[ColorOption, ColorO
 
     constructor(private rotation: boolean) {
         this.name += rotation ? " rotating" : "";
+    }
+
+    private swap(color: Color): Color {
+        return new Color(color.b, color.g, color.r);
     }
 
     public animate(t, display, options) {
@@ -38,7 +43,7 @@ export default class FireAnimation implements LampAnimation<[ColorOption, ColorO
             const temperatureDecrease = (Math.random() - 0.5) * temperatureDecreaseVariation + meanTemperatureDecrease;
             const temp = Math.max(this.previousTemperatures[n - 1] - temperatureDecrease, 0);
             this.temperatures[n] = temp;
-            const color = temperatureToRgb(temp);
+            const color = this.swap(temperatureToRgb(temp));
 
             if (!this.rotation) {
                 display.drawDot(normalize(n + NB_LED / 2 + topLedNb), color);
@@ -55,7 +60,7 @@ export default class FireAnimation implements LampAnimation<[ColorOption, ColorO
             const temperatureDecrease = (Math.random() - 0.5) * temperatureDecreaseVariation + meanTemperatureDecrease;
             const temp = Math.max(this.previousTemperatures[n + 1] - temperatureDecrease, 0);
             this.temperatures[n] = temp;
-            const color = temperatureToRgb(temp);
+            const color = this.swap(temperatureToRgb(temp));
 
             if (!this.rotation) {
                 display.drawDot(normalize(n + NB_LED / 2 + topLedNb), color);
@@ -73,13 +78,13 @@ export default class FireAnimation implements LampAnimation<[ColorOption, ColorO
         this.temperatures[NB_LED] = (maxTemp - minTemp) * this.fireIntensityRight + minTemp;
 
         if (!this.rotation) {
-            display.drawDot(normalize(NB_LED / 2 + topLedNb), temperatureToRgb(this.temperatures[0]));
-            display.drawDot(normalize(NB_LED / 2 + topLedNb - 1), temperatureToRgb(this.temperatures[NB_LED]));
+            display.drawDot(normalize(NB_LED / 2 + topLedNb), this.swap(temperatureToRgb(this.temperatures[0])));
+            display.drawDot(normalize(NB_LED / 2 + topLedNb - 1), this.swap(temperatureToRgb(this.temperatures[NB_LED])));
         } else {
-            display.drawDot(normalize(t + NB_LED / 2 + topLedNb), temperatureToRgb(this.temperatures[0]));
-            display.drawDot(normalize(t + topLedNb), temperatureToRgb(this.temperatures[NB_LED]));
+            display.drawDot(normalize(t + NB_LED / 2 + topLedNb), this.swap(temperatureToRgb(this.temperatures[0])));
+            display.drawDot(normalize(t + topLedNb), this.swap(temperatureToRgb(this.temperatures[NB_LED])));
 
-            const colorFront = temperatureToRgb(this.temperatures[0] - 500);
+            const colorFront = this.swap(temperatureToRgb(this.temperatures[0] - 500));
             display.drawDot(normalize(t + 1 + NB_LED / 2 + topLedNb), colorFront);
             display.drawDot(normalize(t + 1 + topLedNb), colorFront);
         }

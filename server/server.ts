@@ -12,7 +12,7 @@ import { Color } from './color';
 import { HtmlColors } from './htmlColors';
 import { GameOptions } from "./types/GameOptions";
 import { Line } from './types/Line';
-import { lamp } from './lamp';
+import { lamp, initLamp } from './lamp';
 import { NB_LED, fetchNB_LED } from './NB_LED';
 import cors from 'cors';
 
@@ -33,6 +33,8 @@ fetchNB_LED().then(() => init());
 function init() {
     const app = express();
     app.use(cors());
+
+    initLamp();
 
     if (env.LAMP_MODE_ENABLED) {
         app.use('/lamp', lamp);

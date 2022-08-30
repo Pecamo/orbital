@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#603cba">
+    <meta name="theme-color" content="#777777">
+    <title>Orbital</title>
+    <link href="/static/normalize.css" rel="stylesheet">
+    <link href="/static/lamp.css" rel="stylesheet">
+</head>
+<body>
+    <div id="container" class="page-grid">
+        <div class="line">
+            <h1>Lamp</h1>
+        </div>
+        <div class="line">
+            <label>Animation Mode</label>
+            <select name="animation" id="animation-picker">
+                <option value="Off">Off</option>
+                <option value="None">None</option>
+                <option value="Strobe">Strobe</option>
+                <option value="Strobe2">Strobe2</option>
+                <option value="Alternating">Alternating</option>
+                <option value="Rainbow">Rainbow</option>
+                <option value="Fire">Fire</option>
+                <option value="Fire rotating">Fire Wheel</option>
+                <option value="Blue Fire rotating">Blue Fire Wheel</option>
+                <option value="Stars">Stars</option>
+                <option value="Matrix">Matrix Wheel</option>
+                <option value="Rainbow Sliding Window">Rainbow Sliding Window</option>
+                <option value="Sliding Window">Sliding Window</option>
+                <option value="Old School Segments">Old School Segments</option>
+                <option value="Game of Life">Game of Life</option>
+                <option value="Flashing Aperture">Flashing Aperture</option>
+                <option value="Flashing Segments">Flashing Segments</option>
+                <option value="Particle Wave">Particle Wave</option>
+            </select>
+        </div>
+        <div class="line">
+            <label>Color 1</label>
+            <div>
+                <input type="color" data-id="0" class="color-picker">
+            </div>
+        </div>
+        <div class="line">
+            <label>Color 2</label>
+            <div>
+                <input type="color" data-id="1" class="color-picker">
+            </div>
+        </div>
+        <div class="line">
+            <label>Top Led Number</label>
+            <div>
+                <input type="number" class="top-led-number" min="0" step="1">
+            </div>
+        </div>
+    </div>
+    <script src="/static/lamp.js"></script>
+</body>
+</html>
