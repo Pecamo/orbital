@@ -6,7 +6,7 @@ export const AudioHandler = {
       );
     });
   },
-  path: "public/sounds",
+  path: "/sounds",
   files: {
     button: "button.wav",
     confirm: "confirm.wav",
