@@ -3,7 +3,11 @@
     <div class="background"></div>
     Welcome to
     <div class="orbital"><img src="@/assets/logo/Orbital-white.svg" /></div>
-    <RouterLink to="/play" class="button" id="joinButton"
+    <RouterLink
+      to="/play"
+      class="button"
+      id="joinButton"
+      @click="AudioHandler.play('confirm')"
       >Join a game</RouterLink
     >
     <RouterLink to="/settings" class="button mini" id="changeOptionsButton"
@@ -22,6 +26,7 @@
 </template>
 
 <script setup lang="ts">
+import { AudioHandler } from "../audio";
 </script>
 
 <style scoped>
