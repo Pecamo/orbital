@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from "@vue/runtime-core";
 import { WebSocketHandler } from "../../ws";
+import { AudioHandler } from "../../audio";
 defineProps(["color"]);
 
 const bindings = {
@@ -101,6 +102,7 @@ function onFirePress() {
 
 function onFireRelease() {
   WebSocketHandler.onFireRelease();
+  AudioHandler.play("fire");
 }
 </script>
 

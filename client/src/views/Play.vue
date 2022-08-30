@@ -26,6 +26,7 @@ import GameOver from "@/components/game/GameOver.vue";
 
 import { onMounted, onUnmounted } from "@vue/runtime-core";
 import { WebSocketHandler } from "../ws";
+import { AudioHandler } from "../audio";
 import { ref } from "@vue/reactivity";
 
 const enum States {
@@ -62,16 +63,19 @@ function onGetReady(data: any) {
 function onPlay(data: any) {
   color.value = data.color;
   currentState.value = States.PLAY;
+  AudioHandler.play("start");
 }
 
 function onGameOverWon() {
   isWon.value = true;
   currentState.value = States.GAME_OVER;
+  AudioHandler.play("victory");
 }
 
 function onGameOverLost() {
   isWon.value = false;
   currentState.value = States.GAME_OVER;
+  AudioHandler.play("defeat");
 }
 
 onMounted(async () => {
