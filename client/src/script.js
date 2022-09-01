@@ -42,13 +42,11 @@ changeBaseColorBG = (color) => {
 
 onSpectateRelease = () => {
   activateScene("spectate");
-  playSound("button");
   onSpectate();
 };
 
 onChangeOptionsRelease = () => {
   document.querySelector("#changeOptionsButton").setAttribute("disabled", true);
-  playSound("button");
   onQueryGameOptions();
 };
 
@@ -59,7 +57,6 @@ onChangeOptionsDisappear = () => {
 onChangeOptionsValidate = () => {
   onWriteGameOptions(gameOptions);
   onChangeOptionsDisappear();
-  playSound("confirm");
   activateScene("welcome");
 };
 
@@ -104,10 +101,6 @@ onRecieve = (message) => {
     }
   }
 };
-
-function playSound(soundName: string) {
-  document.getElementById("sound-" + soundName).play();
-}
 
 spectateData = () => {
   var data = spectateLastData;
