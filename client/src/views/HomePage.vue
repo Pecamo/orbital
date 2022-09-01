@@ -14,7 +14,7 @@
     <RouterLink to="/settings" class="button mini" id="changeOptionsButton"
       >Change game settings</RouterLink
     >
-    <RouterLink to="/howto" class="button mini" id="howButton"
+    <RouterLink to="/how-to" class="button mini" id="howButton"
       >How to play</RouterLink
     >
     <RouterLink to="/spectate" class="button mini" id="spectateButton"

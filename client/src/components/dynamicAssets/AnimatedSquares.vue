@@ -20,7 +20,7 @@ import { ref, onMounted } from "vue";
 const nbSquares = ref(0);
 const squares: { time: string; delay: string }[] = reactive([]);
 const animatedSquaresElement = ref<HTMLElement | null>(null);
-const props = defineProps<{
+defineProps<{
   color: string;
 }>();
 

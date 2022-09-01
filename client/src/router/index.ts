@@ -1,5 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import HomePage from "../views/HomePage.vue";
+import LampPage from "../views/LampPage.vue";
+import HowToPage from "../views/HowToPage.vue";
+import PlayPage from "../views/PlayPage.vue";
+import SettingsPage from "../views/SettingsPage.vue";
+import SpectatePage from "../views/SpectatePage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,32 +12,32 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: Home,
+      component: HomePage,
     },
     {
       path: "/lamp",
       name: "lamp",
-      component: () => import("../views/Lamp.vue"),
+      component: LampPage,
     },
     {
       path: "/play",
       name: "play",
-      component: () => import("../views/Play.vue"),
+      component: PlayPage,
     },
     {
-      path: "/howto",
-      name: "howto",
-      component: () => import("../views/HowTo.vue"),
-    },
-    {
-      path: "/spectate",
-      name: "spectate",
-      component: () => import("../views/Spectate.vue"),
+      path: "/how-to",
+      name: "how-to",
+      component: HowToPage,
     },
     {
       path: "/settings",
       name: "settings",
-      component: () => import("../views/Settings.vue"),
+      component: SettingsPage,
+    },
+    {
+      path: "/spectate",
+      name: "spectate",
+      component: SpectatePage,
     },
   ],
 });
