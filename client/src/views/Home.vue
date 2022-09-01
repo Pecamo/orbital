@@ -10,7 +10,7 @@
       @click="AudioHandler.play('confirm')"
       >Join a game</RouterLink
     >
-    <DynamicButton></DynamicButton>
+    <DynamicButton>Hello</DynamicButton>
     <RouterLink to="/settings" class="button mini" id="changeOptionsButton"
       >Change game settings</RouterLink
     >
@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { AudioHandler } from "../audio";
-import DynamicButton from "../components/primitives/DynamicButton.vue";
+import DynamicButton from "../components/shared/DynamicButton.vue";
 </script>
 
 <style scoped>

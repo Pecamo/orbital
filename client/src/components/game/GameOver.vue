@@ -12,7 +12,9 @@
 <script setup lang="ts">
 import { WebSocketHandler } from "../../ws";
 
-defineProps(["isWon"]);
+defineProps<{
+  isWon: boolean;
+}>();
 
 function playAgainClicked() {
   WebSocketHandler.onJoin();

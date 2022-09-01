@@ -1,12 +1,14 @@
 <template>
   <div class="dynamic-button">
-    <div class="text">Hello</div>
-    <div class="red-squares"><red-squares></red-squares></div>
+    <div class="text"><slot /></div>
+    <div class="animated-squares">
+      <animated-squares color="var(--rocket-blue)"></animated-squares>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import RedSquares from "../dynamicAssets/RedSquares.vue";
+import AnimatedSquares from "../dynamicAssets/AnimatedSquares.vue";
 </script>
 
 <style scoped>
@@ -23,7 +25,7 @@ import RedSquares from "../dynamicAssets/RedSquares.vue";
   font-size: 2em;
 }
 
-.red-squares {
+.animated-squares {
   z-index: 0;
   position: absolute;
   top: 0;

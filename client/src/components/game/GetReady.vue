@@ -13,8 +13,12 @@
 </template>
 
 <script setup lang="ts">
-defineProps(["startsIn", "color"]);
+defineProps<{
+  startsIn: number;
+  color: string;
+}>();
 </script>
+
 <style scoped>
 #getReady {
   flex-direction: column;

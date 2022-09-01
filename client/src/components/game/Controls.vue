@@ -41,7 +41,9 @@
 import { onMounted, onUnmounted } from "@vue/runtime-core";
 import { WebSocketHandler } from "../../ws";
 import { AudioHandler } from "../../audio";
-defineProps(["color"]);
+defineProps<{
+  color: string;
+}>();
 
 const bindings = {
   ArrowLeft: [onLeftPress, onLeftRelease],
