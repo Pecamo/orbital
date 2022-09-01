@@ -10,7 +10,8 @@
       @click="AudioHandler.play('confirm')"
       >Join a game</RouterLink
     >
-    <DynamicButton>Hello</DynamicButton>
+    <DynamicButton variant="primary">Primary</DynamicButton>
+    <DynamicButton variant="simple">Simple</DynamicButton>
     <RouterLink to="/settings" class="button mini" id="changeOptionsButton"
       >Change game settings</RouterLink
     >

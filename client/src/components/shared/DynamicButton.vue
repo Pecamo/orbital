@@ -1,14 +1,28 @@
 <template>
-  <div class="dynamic-button">
+  <button class="dynamic-button" @click="onclick">
     <div class="text"><slot /></div>
     <div class="animated-squares">
       <animated-squares color="var(--rocket-blue)"></animated-squares>
     </div>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">
+import { AudioHandler } from "@/audio";
 import AnimatedSquares from "../dynamicAssets/AnimatedSquares.vue";
+
+type Variant = "primary" | "simple";
+const props = defineProps<{
+  variant: Variant;
+}>();
+
+function onclick() {
+  if (props.variant === "primary") {
+    AudioHandler.play("confirm");
+  } else {
+    AudioHandler.play("button");
+  }
+}
 </script>
 
 <style scoped>
@@ -16,6 +30,8 @@ import AnimatedSquares from "../dynamicAssets/AnimatedSquares.vue";
   position: relative;
   background-color: black;
   cursor: pointer;
+  border: 2px solid var(--base-color-fg);
+  color: var(--base-color-fg);
 }
 
 .text {
