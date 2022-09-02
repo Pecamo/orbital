@@ -1,15 +1,12 @@
 <template>
-  <div class="scene" id="spectate">
-    <div class="scene" id="spectate">
-      <div class="background"></div>
-      <canvas id="spectateCanvas" width="600" height="600"></canvas>
-      <div id="spectateResult"></div>
-    </div>
+  <div id="spectate">
+    <div class="background"></div>
+    <canvas id="spectateCanvas" width="600" height="600"></canvas>
+    <div id="spectateResult"></div>
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 #spectate {

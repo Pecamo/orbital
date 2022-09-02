@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="game-over">
+  <div id="game-over">
     <div class="background"></div>
     <p style="color: var(--base-color-bg)">
       {{ isWon ? "CONGRATULATIONS" : "SO SAD" }}

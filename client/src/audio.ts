@@ -18,7 +18,6 @@ export const AudioHandler = {
 
   audioObjects: {} as { [key in AudioName]: HTMLAudioElement },
   play: (name: AudioName) => {
-    console.log("Play", name);
     AudioHandler.audioObjects[name].play();
   },
 };

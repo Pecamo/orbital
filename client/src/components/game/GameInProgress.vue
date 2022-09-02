@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="game-in-progress">
+  <div id="game-in-progress">
     <div class="background"></div>
     <p>A game is already in progress</p>
     <button class="button" id="backButton" @click="backClicked">Back</button>

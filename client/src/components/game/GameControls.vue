@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="play">
+  <div id="play">
     <div class="background"></div>
     <button
       class="left button"

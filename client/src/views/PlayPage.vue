@@ -1,6 +1,6 @@
 <template>
   <div>
-    <wait v-show="currentState === States.WAIT"></wait>
+    <wait-for-game v-show="currentState === States.WAIT"></wait-for-game>
     <game-in-progress
       v-show="currentState === States.GAME_IN_PROGRESS"
     ></game-in-progress>
@@ -9,7 +9,10 @@
       :startsIn="startsIn"
       :color="color"
     ></get-ready>
-    <controls v-if="currentState === States.PLAY" :color="color"></controls>
+    <game-controls
+      v-if="currentState === States.PLAY"
+      :color="color"
+    ></game-controls>
     <game-over
       v-show="currentState === States.GAME_OVER"
       :isWon="isWon"
@@ -18,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import Wait from "@/components/game/Wait.vue";
+import WaitForGame from "@/components/game/WaitForGame.vue";
 import GameInProgress from "@/components/game/GameInProgress.vue";
 import GetReady from "@/components/game/GetReady.vue";
-import Controls from "@/components/game/Controls.vue";
+import GameControls from "@/components/game/GameControls.vue";
 import GameOver from "@/components/game/GameOver.vue";
 
 import { onMounted, onUnmounted } from "@vue/runtime-core";

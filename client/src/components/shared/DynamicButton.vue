@@ -1,8 +1,12 @@
 <template>
-  <button class="dynamic-button" @click="onclick">
+  <button
+    class="dynamic-button"
+    :class="[variant, { square: square }]"
+    @click="onclick"
+  >
     <div class="text"><slot /></div>
     <div class="animated-squares">
-      <animated-squares color="var(--rocket-blue)"></animated-squares>
+      <animated-squares :color="getColor()"></animated-squares>
     </div>
   </button>
 </template>
@@ -11,9 +15,16 @@
 import { AudioHandler } from "@/audio";
 import AnimatedSquares from "../dynamicAssets/AnimatedSquares.vue";
 
-type Variant = "primary" | "simple";
+// TODO Ability to disable buttons
+// TODO :active :focus :hover (pixel patterns?)
+
+type Variant = "primary" | "normal";
+type Color = "red" | "blue" | "yellow" | "random" | string;
 const props = defineProps<{
   variant: Variant;
+  color: Color;
+  square?: boolean;
+  disabled?: boolean;
 }>();
 
 function onclick() {
@@ -22,6 +33,25 @@ function onclick() {
   } else {
     AudioHandler.play("button");
   }
+}
+
+function getColor() {
+  switch (props.color) {
+    case "red":
+      return "var(--rocket-red)";
+    case "blue":
+      return "var(--rocket-blue)";
+    case "yellow":
+      return "var(--rocket-yellow)";
+    case "random":
+      return `var(--rocket-${getRandomColor()})`;
+    default:
+      return props.color;
+  }
+}
+
+function getRandomColor() {
+  return ["red", "blue", "yellow"][Math.floor(Math.random() * 3)];
 }
 </script>
 
@@ -39,6 +69,7 @@ function onclick() {
   z-index: 5;
   padding: 1em;
   font-size: 2em;
+  vertical-align: center;
 }
 
 .animated-squares {
@@ -48,5 +79,23 @@ function onclick() {
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.primary .text {
+  font-size: 3em;
+}
+
+.square .text {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.square::before {
+  content: "";
+  display: block;
+  float: left;
+  padding-bottom: 100%;
 }
 </style>

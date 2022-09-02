@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="getReady">
+  <div id="getReady">
     <div class="background"></div>
     <p>Waiting for eventual other players...</p>
     <p>Starting in {{ startsIn }} sec</p>

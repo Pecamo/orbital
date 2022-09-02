@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="changeGameOptions">
+  <div id="changeGameOptions">
     <div class="background"></div>
     <h1>Change Game Settings</h1>
     <div id="gameOptionsScene"></div>

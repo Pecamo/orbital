@@ -38,7 +38,6 @@ export const WebSocketHandler = {
 
       WebSocketHandler.ws.onmessage = (evt) => {
         const msg = JSON.parse(evt.data);
-        console.log(msg);
 
         if (!WebSocketHandler.subscriptions[msg.cmd]) {
           return;

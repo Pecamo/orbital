@@ -1,4 +1,7 @@
-body {
+:root {
+    --unit: min(1vw, 1vh);
+    --base-color-bg: #666666;
+    --base-color-fg: #ffffff;
     --rocket-red: rgb(204, 51, 63);
     --rocket-blue: rgb(0, 160, 176);
     --rocket-yellow: rgb(235, 182, 71);

@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="how">
+  <div id="how">
     <div class="background"></div>
     <p>How to play Orbital:</p>
     <p>

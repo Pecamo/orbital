@@ -1,71 +1,89 @@
 <template>
-  <div class="scene" id="home">
-    <div class="background"></div>
-    Welcome to
-    <div class="orbital"><img src="@/assets/logo/Orbital-white.svg" /></div>
-    <RouterLink
-      to="/play"
-      class="button"
-      id="joinButton"
-      @click="AudioHandler.play('confirm')"
-      >Join a game</RouterLink
-    >
-    <DynamicButton variant="primary">Primary</DynamicButton>
-    <DynamicButton variant="simple">Simple</DynamicButton>
-    <RouterLink to="/settings" class="button mini" id="changeOptionsButton"
-      >Change game settings</RouterLink
-    >
-    <RouterLink to="/how-to" class="button mini" id="howButton"
-      >How to play</RouterLink
-    >
-    <RouterLink to="/spectate" class="button mini" id="spectateButton"
-      >Spectate mode</RouterLink
-    >
-    <RouterLink to="/lamp" class="button mini" id="lampButton">
-      Lamp mode
+  <div class="home">
+    <div class="header full-row">
+      <div class="orbital">
+        <img src="@/assets/logo/Orbital-white.svg" />
+      </div>
+    </div>
+
+    <RouterLink to="/play" class="full-row">
+      <DynamicButton color="blue" variant="primary" class="grid-button">
+        Play
+      </DynamicButton>
+    </RouterLink>
+
+    <RouterLink to="/settings" class="perspective-button">
+      <DynamicButton color="random" variant="normal" square class="grid-button">
+        Settings
+      </DynamicButton>
+    </RouterLink>
+
+    <RouterLink to="/how-to" class="perspective-button">
+      <DynamicButton color="random" variant="normal" square class="grid-button">
+        How To
+      </DynamicButton>
+    </RouterLink>
+
+    <RouterLink to="/spectate" class="perspective-button">
+      <DynamicButton color="random" variant="normal" square class="grid-button">
+        Spectate
+      </DynamicButton>
+    </RouterLink>
+
+    <RouterLink to="/lamp" class="perspective-button">
+      <DynamicButton color="red" variant="normal" square class="grid-button">
+        Lamp
+      </DynamicButton>
     </RouterLink>
   </div>
 </template>
 
 <script setup lang="ts">
-import { AudioHandler } from "../audio";
 import DynamicButton from "../components/shared/DynamicButton.vue";
 </script>
 
 <style scoped>
-#home {
-  flex-direction: column;
+.home {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 200px));
   justify-content: center;
-  align-items: center;
+  column-gap: 5%;
+  padding: 1.5em;
+  padding-top: 0;
   font-size: 20px;
-  color: var(--base-color-fg);
+  perspective: 700px;
 }
 
-#home .button {
-  font-size: 6vw;
-  padding: 2vw;
-  margin-top: 4vh;
-  margin-bottom: 4vh;
+.perspective-button {
+  transform-origin: 0%;
+  transform: rotateY(20deg);
 }
 
-#home .button.mini {
-  font-size: 2vw;
-  margin-top: 1vh;
-  padding: 1vw;
-  margin-bottom: 2vh;
+.perspective-button:nth-child(2n) {
+  transform-origin: 100%;
+  transform: rotateY(-20deg);
 }
 
-#home .button:disabled {
-  filter: brightness(0.4);
+.header {
+  text-align: center;
 }
 
-#home .orbital {
+.full-row {
+  grid-column-end: span 2;
+}
+
+.grid-button {
+  width: 100%;
+  height: 100%;
+}
+
+.home .orbital {
   font-size: 4vw;
   margin-bottom: 2vw;
   margin-top: 4vw;
 }
 
-#home .orbital img {
+.home .orbital img {
   height: 15vh;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="scene" id="wait">
+  <div id="wait">
     <div class="background"></div>
     <p>Waiting for an opponent to connect...</p>
     <button class="button" id="cancelButton" @click="cancelClicked">
