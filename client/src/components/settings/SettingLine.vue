@@ -1,11 +1,9 @@
 <template>
   <div class="setting">
-    <label :for="setting.name">{{ setting.label }}</label>
+    <label :for="setting.name">{{ setting.name }}</label>
     <setting-input
       :name="setting.name"
-      :input-type="setting.inputType"
-      :options="setting.options"
-      :defaultValue="setting.defaultValue"
+      :option="setting.option"
     />
   </div>
 </template>

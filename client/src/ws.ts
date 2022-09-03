@@ -61,7 +61,9 @@ export const WebSocketHandler = {
     const ws = WebSocketHandler.ws;
     if (ws && ws.readyState === ws.OPEN) {
       ws.send(JSON.stringify(message));
+      return;
     }
+    throw "Tried to send JSON to closed or null websocket";
   },
 
   onJoin: () => {

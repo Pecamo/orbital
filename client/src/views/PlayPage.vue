@@ -27,10 +27,10 @@ import GetReady from "@/components/game/GetReady.vue";
 import GameControls from "@/components/game/GameControls.vue";
 import GameOver from "@/components/game/GameOver.vue";
 
-import { onMounted, onUnmounted } from "@vue/runtime-core";
-import { WebSocketHandler } from "../ws";
 import { AudioHandler } from "../audio";
 import { ref } from "@vue/reactivity";
+import {useWebsocketHandlers} from "@/utils/useWebsocket";
+import {WebSocketHandler} from "@/ws";
 
 const enum States {
   WAIT = "wait",
@@ -81,26 +81,21 @@ function onGameOverLost() {
   AudioHandler.play("defeat");
 }
 
-onMounted(async () => {
-  await WebSocketHandler.connect();
-  WebSocketHandler.subscribe("wait", onWait);
-  WebSocketHandler.subscribe("gameInProgress", onGameInProgress);
-  WebSocketHandler.subscribe("getReady", onGetReady);
-  WebSocketHandler.subscribe("play", onPlay);
-  WebSocketHandler.subscribe("won", onGameOverWon);
-  WebSocketHandler.subscribe("lost", onGameOverLost);
+function onConnected() {
   WebSocketHandler.onJoin();
-});
+}
 
-onUnmounted(() => {
-  WebSocketHandler.unsubscribe("wait", onWait);
-  WebSocketHandler.unsubscribe("gameInProgress", onGameInProgress);
-  WebSocketHandler.unsubscribe("getReady", onGetReady);
-  WebSocketHandler.unsubscribe("play", onPlay);
-  WebSocketHandler.unsubscribe("won", onGameOverWon);
-  WebSocketHandler.unsubscribe("lost", onGameOverLost);
-  WebSocketHandler.disconnect();
-});
+useWebsocketHandlers(
+  {
+    wait: onWait,
+    gameInProgress: onGameInProgress,
+    getReady: onGetReady,
+    play: onPlay,
+    won: onGameOverWon,
+    lost: onGameOverLost,
+  },
+  onConnected,
+);
 </script>
 
 <style scoped></style>

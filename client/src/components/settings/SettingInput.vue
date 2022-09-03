@@ -1,25 +1,23 @@
 <template>
-  <div v-if="inputType === 'number'">
-    <input type="number" :name="name" :value="defaultValue" />
+  <div v-if="option.type === 'boolean'">
+    <input type="checkbox" :name="name" :checked="!!option.value" />
   </div>
-  <div v-if="inputType === 'checkbox'">
-    <input type="checkbox" :name="name" :value="defaultValue" />
+  <div v-if="option.type === 'number'">
+    <input type="number" :name="name" :value="option.value" />
   </div>
-  <div v-if="inputType === 'select'">
-    <select :name="name" :value="defaultValue">
-      <option v-for="option in options" :value="option.value">{{option.label}}</option>
+  <div v-if="option.type === 'enum'">
+    <select :name="name" :value="option.value">
+      <option v-for="choice in option.options" :value="(option).default">{{choice}}</option>
     </select>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {SelectSetting, Setting} from "@/components/settings/settings.types";
+import type {Setting} from "@/components/settings/settings.types";
 
 defineProps<{
-  name: Setting
-  inputType: Setting['inputType'],
-  defaultValue: Setting['defaultValue'],
-  options?: SelectSetting['options'],
+  name: string,
+  option: Setting['option']
 }>()
 </script>
 
