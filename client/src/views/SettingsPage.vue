@@ -5,7 +5,7 @@
     <div v-if="settings.isLoading">
       Loading...
     </div>
-    <form class="settings" v-if="!settings.isLoading">
+    <form id="settings" class="settings" v-if="!settings.isLoading">
       <setting-line v-for="setting in settings.data" :setting="setting"></setting-line>
     </form>
     <button class="button" id="backButton" @click="backClicked">Back</button>
@@ -32,6 +32,7 @@ const settings: {
 });
 
 function backClicked() {
+  // TODO : Get the form values, format it and send it to the WS.
   router.replace({ path: "/" });
 }
 
