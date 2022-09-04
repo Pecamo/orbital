@@ -1,3 +1,4 @@
+import { Character } from "../game";
 import { GameOptions } from "./GameOptions";
 
 export interface BaseMessage {
@@ -35,7 +36,7 @@ export interface WriteGameOptionsMessage {
 }
 
 // Server -> Client
-export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage | SpectateDataMessage | ReadGameOptionsMessage;
+export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage | SpectateDataMessage | SpectateEndMessage | ReadGameOptionsMessage;
 
 export interface SimpleStateMessage  extends BaseMessage {
     cmd: 'welcome' | 'wait' | 'won' | 'lost' | 'gameInProgress'
@@ -44,6 +45,13 @@ export interface SimpleStateMessage  extends BaseMessage {
 export interface SpectateDataMessage extends BaseMessage {
     cmd: 'spectateData';
     data: Object;
+}
+
+export interface SpectateEndMessage extends BaseMessage {
+    cmd: 'spectateEnd';
+    data: {
+        winner: Character;
+    };
 }
 
 export interface PlayMessage {
