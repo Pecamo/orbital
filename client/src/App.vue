@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-    <RouterView class="scene" />
+    <RouterView class="view" />
     <!--div id="allBackground"></div-->
 
     <div class="credits">
@@ -40,56 +40,8 @@ const currentYear = new Date().getFullYear();
   color: white;
 }
 
-.scene {
-  width: 100%;
+.view {
   height: 100%;
-  display: flex;
-  align-items: center;
-  position: relative;
-  justify-content: space-between;
-  color: var(--base-color-fg);
-}
-
-#allBackground {
-  position: absolute;
-  width: 120%;
-  margin-left: -20%;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: space-around;
-  opacity: 0.2;
-  overflow: hidden;
-}
-
-#allBackground * {
-  overflow: hidden;
-}
-
-#allBackground .strip {
-  width: 100%;
-  height: 5vh;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  justify-content: space-around;
-  animation: slowMove 4s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-#allBackground .led {
-  height: 2.5vh;
-  width: 1.5vw;
-  background-color: var(--base-color-bg);
-  box-shadow: 0 0 10px 5px var(--base-color-bg);
-  transition: all 1s;
-}
-
-#allBackground .led:hover {
-  background-color: var(--base-color-fg);
-  box-shadow: 0 0 10px 5px var(--base-color-fg);
 }
 
 .credits {

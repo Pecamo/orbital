@@ -1,6 +1,5 @@
 <template>
-  <div id="play">
-    <div class="background"></div>
+  <div class="game-controls">
     <button
       class="left button"
       id="leftButton"
@@ -10,7 +9,7 @@
       @touchstart="onLeftPress"
       @touchend="onLeftRelease"
     >
-      <img class="img" src="@/assets/left-arrow.svg" />
+      <img src="@/assets/left-arrow.svg" />
     </button>
     <button
       class="fire button"
@@ -21,7 +20,7 @@
       @touchstart="onFirePress"
       @touchend="onFireRelease"
     >
-      <img class="img" src="@/assets/target.svg" />
+      <img src="@/assets/target.svg" />
     </button>
     <button
       class="right button"
@@ -32,7 +31,7 @@
       @touchstart="onRightPress"
       @touchend="onRightRelease"
     >
-      <img class="img" src="@/assets/right-arrow.svg" />
+      <img src="@/assets/right-arrow.svg" />
     </button>
   </div>
 </template>
@@ -109,25 +108,54 @@ function onFireRelease() {
 </script>
 
 <style scoped>
-#play .button {
+.game-controls {
+  display: grid;
+  height: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  grid-template-areas: "l c r";
+}
+
+@media screen and (orientation: portrait) {
+  .game-controls {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr minmax(0, 2fr);
+    grid-template-areas:
+      "l r"
+      "c c";
+  }
+}
+
+.game-controls .button {
   background-color: var(--base-color-bg);
   color: var(--base-color-fg);
   justify-content: center;
   align-items: center;
-  font-size: 20vw;
-  flex-grow: 1;
-  height: 100%;
   border: 0;
-  max-width: 32%;
-  max-height: 98%;
   fill: white;
+  justify-content: center;
+  align-items: center;
 }
 
-#play .button:active {
+.game-controls .button:active {
   filter: contrast(0.5);
 }
 
+.game-controls .button img {
+  pointer-events: none;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.left {
+  grid-area: l;
+}
+
+.right {
+  grid-area: r;
+}
+
 .fire {
-  font-size: 25vw;
+  grid-area: c;
 }
 </style>

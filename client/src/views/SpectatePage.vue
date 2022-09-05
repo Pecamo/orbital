@@ -3,7 +3,7 @@
     <canvas ref="spectateCanvas" width="600" height="600"></canvas>
     <div class="end-message" v-show="color">
       Player
-      <span class="color-square" :style="{ 'background-color': color }"></span>
+      <span class="color-square" :style="{ 'background-color': color! }"></span>
       won the game!
     </div>
   </div>
@@ -14,7 +14,7 @@ import { WebSocketHandler } from "@/ws";
 import { onMounted, ref } from "vue";
 
 const spectateCanvas = ref(null);
-const color = ref<string>(null);
+const color = ref<string | null>(null);
 
 onMounted(async () => {
   await WebSocketHandler.connect();
@@ -26,11 +26,12 @@ onMounted(async () => {
 function onSpectateEnd(data) {
   const c = data.data.winner.color;
   color.value = `rgb(${c.r}, ${c.g}, ${c.b})`;
-  console.log(color.value);
 }
 
 function onSpectateData(data) {
   data = data.data;
+  color.value = null;
+
   if (!spectateCanvas.value) {
     return;
   }
@@ -108,6 +109,8 @@ function onSpectateData(data) {
 
 <style scoped>
 #spectate {
+  display: flex;
+  height: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
