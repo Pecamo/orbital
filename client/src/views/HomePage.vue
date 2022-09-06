@@ -45,8 +45,10 @@ import DynamicButton from "../components/shared/DynamicButton.vue";
 <style scoped>
 .home {
   display: grid;
+  height: 100%;
   grid-template-columns: repeat(2, minmax(0, 200px));
   justify-content: center;
+  align-items: center;
   column-gap: 5%;
   padding: 1.5em;
   padding-top: 0;
