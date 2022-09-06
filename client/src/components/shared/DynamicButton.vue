@@ -6,7 +6,7 @@
   >
     <div class="text"><slot /></div>
     <div class="animated-squares">
-      <animated-squares :color="getColor()"></animated-squares>
+      <AnimatedSquares :color="getColor()"></AnimatedSquares>
     </div>
   </button>
 </template>

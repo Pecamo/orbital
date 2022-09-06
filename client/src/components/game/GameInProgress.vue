@@ -1,13 +1,15 @@
 <template>
-  <div id="game-in-progress">
-    <div class="background"></div>
+  <div class="simple-view">
     <p>A game is already in progress</p>
-    <button class="button" id="backButton" @click="backClicked">Back</button>
+    <DynamicButton color="red" variant="normal" @click="backClicked">
+      Back
+    </DynamicButton>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import DynamicButton from "../shared/DynamicButton.vue";
 
 const router = useRouter();
 
@@ -17,16 +19,4 @@ function backClicked() {
 </script>
 
 <style scoped>
-#game-in-progress {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#game-in-progress .button {
-  font-size: 3vw;
-  padding: 1vw;
-  margin-top: 6vh;
-  margin-bottom: 6vh;
-}
 </style>

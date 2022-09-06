@@ -1,6 +1,5 @@
 <template>
-  <div id="getReady">
-    <div class="background"></div>
+  <div class="simple-view">
     <p>Waiting for eventual other players...</p>
     <p>Starting in {{ startsIn }} sec</p>
     <p
@@ -20,9 +19,4 @@ defineProps<{
 </script>
 
 <style scoped>
-#getReady {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 </style>

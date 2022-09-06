@@ -26,6 +26,7 @@ const currentYear = new Date().getFullYear();
 
 <style>
 @import "@/assets/base.css";
+@import "@/assets/shared.css";
 @import "@/assets/variables.css";
 
 #app {

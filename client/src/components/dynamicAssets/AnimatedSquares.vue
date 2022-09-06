@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { reactive } from "@vue/reactivity";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUpdated } from "vue";
 
 const nbSquares = ref(0);
 const squares: { time: string; delay: string }[] = reactive([]);
@@ -24,7 +24,7 @@ defineProps<{
   color: string;
 }>();
 
-onMounted(() => {
+function init() {
   if (!animatedSquaresElement.value) {
     return;
   }
@@ -34,6 +34,14 @@ onMounted(() => {
   nbSquares.value = Math.ceil((width * height) / (15 * 15));
 
   setRandomOpacities();
+}
+
+onMounted(() => {
+  init();
+});
+
+onUpdated(() => {
+  init();
 });
 
 function setRandomOpacities() {

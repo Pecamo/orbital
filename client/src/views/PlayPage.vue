@@ -1,22 +1,22 @@
 <template>
   <div>
-    <wait-for-game v-show="currentState === States.WAIT"></wait-for-game>
-    <game-in-progress
-      v-show="currentState === States.GAME_IN_PROGRESS"
-    ></game-in-progress>
-    <get-ready
-      v-show="currentState === States.GET_READY"
+    <WaitForGame v-show="currentState === States.WAIT"></WaitForGame>
+    <GameInProgress
+      v-if="currentState === States.GAME_IN_PROGRESS"
+    ></GameInProgress>
+    <GetReady
+      v-if="currentState === States.GET_READY"
       :startsIn="startsIn"
       :color="color"
-    ></get-ready>
-    <game-controls
+    ></GetReady>
+    <GameControls
       v-if="currentState === States.PLAY"
       :color="color"
-    ></game-controls>
-    <game-over
-      v-show="currentState === States.GAME_OVER"
+    ></GameControls>
+    <GameOver
+      v-if="currentState === States.GAME_OVER"
       :isWon="isWon"
-    ></game-over>
+    ></GameOver>
   </div>
 </template>
 

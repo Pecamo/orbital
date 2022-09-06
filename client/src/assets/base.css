@@ -50,17 +50,6 @@ h1 {
   justify-content: center;
 }
 
-.background {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #000000;
-  transition: 1s all;
-  position: absolute;
-  z-index: -1;
-}
-
 .button {
   font-family: Montserrat, sans-serif;
   color: var(--base-color-fg);

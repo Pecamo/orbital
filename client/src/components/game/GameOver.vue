@@ -1,16 +1,18 @@
 <template>
-  <div id="game-over">
-    <div class="background"></div>
+  <div class="simple-view">
     <p style="color: var(--base-color-bg)">
       {{ isWon ? "CONGRATULATIONS" : "SO SAD" }}
     </p>
     <p>{{ isWon ? "You won!" : "You lost!" }}</p>
-    <button class="button retry" @click="playAgainClicked">Play again</button>
+    <DynamicButton color="blue" variant="normal" @click="playAgainClicked">
+      Play again
+    </DynamicButton>
   </div>
 </template>
 
 <script setup lang="ts">
 import { WebSocketHandler } from "../../ws";
+import DynamicButton from "../shared/DynamicButton.vue";
 
 defineProps<{
   isWon: boolean;
@@ -22,13 +24,4 @@ function playAgainClicked() {
 </script>
 
 <style scoped>
-#wait,
-#getReady,
-#game-over,
-#gameInProgress,
-#spectate {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 </style>
