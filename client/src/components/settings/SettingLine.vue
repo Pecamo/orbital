@@ -4,6 +4,7 @@
     <setting-input
       :name="setting.name"
       :option="setting.option"
+      @setValue="setValueCallback"
     />
   </div>
 </template>
@@ -12,9 +13,17 @@
 import type {Setting} from "@/components/settings/settings.types";
 import SettingInput from "@/components/settings/SettingInput.vue";
 
+const emits = defineEmits(["setValue"]);
+
+const setValueCallback = (...args: any) => {
+  emits("setValue", ...args);
+}
+
 defineProps<{
   setting: Setting,
+  data: any,
 }>()
+
 </script>
 
 <style scoped>

@@ -5,10 +5,16 @@
     <div v-if="settings.isLoading">
       Loading...
     </div>
-    <form id="settings" class="settings" v-if="!settings.isLoading">
-      <setting-line v-for="setting in settings.data" :setting="setting"></setting-line>
+    <form id="settings" class="settings" v-if="!settings.isLoading" ref="formRef">
+      <setting-line
+        v-for="setting in settings.data"
+        :setting="setting"
+        :data="formData"
+        @setValue="setValue"
+      ></setting-line>
     </form>
     <button class="button" id="backButton" @click="backClicked">Back</button>
+    <button class="button" id="saveButton" @click="saveClicked">Save</button>
   </div>
 </template>
 
@@ -31,8 +37,27 @@ const settings: {
   data: {},
 });
 
+const formData: {[key: string]: any} = {};
+
+const setValue = (key: string, value: any) => {
+  formData[key] = value;
+}
+
+function saveClicked() {
+  console.log('data', formData);
+  const data: {[key:string]: {value: any}} = {};
+  Object.entries(formData).forEach(([key, value]) => {
+    data[key] = {value}
+    console.log('key, value', key, value);
+  });
+  const message = {
+    cmd: "writeGameOptions",
+    data,
+  };
+  WebSocketHandler.sendJSON(message);
+}
+
 function backClicked() {
-  // TODO : Get the form values, format it and send it to the WS.
   router.replace({ path: "/" });
 }
 
