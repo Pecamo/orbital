@@ -17,7 +17,7 @@ import Strobe2Animation from './strobe2';
 import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
-import RainbowSlidingWindowAnimation from './rainboxSlidingWindow';
+import RainbowSlidingWindowAnimation from './rainbowSlidingWindow';
 import FlashingApertureAnimation from './flashingAperture';
 import BlueFireAnimation from './blueFire';
 import FlashingSegmentsAnimation from './flashingSegments';
