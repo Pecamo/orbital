@@ -32,10 +32,10 @@ type Option = NumberOption | ColorOption | SelectOption;
 
 type Unpacked<T> = T extends Array<{value: infer U}> ? Array<U> : T;
 
-type TypeOfOptions<T extends Array<Option>> = Array<Unpacked<Option>>;
+// type TypeOfOptions<T extends Array<Option>> = Array<Unpacked<Option>>;
 
 export interface LampAnimation<T extends Array<Option> = Array<Option>> {
     name: string;
     options: T;
-    animate(t: number, display: Display, options: TypeOfOptions<T>): void;
+    animate(t: number, display: Display, options: TypeOfOption<any>[]): void;
 }

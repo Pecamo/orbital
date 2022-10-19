@@ -22,6 +22,7 @@ import FlashingApertureAnimation from './flashingAperture';
 import BlueFireAnimation from './blueFire';
 import FlashingSegmentsAnimation from './flashingSegments';
 import ParticleWaveAnimation from "./particleWave";
+import { LampAnimation } from '../types/LampAnimation';
 
 export const lamp = express();
 
@@ -32,7 +33,7 @@ export function initLamp() {
     const LAMP_FPS: number = env.LAMP_FPS;
     let TOP_LED_NB: number = env.TOP_LED_NB;
 
-    const animations = [
+    const animations: LampAnimation[] = [
         new NoneAnimation(),
         new StarsAnimation(120),
         new FireAnimation(false),
@@ -64,9 +65,26 @@ export function initLamp() {
 
     // Hacky: we need to send index.html because Vue manages routes
     lamp.get('/', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'static', 'index.html'));;
+        res.sendFile(path.join(__dirname, '..', '..', 'static', 'index.html'));
     });
 
+    lamp.get('/options/:animationName', (req, res) => {
+        const animationName = req.params.animationName;
+        const animation = animations.find(a => a.name === animationName);
+        if (animation) {
+            const options = animation.options;
+            res.send({ options });
+        } else {
+            res.sendStatus(404);
+        }
+    });
+
+    lamp.post('/options', (req, res) => {
+        const options = req.body;
+        res.send("OK");
+    });
+
+    // TODO Deprecate
     lamp.post('/colors', (req, res) => {
         const colors = req.body;
         currentColors = colors.map(color => {
@@ -102,6 +120,7 @@ export function initLamp() {
         res.send("OK");
     });
 
+    // TODO Deprecate
     lamp.post('/set-top-led', (req, res) => {
         TOP_LED_NB = req.body.topLedNb;
         res.send("OK");
