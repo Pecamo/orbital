@@ -18,7 +18,7 @@
       :name="name"
       :value="option.value"
       @change="onChangeValue">
-      <option v-for="choice in option.options" :value="(option).default">{{choice}}</option>
+      <option v-for="choice in option.options" :value="choice">{{choice}}</option>
     </select>
   </div>
 </template>
