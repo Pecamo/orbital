@@ -32,7 +32,7 @@ export interface QueryGameOptionsMessage {
 
 export interface WriteGameOptionsMessage {
     cmd: 'writeGameOptions';
-    data: GameOptions;
+    data: {[key in keyof GameOptions]: { value: any }};
 }
 
 // Server -> Client

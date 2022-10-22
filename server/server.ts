@@ -319,8 +319,12 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'writeGameOptions': {
-            // TODO we may want to validate this
-            gameOptions = msg.data;
+            Object.entries(msg.data).forEach(([optionName, optionValue]) => {
+                if (Object.keys(gameOptions).includes(optionName)) {
+                    gameOptions[optionName].value = optionValue.value;
+                }
+            });
+            
             break;
         }
         default: {
