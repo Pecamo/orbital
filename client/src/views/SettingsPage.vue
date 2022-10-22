@@ -44,11 +44,9 @@ const setValue = (key: string, value: any) => {
 }
 
 function saveClicked() {
-  console.log('data', formData);
   const data: {[key:string]: {value: any}} = {};
   Object.entries(formData).forEach(([key, value]) => {
     data[key] = {value}
-    console.log('key, value', key, value);
   });
   const message = {
     cmd: "writeGameOptions",

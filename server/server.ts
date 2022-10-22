@@ -319,17 +319,12 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'writeGameOptions': {
-            console.log('gameOptions', gameOptions);
-
             Object.entries(msg.data).forEach(([optionName, optionValue]) => {
                 if (Object.keys(gameOptions).includes(optionName)) {
-                    console.log('optionName', optionName);
                     gameOptions[optionName].value = optionValue.value;
                 }
             });
-
-            console.log('gameOptions', gameOptions);
-
+            
             break;
         }
         default: {
