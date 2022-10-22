@@ -1,5 +1,8 @@
 <template>
-  <div class="animated-squares" ref="animatedSquaresElement">
+  <div
+    class="animated-squares"
+    ref="animatedSquaresElement"
+  >
     <div
       v-for="(square, k) in squares"
       :key="k"
@@ -14,8 +17,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { onViewportSizeChange } from "@/utils/useViewportSize";
 import { reactive } from "@vue/reactivity";
-import { ref, onMounted, onUpdated } from "vue";
 
 const nbSquares = ref(0);
 const squares: { time: string; delay: string }[] = reactive([]);
@@ -40,9 +44,9 @@ onMounted(() => {
   init();
 });
 
-onUpdated(() => {
+onViewportSizeChange(() => {
   init();
-});
+})
 
 function setRandomOpacities() {
   for (let i = 0; i < nbSquares.value; i++) {
