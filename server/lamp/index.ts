@@ -2,11 +2,12 @@ import * as path from 'path';
 import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
+import { Characteristic, Option } from '../types/LampAnimation';
 import { HtmlColors } from '../htmlColors';
 import * as env from '../env';
-import StarsAnimation from "./stars";
 import cors from 'cors';
 
+import StarsAnimation from "./stars";
 import FireAnimation from './fire';
 import OldSchoolSegmentsAnimation from './oldSchoolSegments';
 import GameOfLifeAnimation from './gameOfLife';
@@ -31,7 +32,7 @@ lamp.use(express.json());
 
 export function initLamp() {
     const LAMP_FPS: number = env.LAMP_FPS;
-    let TOP_LED_NB: number = env.TOP_LED_NB;
+    let TOP_LED_NB: number = env.TOP_LED_NB; // TODO Handle properly
 
     const animations: LampAnimation[] = [
         new NoneAnimation(),
@@ -61,7 +62,7 @@ export function initLamp() {
 
     let isLampRunning = false;
     let lampShouldStop = false;
-    let currentColors: Color[] = [];
+    const currentCharacteristics: { [key: string]: Characteristic[] } = {};
 
     // Hacky: we need to send index.html because Vue manages routes
     lamp.get('/', (req, res) => {
@@ -79,20 +80,9 @@ export function initLamp() {
         }
     });
 
-    lamp.post('/options', (req, res) => {
-        const options = req.body;
-        res.send("OK");
-    });
-
-    // TODO Deprecate
-    lamp.post('/colors', (req, res) => {
-        const colors = req.body;
-        currentColors = colors.map(color => {
-            const { r, g, b, w } = color;
-            return new Color(r, g, b, w);
-        });
-
-        startLamp();
+    // TODO implement
+    lamp.post('/characteristics', (req, res) => {
+        const characteristics: Characteristic[] = req.body;
         res.send("OK");
     });
 
@@ -120,21 +110,6 @@ export function initLamp() {
         res.send("OK");
     });
 
-    // TODO Deprecate
-    lamp.post('/set-top-led', (req, res) => {
-        TOP_LED_NB = req.body.topLedNb;
-        res.send("OK");
-    });
-
-    // Getter to avoid trying to read an undefined value
-    function getColor(i): Color {
-        if (i < currentColors.length) {
-            return currentColors[i];
-        } else {
-            return HtmlColors.black;
-        }
-    }
-
     function startLamp() {
         if (!isLampRunning && state === State.IDLE) {
             isLampRunning = true;
@@ -146,9 +121,13 @@ export function initLamp() {
             const tickStart = Date.now();
 
             // Get the current animation
-            const animation = animationStore[currentAnimation];
-            const options = [getColor(0), getColor(1), TOP_LED_NB];
-            animation.animate(t, display, options);
+            const animation: LampAnimation = animationStore[currentAnimation];
+            if (!currentCharacteristics[animation.name]) {
+                currentCharacteristics[animation.name] = animation.options.map(o => o.default);
+            }
+            const characteristics = currentCharacteristics[animation.name];
+
+            animation.animate(t, display, characteristics);
 
             // Loop timing, keep at the end
             if (state === State.IDLE && !lampShouldStop) {

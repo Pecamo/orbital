@@ -28,7 +28,9 @@ export type SelectOption = {
 
 type TypeOfOption<O extends Option> = O['default'];
 
-type Option = NumberOption | ColorOption | SelectOption;
+export type Option = NumberOption | ColorOption | SelectOption;
+
+export type Characteristic = any;
 
 type Unpacked<T> = T extends Array<{value: infer U}> ? Array<U> : T;
 
@@ -37,5 +39,5 @@ type Unpacked<T> = T extends Array<{value: infer U}> ? Array<U> : T;
 export interface LampAnimation<T extends Array<Option> = Array<Option>> {
     name: string;
     options: T;
-    animate(t: number, display: Display, options: TypeOfOption<any>[]): void;
+    animate(t: number, display: Display, characteristics: Characteristic[]): void;
 }

@@ -1,7 +1,8 @@
 import { LAMP_FPS } from "../env";
 import { NB_LED } from '../NB_LED';
-import { ColorOption, LampAnimation } from "../types/LampAnimation";
+import { Characteristic, ColorOption, LampAnimation } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
+import { Display } from "../display";
 
 export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
     public name = "Game of Life";
@@ -13,9 +14,9 @@ export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]>
 
     }
 
-    public animate(t, display, options): void {
+    public animate(t: number, display: Display, characteristics: Characteristic[]) {
         const speed = LAMP_FPS / 6;
-        const [color] = options;
+        const [color] = characteristics;
 
         // init
         if (this.cells.length === 0) {
