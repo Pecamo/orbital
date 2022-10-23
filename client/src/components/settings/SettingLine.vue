@@ -30,6 +30,6 @@ defineProps<{
 }
 
 label {
-  font-size: 2em;
+  font-size: calc(5 * var(--unit));
 }
 </style>

@@ -109,6 +109,7 @@ useWebsocketHandlers({
 h1 {
   margin-top: 1em;
   margin-bottom: 1em;
+  font-size: calc(7 * var(--unit));
 }
 
 .buttons {
