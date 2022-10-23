@@ -13,19 +13,19 @@
     </RouterLink>
 
     <RouterLink to="/settings" class="perspective-button">
-      <DynamicButton color="random" variant="normal" square class="grid-button">
+      <DynamicButton color="blue" variant="normal" square class="grid-button">
         Settings
       </DynamicButton>
     </RouterLink>
 
     <RouterLink to="/how-to" class="perspective-button">
-      <DynamicButton color="random" variant="normal" square class="grid-button">
+      <DynamicButton color="yellow" variant="normal" square class="grid-button">
         How To
       </DynamicButton>
     </RouterLink>
 
     <RouterLink to="/spectate" class="perspective-button">
-      <DynamicButton color="random" variant="normal" square class="grid-button">
+      <DynamicButton color="yellow" variant="normal" square class="grid-button">
         Spectate
       </DynamicButton>
     </RouterLink>

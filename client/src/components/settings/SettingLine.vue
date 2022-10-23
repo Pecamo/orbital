@@ -1,12 +1,10 @@
 <template>
-  <div class="setting">
-    <label :for="setting.name">{{ setting.name }}</label>
-    <setting-input
-      :name="setting.name"
-      :option="setting.option"
-      @setValue="setValueCallback"
-    />
-  </div>
+  <label :for="setting.name">{{ setting.name }}</label>
+  <setting-input
+    :name="setting.name"
+    :option="setting.option"
+    @setValue="setValueCallback"
+  />
 </template>
 
 <script setup lang="ts">
@@ -28,8 +26,10 @@ defineProps<{
 
 <style scoped>
 .setting {
-  width: 100%;
   display: flex;
-  justify-content: space-between;
+}
+
+label {
+  font-size: 2em;
 }
 </style>

@@ -4,7 +4,12 @@
     :class="[variant, { square: square }]"
     @click="onclick"
   >
-    <div class="text"><slot /></div>
+    <div class="text">
+      <div class="">
+        <slot />
+      </div>
+    </div>
+
     <div class="animated-squares">
       <AnimatedSquares :color="getColor()"></AnimatedSquares>
     </div>
@@ -66,10 +71,21 @@ function getRandomColor() {
 
 .text {
   position: relative;
-  z-index: 5;
+  z-index: 1;
   padding: 1em;
   font-size: 2em;
-  vertical-align: center;
+  font-family: "Montserrat";
+  font-weight: bold;
+}
+
+.square .text {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .animated-squares {
@@ -83,13 +99,6 @@ function getRandomColor() {
 
 .primary .text {
   font-size: 3em;
-}
-
-.square .text {
-  position: absolute;
-  width: 100%;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .square::before {

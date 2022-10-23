@@ -13,8 +13,14 @@
         @setValue="setValue"
       ></setting-line>
     </form>
-    <button class="button" id="backButton" @click="backClicked">Back</button>
-    <button class="button" id="saveButton" @click="saveClicked">Save</button>
+    <div class="buttons">
+      <DynamicButton color="blue" id="saveButton" variant="normal" @click="saveClicked">
+        Save
+      </DynamicButton>
+      <DynamicButton color="red" id="backButton" variant="normal" @click="backClicked">
+        Discard
+      </DynamicButton>
+    </div>
   </div>
 </template>
 
@@ -24,6 +30,7 @@ import SettingLine from "@/components/settings/SettingLine.vue";
 import {useWebsocketHandlers} from "@/utils/useWebsocket";
 import {WebSocketHandler} from "@/ws";
 import {reactive} from "@vue/reactivity";
+import DynamicButton from "../components/shared/DynamicButton.vue";
 import type {GameOptions} from "../../../server/types/GameOptions";
 import type {Setting} from "@/components/settings/settings.types";
 
@@ -53,6 +60,7 @@ function saveClicked() {
     data,
   };
   WebSocketHandler.sendJSON(message);
+  router.replace({ path: "/" });
 }
 
 function backClicked() {
@@ -87,5 +95,25 @@ useWebsocketHandlers({
   align-items: center;
   font-size: 20px;
   color: var(--base-color-fg);
+}
+
+.settings {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  align-items: center;
+  row-gap: 1em;
+  font-size: 20px;
+}
+
+h1 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.buttons {
+  margin-top: 2em;
+  display: flex;
+  justify-content: space-evenly;
 }
 </style>

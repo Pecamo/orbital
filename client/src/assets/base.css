@@ -78,7 +78,6 @@ input[type="radio"] {
 input[type="number"] {
   font-size: 2vw;
   text-align: right;
-  max-width: 5vw;
 }
 
 label {
