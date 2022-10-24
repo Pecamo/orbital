@@ -2,7 +2,7 @@ import * as path from 'path';
 import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
-import { Characteristic, Option } from '../types/LampAnimation';
+import { Characteristic, NumberCharacteristic, Option, SelectCharacteristic, SmartColor, SmartColorCharacteristic } from '../types/LampAnimation';
 import { HtmlColors } from '../htmlColors';
 import * as env from '../env';
 import cors from 'cors';
@@ -54,7 +54,7 @@ export function initLamp() {
         new ParticleWaveAnimation(),
     ];
 
-    const animationStore = {};
+    const animationStore: { [key: string]: LampAnimation } = {};
     for (const animation of animations) {
         animationStore[animation.name] = animation;
     }
@@ -71,18 +71,43 @@ export function initLamp() {
 
     lamp.get('/options/:animationName', (req, res) => {
         const animationName = req.params.animationName;
+        if (animationName.toLowerCase() === "off") {
+            return res.send({ options: [] });
+        }
+
         const animation = animations.find(a => a.name === animationName);
         if (animation) {
             const options = animation.options;
+
+            // We set the default value to the current one to sync clients
+            if (currentCharacteristics[animationName]) {
+                for (let i = 0; i < options.length; i++) {
+                    options[i].currentCharacteristicValue = currentCharacteristics[animationName][i].value;
+                }
+            }
+
             res.send({ options });
         } else {
             res.sendStatus(404);
         }
     });
 
-    // TODO implement
     lamp.post('/characteristics', (req, res) => {
         const characteristics: Characteristic[] = req.body;
+        characteristics
+            .forEach(c => {
+                if (c.type === "color") {
+                    if (c.value.type === "static") {
+                        c.value.color = Color.fromObject(c.value.color);
+                    } else if (c.value.type === "gradient") {
+                        c.value.parameters.colorFrom = Color.fromObject(c.value.parameters.colorFrom);
+                        c.value.parameters.colorTo = Color.fromObject(c.value.parameters.colorTo);
+                    }
+                }
+            });
+        currentCharacteristics[currentAnimation] = characteristics;
+
+        startLamp();
         res.send("OK");
     });
 
@@ -123,11 +148,40 @@ export function initLamp() {
             // Get the current animation
             const animation: LampAnimation = animationStore[currentAnimation];
             if (!currentCharacteristics[animation.name]) {
-                currentCharacteristics[animation.name] = animation.options.map(o => o.default);
+                currentCharacteristics[animation.name] = animation.options.map(o => {
+                    let characteristic: Characteristic;
+                    if (o.type === "color") {
+                        characteristic = { type: "color", value: { type: "static", color: o.default } };
+                    } else if (o.type === "number") {
+                        characteristic = { type: "number", value: o.default };
+                    } else if (o.type === "select") {
+                        characteristic = { type: "select", value: o.default };
+                    }
+
+                    return characteristic;
+                });
             }
+
             const characteristics = currentCharacteristics[animation.name];
 
-            animation.animate(t, display, characteristics);
+            const parameters = characteristics.map(c => {
+                switch (c.type) {
+                    case "number":
+                        return c.value;
+                    case "select":
+                        return c.value;
+                    case "color":
+                        if (c.value.type === "static") {
+                            return c.value.color;
+                        } else if (c.value.type === "gradient") {
+                            return c.value.parameters.colorFrom; // TODO
+                        } else if (c.value.type === "rainbow") {
+                            return new Color(0, 0, 255, 0); // TODO
+                        }
+                }
+            });
+
+            animation.animate(t, display, parameters);
 
             // Loop timing, keep at the end
             if (state === State.IDLE && !lampShouldStop) {

@@ -21,7 +21,7 @@ export class Display {
             this.nextFrame.reverse();
         }
 
-        this.nextFrame.forEach(color => color.safe());
+        this.nextFrame.forEach(color => color?.safe());
 
         this.displayApi.set(this.nextFrame);
 

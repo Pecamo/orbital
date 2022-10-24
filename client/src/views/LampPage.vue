@@ -20,52 +20,49 @@
         </option>
       </select>
     </div>
-    <div class="line">
-      <label>Color 1</label>
+    <div v-for="option, i in options.array" :key="option.name" class="line">
+      <label>{{ option.name }}</label>
       <div>
+        <smart-color-picker
+          v-if="option.type === 'color'"
+          :smartColor="(characteristics.array[i].value as SmartColor)"
+          @smartColorUpdate="smartColor => onSmartColorUpdate(smartColor, i)"
+        ></smart-color-picker>
         <input
-          v-model="currentConfig.hexColors[0]"
-          @change="onNewColor"
-          type="color"
-          class="color-picker"
-        />
-      </div>
-    </div>
-    <div class="line">
-      <label>Color 2</label>
-      <div>
-        <input
-          v-model="currentConfig.hexColors[1]"
-          @change="onNewColor"
-          type="color"
-          class="color-picker"
-        />
-      </div>
-    </div>
-    <div class="line">
-      <label>Top Led Number</label>
-      <div>
-        <input
-          v-model="currentConfig.topLedNb"
-          @change="onNewTopLed"
+          v-if="option.type === 'number'"
+          v-model="characteristics.array[i].value"
           type="number"
-          class="top-led-number"
-          min="0"
-          step="1"
+          :min="option.min"
+          :max="option.max"
+          :step="option.step"
         />
+        <select
+          v-if="option.type === 'select'"
+          v-model="characteristics.array[i].value"
+        >
+          <option
+            v-for="opt in option.options"
+            :key="opt.label"
+            :value="opt.optionValue"
+          >
+            {{ opt.label }}
+          </option>
+        </select>
       </div>
     </div>
+    <dynamic-button @click="onSave" variant="primary" color="blue">Save</dynamic-button>
   </div>
 </template>
 
 <script setup lang="ts">
+import DynamicButton from "../components/shared/DynamicButton.vue";
+import SmartColorPicker from "../components/shared/SmartColorPicker.vue";
 import { axiosInstance } from "../axios-common";
 import { Color } from "../../../server/color";
+import type { OptionWithCurrentCharacteristic, Characteristic, StaticColor, SmartGradientColor, SmartRainbowColor, SmartColor } from "../../../server/types/LampAnimation";
 import { reactive } from "@vue/reactivity";
 
 const currentConfig = reactive({
-  // TODO fetch current color
-  hexColors: ["#000000", "#000000"] as string[],
   selectedAnimation: "None",
   // TODO Query from server
   animationOptions: [
@@ -91,28 +88,44 @@ const currentConfig = reactive({
   topLedNb: 0,
 });
 
-const colors = reactive({
-  get(): Color[] {
-    return currentConfig.hexColors.map((hex: string) => Color.fromHex(hex));
-  },
-  set(colors: Color[]) {
-    currentConfig.hexColors = colors.map((c) => Color.toHex(c));
-  },
-});
+const characteristics: { array: Characteristic[] } = reactive({ array: [] });
+const options: { array: OptionWithCurrentCharacteristic[] } = reactive({ array: [] });
 
-// Color Picker
-function onNewColor() {
-  axiosInstance.post("/lamp/colors", colors);
+function onSmartColorUpdate(smartColor: SmartColor, i: number) {
+  characteristics.array[i].value = smartColor;
+}
+
+function onSave() {
+  axiosInstance.post("/lamp/characteristics", characteristics.array);
 }
 
 function onNewAnimation() {
+  axiosInstance
+    .get(`/lamp/options/${currentConfig.selectedAnimation}`)
+    .then((res) => {
+      return JSON.parse(res.data);
+    })
+    .then((data) => {
+      options.array = data.options;
+      characteristics.array = options.array.map(o => {
+        let characteristic: Characteristic;
+        if (o.type === "number") {
+          characteristic = { type: "number", value: o.currentCharacteristicValue };
+        } else if (o.type === "select") {
+          characteristic = { type: "select", value: o.currentCharacteristicValue };
+        } else if (o.type === "color") {
+          characteristic = { type: "color", value: o.currentCharacteristicValue };
+        } else {
+          throw new Error(`Unhandled option type "${o.type}"`);
+        }
+
+        return characteristic;
+      });
+    });
+
   axiosInstance.post("/lamp/animation", {
     animation: currentConfig.selectedAnimation,
   });
-}
-
-function onNewTopLed() {
-  axiosInstance.post("/lamp/set-top-led", { topLedNb: currentConfig.topLedNb });
 }
 </script>
 

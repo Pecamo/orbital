@@ -1,14 +1,11 @@
 import { NB_LED } from '../NB_LED';
 import { normalize, temperatureToRgb } from "../utils";
-import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
-import { HtmlColors } from "../htmlColors";
+import { LampAnimation, NumberOption } from "../types/LampAnimation";
 import { Color } from '../color';
 
-export default class BlueFireAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+export default class BlueFireAnimation implements LampAnimation<[NumberOption]> {
     public name = "Blue Fire";
-    public options: [ColorOption, ColorOption, NumberOption] = [
-      { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
-      { name: "Color 2", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
+    public options: [NumberOption] = [
       { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
     ];
 

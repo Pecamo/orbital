@@ -82,6 +82,11 @@ export class Color {
             color.g.toString(16) +
             color.b.toString(16);
     }
+
+    public static fromObject(colorObject: { r: number, g: number, b: number, w: number }): Color {
+        const { r, g, b, w } = colorObject;
+        return new Color(r, g, b, w);
+    }
 }
 
 export type LEDStrip = Color[];

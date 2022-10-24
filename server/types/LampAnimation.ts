@@ -7,37 +7,73 @@ export type NumberOption = {
     min: number,
     max: number,
     step: number,
-    default: number,
     display: 'range' | 'input',
+    default: number,
+    currentCharacteristicValue?: number,
 };
 
 export type ColorOption = {
     type: 'color',
-    default: Color,
     name: string,
+    default: Color,
+    currentCharacteristicValue?: SmartColor,
 };
 
 export type SelectOption = {
     type: 'select',
+    name: string,
     options: Array<{
-        value: string,
+        optionValue: string,
         label: string,
     }>,
     default: string,
+    currentCharacteristicValue?: string,
 };
-
-type TypeOfOption<O extends Option> = O['default'];
 
 export type Option = NumberOption | ColorOption | SelectOption;
 
-export type Characteristic = any;
+export type OptionWithCurrentCharacteristic = Required<Option>;
 
-type Unpacked<T> = T extends Array<{value: infer U}> ? Array<U> : T;
+export type NumberCharacteristic = {
+    type: 'number',
+    value: number,
+};
 
-// type TypeOfOptions<T extends Array<Option>> = Array<Unpacked<Option>>;
+export type SmartColorCharacteristic = {
+    type: 'color',
+    value: SmartColor,
+};
+
+export type SelectCharacteristic = {
+    type: 'select',
+    value: string,
+};
+
+export type Characteristic = NumberCharacteristic |SmartColorCharacteristic | SelectCharacteristic;
+
+export type AnimateParameter = number | string | Color;
 
 export interface LampAnimation<T extends Array<Option> = Array<Option>> {
     name: string;
     options: T;
-    animate(t: number, display: Display, characteristics: Characteristic[]): void;
+    animate(t: number, display: Display, parameters: AnimateParameter[]): void;
 }
+
+export type StaticColor = {
+    type: 'static',
+    color: Color,
+};
+
+export type SmartGradientColor = {
+    type: 'gradient',
+    parameters: {
+        colorFrom: Color,
+        colorTo: Color,
+    },
+};
+
+export type SmartRainbowColor = {
+    type: 'rainbow'
+};
+
+export type SmartColor = StaticColor | SmartGradientColor | SmartRainbowColor;
