@@ -6,16 +6,13 @@ import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation
 import { HtmlColors } from "../htmlColors";
 import { Display } from "../display";
 
-export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOption]> {
     public name = "Flashing Segments";
-    public options: [ColorOption, ColorOption, NumberOption] = [
-        { name: "Color 1", type: "color", default: HtmlColors.black },
-        { name: "Color 2", type: "color", default: HtmlColors.black },
-        { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
+    public options: [ColorOption] = [
+        { name: "Color 1", type: "color", default: HtmlColors.red },
     ];
 
-    constructor(public segmentsLife = []) {
-    }
+    constructor(public segmentsLife = []) {}
 
     public animate(t, display: Display, options): void {
         const color = options[0];

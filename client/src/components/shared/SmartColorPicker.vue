@@ -28,7 +28,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { Ref } from "vue";
 import { Color } from "../../../../server/color";
 import type { SmartColor } from "../../../../server/types/LampAnimation";
 
@@ -38,10 +37,10 @@ const props = defineProps<{
 
 const emit = defineEmits(['smartColorUpdate']);
 
-const selectedType = props.smartColor.type ? ref(props.smartColor.type) : ref("static");
-const selectedColor = props.smartColor.type === "static" ? ref(Color.toHex(props.smartColor.color)) : ref("#000000");
-const selectedColorFrom = props.smartColor.type === "gradient" ? ref(Color.toHex(props.smartColor.parameters.colorFrom)) : ref("#000000");
-const selectedColorTo = props.smartColor.type === "gradient" ? ref(Color.toHex(props.smartColor.parameters.colorTo)) : ref("#000000");
+const selectedType = props.smartColor?.type ? ref(props.smartColor.type) : ref("static");
+const selectedColor = props.smartColor?.type === "static" ? ref(Color.toHex(props.smartColor.color)) : ref("#000000");
+const selectedColorFrom = props.smartColor?.type === "gradient" ? ref(Color.toHex(props.smartColor.parameters.colorFrom)) : ref("#000000");
+const selectedColorTo = props.smartColor?.type === "gradient" ? ref(Color.toHex(props.smartColor.parameters.colorTo)) : ref("#000000");
 
 function onFormUpdate() {
   let emitSmartColor: SmartColor;

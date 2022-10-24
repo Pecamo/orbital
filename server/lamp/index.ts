@@ -2,7 +2,7 @@ import * as path from 'path';
 import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
-import { Characteristic, NumberCharacteristic, Option, SelectCharacteristic, SmartColor, SmartColorCharacteristic } from '../types/LampAnimation';
+import { Characteristic, SmartColor } from '../types/LampAnimation';
 import { HtmlColors } from '../htmlColors';
 import * as env from '../env';
 import cors from 'cors';
@@ -32,7 +32,6 @@ lamp.use(express.json());
 
 export function initLamp() {
     const LAMP_FPS: number = env.LAMP_FPS;
-    let TOP_LED_NB: number = env.TOP_LED_NB; // TODO Handle properly
 
     const animations: LampAnimation[] = [
         new NoneAnimation(),
@@ -69,7 +68,15 @@ export function initLamp() {
         res.sendFile(path.join(__dirname, '..', '..', 'static', 'index.html'));
     });
 
+    lamp.get('/animationNames', (req, res) => {
+        res.send({ animationNames: ["Off", ...animations.map(anim => anim.name)] });
+    })
+
     lamp.get('/options/:animationName', (req, res) => {
+        if (!req.params.animationName) {
+            return;
+        }
+
         const animationName = req.params.animationName;
         if (animationName.toLowerCase() === "off") {
             return res.send({ options: [] });
@@ -84,6 +91,17 @@ export function initLamp() {
                 for (let i = 0; i < options.length; i++) {
                     options[i].currentCharacteristicValue = currentCharacteristics[animationName][i].value;
                 }
+            } else {
+                options.forEach(option => {
+                    if (option.type === "color") {
+                        option.currentCharacteristicValue = {
+                            type: "static",
+                            color: option.default,
+                        } as SmartColor;
+                    } else {
+                        option.currentCharacteristicValue = option.default;
+                    }
+                });
             }
 
             res.send({ options });

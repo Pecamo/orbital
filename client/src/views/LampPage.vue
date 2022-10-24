@@ -31,6 +31,7 @@
         <input
           v-if="option.type === 'number'"
           v-model="characteristics.array[i].value"
+          @change="onChange"
           type="number"
           :min="option.min"
           :max="option.max"
@@ -39,6 +40,7 @@
         <select
           v-if="option.type === 'select'"
           v-model="characteristics.array[i].value"
+          @change="onChange"
         >
           <option
             v-for="opt in option.options"
@@ -50,52 +52,38 @@
         </select>
       </div>
     </div>
-    <dynamic-button @click="onSave" variant="primary" color="blue">Save</dynamic-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import DynamicButton from "../components/shared/DynamicButton.vue";
 import SmartColorPicker from "../components/shared/SmartColorPicker.vue";
 import { axiosInstance } from "../axios-common";
-import { Color } from "../../../server/color";
-import type { OptionWithCurrentCharacteristic, Characteristic, StaticColor, SmartGradientColor, SmartRainbowColor, SmartColor } from "../../../server/types/LampAnimation";
+import type { OptionWithCurrentCharacteristic, Characteristic, SmartColor } from "../../../server/types/LampAnimation";
 import { reactive } from "@vue/reactivity";
+import { onMounted } from "vue";
 
 const currentConfig = reactive({
   selectedAnimation: "None",
-  // TODO Query from server
-  animationOptions: [
-    "Off",
-    "None",
-    "Strobe",
-    "Strobe2",
-    "Alternating",
-    "Rainbow",
-    "Fire",
-    "Fire rotating",
-    "Blue Fire rotating",
-    "Stars",
-    "Matrix",
-    "Rainbow Sliding Window",
-    "Sliding Window",
-    "Old School Segments",
-    "Game of Life",
-    "Flashing Aperture",
-    "Flashing Segments",
-    "Particle Wave",
-  ],
-  topLedNb: 0,
+  animationOptions: [],
 });
 
 const characteristics: { array: Characteristic[] } = reactive({ array: [] });
 const options: { array: OptionWithCurrentCharacteristic[] } = reactive({ array: [] });
 
+onMounted(() => {
+  axiosInstance.get('/lamp/animationNames')
+  .then(res => JSON.parse(res.data))
+  .then(data => {
+    currentConfig.animationOptions = data.animationNames;
+  })
+});
+
 function onSmartColorUpdate(smartColor: SmartColor, i: number) {
   characteristics.array[i].value = smartColor;
+  onChange();
 }
 
-function onSave() {
+function onChange() {
   axiosInstance.post("/lamp/characteristics", characteristics.array);
 }
 
