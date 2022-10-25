@@ -25,7 +25,7 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
-    public withOpacitiy(opacity: number): Color {
+    public withOpacity(opacity: number): Color {
         opacity = Math.min(Math.max(opacity, 0), 1);
 
         return new Color(

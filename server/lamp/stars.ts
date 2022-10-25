@@ -25,7 +25,7 @@ export default class StarsAnimation implements LampAnimation<[ColorOption, Color
         this.stars[newStar] = { color: newColor, life: this.star_life };
         for (let n = 0; n < NB_LED; n++) {
             const star = this.stars[n];
-            display.drawDot(n, star.color.withOpacitiy(star.life / this.star_life))
+            display.drawDot(n, star.color.withOpacity(star.life / this.star_life))
             this.stars[n].life = Math.max(0, star.life - 1);
         }
     }

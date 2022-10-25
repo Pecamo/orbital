@@ -6,6 +6,7 @@ import { Characteristic, SmartColor } from '../types/LampAnimation';
 import { HtmlColors } from '../htmlColors';
 import * as env from '../env';
 import cors from 'cors';
+import * as convert from "color-convert";
 
 import StarsAnimation from "./stars";
 import FireAnimation from './fire';
@@ -32,6 +33,7 @@ lamp.use(express.json());
 
 export function initLamp() {
     const LAMP_FPS: number = env.LAMP_FPS;
+    const GRADIENT_DURATION: number = 1000;
 
     const animations: LampAnimation[] = [
         new NoneAnimation(),
@@ -192,9 +194,9 @@ export function initLamp() {
                         if (c.value.type === "static") {
                             return c.value.color;
                         } else if (c.value.type === "gradient") {
-                            return c.value.parameters.colorFrom; // TODO
+                            return computeGradient(c.value.parameters.colorFrom, c.value.parameters.colorTo, t, GRADIENT_DURATION);
                         } else if (c.value.type === "rainbow") {
-                            return new Color(0, 0, 255, 0); // TODO
+                            return computeRainbow(t, GRADIENT_DURATION);
                         }
                 }
             });
@@ -217,4 +219,19 @@ export function initLamp() {
             }
         }
     }
+}
+
+function computeGradient(colorFrom: Color, colorTo: Color, t: number, duration: number): Color {
+    const tMod = t % duration;
+    if (tMod < duration / 2) {
+        return Color.overlap(colorFrom, colorTo, tMod/duration);
+    } else {
+        return Color.overlap(colorTo, colorFrom, tMod/duration);
+    }
+}
+
+function computeRainbow(t: number, duration: number): Color {
+    const tMod = t % duration;
+    const rgb = convert.hsv.rgb([(tMod / duration) * 360, 100, 100]);
+    return new Color(rgb[0], rgb[1], rgb[2]);
 }

@@ -5,8 +5,8 @@ import { LAMP_FPS } from "../env";
 export default class Strobe2Animation implements LampAnimation<[ColorOption, ColorOption]> {
     public name = "Strobe2";
     public options: [ColorOption, ColorOption] = [
-        { name: "Color 1", type: "color", default: HtmlColors.white },
-        { name: "Color 2", type: "color", default: HtmlColors.black },
+        { name: "Short Color", type: "color", default: HtmlColors.white },
+        { name: "Long Color", type: "color", default: HtmlColors.black },
     ];
 
     constructor() {}

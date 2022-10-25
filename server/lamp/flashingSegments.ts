@@ -9,7 +9,7 @@ import { Display } from "../display";
 export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOption]> {
     public name = "Flashing Segments";
     public options: [ColorOption] = [
-        { name: "Color 1", type: "color", default: HtmlColors.red },
+        { name: "Flash Color", type: "color", default: HtmlColors.red },
     ];
 
     constructor(public segmentsLife = []) {}
@@ -31,7 +31,7 @@ export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOp
         for (let i = 0; i < nbSegments; i++) {
             if (this.segmentsLife[i] && this.segmentsLife[i] > 0) {
                 const opacity = this.segmentsLife[i] / maxLife;
-                display.drawLine(new Line(NB_LED, i * segmentsLength, (i + 1) * segmentsLength -1), color.withOpacitiy(opacity));
+                display.drawLine(new Line(NB_LED, i * segmentsLength, (i + 1) * segmentsLength -1), color.withOpacity(opacity));
                 this.segmentsLife[i]--;
             }
         }

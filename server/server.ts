@@ -368,10 +368,10 @@ function displayWinnerColor(color: Color) {
     let it = 0;
     currentDisplayAnim = setInterval(() => {
         if (it <= 255) {
-            display.drawAll(color.withOpacitiy(1 - it / 255));
+            display.drawAll(color.withOpacity(1 - it / 255));
             display.render();
         } else {
-            display.drawAll(color.withOpacitiy((it - 255) / 255));
+            display.drawAll(color.withOpacity((it - 255) / 255));
             display.render();
         }
         if (it > 512) {
@@ -379,7 +379,7 @@ function displayWinnerColor(color: Color) {
             nbLoops--;
         }
         if (it === 255 && nbLoops < 0) {
-            display.drawAll(color.withOpacitiy(0));
+            display.drawAll(color.withOpacity(0));
             display.render();
             stopCurrentAnimation();
         }

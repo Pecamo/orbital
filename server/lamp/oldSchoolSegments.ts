@@ -8,7 +8,7 @@ import { HtmlColors } from "../htmlColors";
 export default class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption]> {
     public name = "Old School Segments";
     public options: [ColorOption] = [
-        { name: "Color 1", type: "color", default: HtmlColors.gold },
+        { name: "Segments' Color", type: "color", default: HtmlColors.gold },
     ];
 
     constructor(public segmentsLife = []) {
@@ -39,7 +39,7 @@ export default class OldSchoolSegmentsAnimation implements LampAnimation<[ColorO
 
             if (this.segmentsLife[i] && this.segmentsLife[i] > 0) {
                 const opacity = OldSchoolSegmentsAnimation.computeOpacity(this.segmentsLife[i], maxLife);
-                display.drawLine(new Line(NB_LED, pos, pos + segmentsLength - 1), color.withOpacitiy(opacity));
+                display.drawLine(new Line(NB_LED, pos, pos + segmentsLength - 1), color.withOpacity(opacity));
                 this.segmentsLife[i]--;
             }
 

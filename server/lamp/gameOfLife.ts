@@ -8,7 +8,7 @@ import { Color } from "../color";
 export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
     public name = "Game of Life";
     public options: [ColorOption] = [
-        { name: "Color", type: "color", default: HtmlColors.cyan },
+        { name: "Cells' Color", type: "color", default: HtmlColors.cyan },
     ];
 
     constructor(private cells = [], private previousCells = []) {
@@ -28,7 +28,7 @@ export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]>
 
         // draw
         for (let i = 0, l = this.cells.length; i < l; i++) {
-            display.drawDot(i, color.withOpacitiy(this.cells[i] / 5));
+            display.drawDot(i, color.withOpacity(this.cells[i] / 5));
         }
 
         // live
