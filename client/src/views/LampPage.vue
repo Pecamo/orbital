@@ -20,7 +20,7 @@
         </option>
       </select>
     </div>
-    <div v-for="(option, i) in options.array" :key="option.name" class="line">
+    <div v-for="(option, i) in options.array" :key="i" class="line">
       <label>{{ option.name }}</label>
       <div>
         <smart-color-picker
@@ -106,24 +106,20 @@ function onChange() {
 function onNewAnimation() {
   axiosInstance
     .get(`/lamp/options/${currentConfig.selectedAnimation}`)
-    .then((res) => {
+    .then(res => {
       return JSON.parse(res.data);
     })
-    .then((data) => {
+    .then(data => {
       options.array = data.options;
       characteristics.array = options.array.map(o => {
-        let characteristic: Characteristic;
-        if (o.type === "number") {
-          characteristic = { type: "number", value: o.currentCharacteristicValue };
-        } else if (o.type === "select") {
-          characteristic = { type: "select", value: o.currentCharacteristicValue };
-        } else if (o.type === "color") {
-          characteristic = { type: "color", value: o.currentCharacteristicValue };
-        } else {
-          throw new Error(`Unhandled option type "${o.type}"`);
+        switch (o.type) {
+          case "number":
+            return { type: "number", value: o.currentCharacteristicValue };
+          case "select":
+            return { type: "select", value: o.currentCharacteristicValue };
+          case "color":
+            return { type: "color", value: o.currentCharacteristicValue };
         }
-
-        return characteristic;
       });
     });
 

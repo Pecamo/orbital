@@ -49,7 +49,7 @@ export type SelectCharacteristic = {
     value: string,
 };
 
-export type Characteristic = NumberCharacteristic |SmartColorCharacteristic | SelectCharacteristic;
+export type Characteristic = NumberCharacteristic | SmartColorCharacteristic | SelectCharacteristic;
 
 export type AnimateParameter = number | string | Color;
 
