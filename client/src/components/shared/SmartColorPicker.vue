@@ -1,12 +1,10 @@
 <template>
   <div class="smart-color">
-    <div class="select-type">
-      <select v-model="selectedType" @change="onFormUpdate">
-        <option value="static">Static</option>
-        <option value="gradient">Gradient</option>
-        <option value="rainbow">Rainbow</option>
-      </select>
-    </div>
+    <select v-model="selectedType" @change="onFormUpdate" class="select-type">
+      <option value="static">Static</option>
+      <option value="gradient">Gradient</option>
+      <option value="rainbow">Rainbow</option>
+    </select>
     <div class="parameters">
       <input
         v-if="selectedType === 'static'"
@@ -76,9 +74,9 @@ function onFormUpdate() {
 
 <style scoped>
 .smart-color {
-  display: flex;
-  justify-content: right;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-between;
 }
 
 .parameters {

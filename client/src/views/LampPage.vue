@@ -21,7 +21,6 @@
       <template v-for="(option, i) in options.array" :key="i">
         <label>{{ option.name }}</label>
         <smart-color-picker
-          class="input"
           v-if="option.type === 'color'"
           :smartColor="(characteristics.array[i].value as SmartColor)"
           @smartColorUpdate="smartColor => onSmartColorUpdate(smartColor, i)"
@@ -160,10 +159,6 @@ h1 {
   column-gap: 1em;
   margin: 0 1em;
   font-size: 20px;
-}
-
-.settings > * {
-  border: 1px solid white;
 }
 
 .input {
