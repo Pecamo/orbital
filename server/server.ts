@@ -145,6 +145,8 @@ let currentDisplayAnim;
 
 // States of the Art
 function startWaiting() {
+    display.brightness = 100;
+
     startTime = Date.now();
     state = State.WAITING;
     let diffTime: number = WAITING_TIME;

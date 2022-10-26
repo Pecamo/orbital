@@ -5,6 +5,7 @@ import { Line } from "./types/Line";
 
 export class Display {
     public displayApi: DisplayAPI;
+    public brightness: number = 100;
 
     constructor(public size: number,
                 rootHost: string,
@@ -19,6 +20,12 @@ export class Display {
     public render(): void {
         if (this.invertOrientation) {
             this.nextFrame.reverse();
+        }
+
+        this.brightness = Math.max(0, Math.min(this.brightness, 100));
+
+        if (this.brightness < 100) {
+            this.nextFrame = this.nextFrame.map(color => color.withOpacity(this.brightness / 100));
         }
 
         this.nextFrame.forEach(color => color?.safe());

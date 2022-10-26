@@ -108,7 +108,7 @@ export function initLamp() {
 
             res.send({ options });
         } else {
-            res.sendStatus(404);
+            res.send(404);
         }
     });
 
@@ -150,8 +150,16 @@ export function initLamp() {
         res.send("OK");
     });
 
+    lamp.get('/brightness', (req, res) => {
+        res.send({ brightness: display.brightness });
+    });
+
     lamp.post('/brightness', (req, res) => {
-        // TODO Overall brightness
+        if (!req.body.brightness) {
+            return;
+        }
+
+        display.brightness = req.body.brightness;
         res.send("OK");
     });
 

@@ -1,11 +1,12 @@
 import { NB_LED } from '../NB_LED';
 import { normalize, temperatureToRgb } from "../utils";
 import { LampAnimation, NumberOption } from "../types/LampAnimation";
+import { TOP_LED_NB } from '../env';
 
 export default class FireAnimation implements LampAnimation<[NumberOption]> {
     public name = "Fire";
     public options: [NumberOption] = [
-      { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
+      { name: "Top Led Number", type: "number", default: TOP_LED_NB, min: 0, max: NB_LED, step: 1, display: 'range' }
     ];
 
     private fireIntensityLeft = 0.5;
