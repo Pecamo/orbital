@@ -64,22 +64,3 @@ h1 {
   border: 0;
   outline: 0;
 }
-
-input[type="checkbox"] {
-  width: 2vw;
-  height: 2vw;
-}
-
-input[type="radio"] {
-  width: 1.4vw;
-  height: 1.4vw;
-}
-
-input[type="number"] {
-  font-size: 2vw;
-  text-align: right;
-}
-
-label {
-  font-size: 2vw;
-}

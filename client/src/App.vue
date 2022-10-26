@@ -42,7 +42,11 @@ const currentYear = new Date().getFullYear();
 }
 
 .view {
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 6vw;
 }
 
 .credits {
@@ -50,9 +54,9 @@ const currentYear = new Date().getFullYear();
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 20px;
+  padding: 2vw 3vw;
   opacity: 0.3;
-  font-size: 12px;
+  font-size: 2vw;
   display: flex;
   justify-content: space-between;
 }

@@ -23,7 +23,7 @@
         :name="name"
         :value="option.value"
         @change="onChangeValue">
-        <option v-for="choice in option.options" :value="choice">{{choice}}</option>
+        <option v-for="choice in option.options" :value="choice" :key="choice">{{choice}}</option>
       </select>
     </div>
   </div>

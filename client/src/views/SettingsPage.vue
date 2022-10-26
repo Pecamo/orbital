@@ -7,7 +7,8 @@
     </div>
     <form id="settings" class="settings" v-if="!settings.isLoading" ref="formRef">
       <setting-line
-        v-for="setting in settings.data"
+        v-for="setting, i in settings.data"
+        :key="i"
         :setting="setting"
         :data="formData"
         @setValue="setValue"
