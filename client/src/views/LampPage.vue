@@ -20,7 +20,7 @@
         </option>
       </select>
     </div>
-    <div v-for="option, i in options.array" :key="option.name" class="line">
+    <div v-for="(option, i) in options.array" :key="option.name" class="line">
       <label>{{ option.name }}</label>
       <div>
         <smart-color-picker
@@ -52,14 +52,25 @@
         </select>
       </div>
     </div>
+    <vue-slider
+      v-model="brightness"
+      class="brightness-slider"
+      @change="onBrightnessChange"
+      :min="0"
+      :max="100"
+      :lazy="true"
+      :marks="[0, 50, 100]"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/antd.css";
 import SmartColorPicker from "../components/shared/SmartColorPicker.vue";
 import { axiosInstance } from "../axios-common";
 import type { OptionWithCurrentCharacteristic, Characteristic, SmartColor } from "../../../server/types/LampAnimation";
-import { reactive } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
 import { onMounted } from "vue";
 
 const currentConfig = reactive({
@@ -69,13 +80,18 @@ const currentConfig = reactive({
 
 const characteristics: { array: Characteristic[] } = reactive({ array: [] });
 const options: { array: OptionWithCurrentCharacteristic[] } = reactive({ array: [] });
+const brightness = ref(100);
 
 onMounted(() => {
-  axiosInstance.get('/lamp/animationNames')
-  .then(res => JSON.parse(res.data))
-  .then(data => {
-    currentConfig.animationOptions = data.animationNames;
-  })
+  axiosInstance.get("/lamp/animationNames")
+    .then(res => JSON.parse(res.data))
+    .then(data => {
+      currentConfig.animationOptions = data.animationNames;
+    });
+
+  axiosInstance.get("/lamp/brightness")
+    .then(res => JSON.parse(res.data))
+    .then(data => brightness.value = data.brightness);
 });
 
 function onSmartColorUpdate(smartColor: SmartColor, i: number) {
@@ -115,6 +131,10 @@ function onNewAnimation() {
     animation: currentConfig.selectedAnimation,
   });
 }
+
+function onBrightnessChange(brightness: number) {
+  axiosInstance.post("/lamp/brightness", { brightness });
+}
 </script>
 
 <style scoped>
@@ -153,5 +173,9 @@ input {
   align-items: center;
   justify-content: flex-end;
   flex-grow: 1;
+}
+
+.brightness-slider {
+  margin: 20px;
 }
 </style>
