@@ -2,20 +2,22 @@ import { LAMP_FPS } from "../env";
 import { NB_LED } from '../NB_LED';
 import { ColorOption, LampAnimation } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
+import { Display } from "../display";
+import { Color } from "../color";
 
 export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]> {
     public name = "Game of Life";
     public options: [ColorOption] = [
-        { name: "Color", type: "color", default: HtmlColors.cyan },
+        { name: "Cells' Color", type: "color", default: HtmlColors.cyan },
     ];
 
     constructor(private cells = [], private previousCells = []) {
 
     }
 
-    public animate(t, display, options): void {
+    public animate(t: number, display: Display, parameters: [Color]) {
         const speed = LAMP_FPS / 6;
-        const [color] = options;
+        const [color] = parameters;
 
         // init
         if (this.cells.length === 0) {
@@ -26,7 +28,7 @@ export default class GameOfLifeAnimation implements LampAnimation<[ColorOption]>
 
         // draw
         for (let i = 0, l = this.cells.length; i < l; i++) {
-            display.drawDot(i, color.withOpacitiy(this.cells[i] / 5));
+            display.drawDot(i, color.withOpacity(this.cells[i] / 5));
         }
 
         // live

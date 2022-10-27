@@ -4,10 +4,11 @@ import {normalize} from "../utils";
 import { HtmlColors } from "../htmlColors";
 import {Line} from "../types/Line";
 
-export default class ParticleWaveAnimation implements LampAnimation<[ColorOption]> {
+export default class ParticleWaveAnimation implements LampAnimation<[ColorOption, ColorOption]> {
     public name = "Particle Wave";
-    public options: [ColorOption] = [
-        { name: "Color", type: "color", default: HtmlColors.white },
+    public options: [ColorOption, ColorOption] = [
+        { name: "Color 1", type: "color", default: HtmlColors.white },
+        { name: "Color 2", type: "color", default: HtmlColors.cyan },
     ];
 
     // Parameters

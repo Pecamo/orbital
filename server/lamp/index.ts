@@ -2,11 +2,13 @@ import * as path from 'path';
 import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
+import { Characteristic, SmartColor } from '../types/LampAnimation';
 import { HtmlColors } from '../htmlColors';
 import * as env from '../env';
-import StarsAnimation from "./stars";
 import cors from 'cors';
+import * as convert from "color-convert";
 
+import StarsAnimation from "./stars";
 import FireAnimation from './fire';
 import OldSchoolSegmentsAnimation from './oldSchoolSegments';
 import GameOfLifeAnimation from './gameOfLife';
@@ -17,11 +19,12 @@ import Strobe2Animation from './strobe2';
 import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
-import RainbowSlidingWindowAnimation from './rainboxSlidingWindow';
+import RainbowSlidingWindowAnimation from './rainbowSlidingWindow';
 import FlashingApertureAnimation from './flashingAperture';
 import BlueFireAnimation from './blueFire';
 import FlashingSegmentsAnimation from './flashingSegments';
 import ParticleWaveAnimation from "./particleWave";
+import { LampAnimation } from '../types/LampAnimation';
 
 export const lamp = express();
 
@@ -30,9 +33,9 @@ lamp.use(express.json());
 
 export function initLamp() {
     const LAMP_FPS: number = env.LAMP_FPS;
-    let TOP_LED_NB: number = env.TOP_LED_NB;
+    const GRADIENT_DURATION: number = 1000;
 
-    const animations = [
+    const animations: LampAnimation[] = [
         new NoneAnimation(),
         new StarsAnimation(120),
         new FireAnimation(false),
@@ -52,7 +55,7 @@ export function initLamp() {
         new ParticleWaveAnimation(),
     ];
 
-    const animationStore = {};
+    const animationStore: { [key: string]: LampAnimation } = {};
     for (const animation of animations) {
         animationStore[animation.name] = animation;
     }
@@ -60,18 +63,69 @@ export function initLamp() {
 
     let isLampRunning = false;
     let lampShouldStop = false;
-    let currentColors: Color[] = [];
+    const currentCharacteristics: { [key: string]: Characteristic[] } = {};
 
+    // Hacky: we need to send index.html because Vue manages routes
     lamp.get('/', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', '..', 'static', 'lamp.html'));
+        res.sendFile(path.join(__dirname, '..', '..', 'static', 'index.html'));
     });
 
-    lamp.post('/colors', (req, res) => {
-        const colors = req.body;
-        currentColors = colors.map(color => {
-            const { r, g, b, w } = color;
-            return new Color(r, g, b, w);
-        });
+    lamp.get('/animationNames', (req, res) => {
+        res.send({ animationNames: ["Off", ...animations.map(anim => anim.name)] });
+    })
+
+    lamp.get('/options/:animationName', (req, res) => {
+        if (!req.params.animationName) {
+            return;
+        }
+
+        const animationName = req.params.animationName;
+        if (animationName.toLowerCase() === "off") {
+            return res.send({ options: [] });
+        }
+
+        const animation = animations.find(a => a.name === animationName);
+        if (animation) {
+            const options = animation.options;
+
+            // We set the default value to the current one to sync clients
+            if (currentCharacteristics[animationName]) {
+                for (let i = 0; i < options.length; i++) {
+                    options[i].currentCharacteristicValue = currentCharacteristics[animationName][i].value;
+                }
+            } else {
+                options.forEach(option => {
+                    if (option.type === "color") {
+                        option.currentCharacteristicValue = {
+                            type: "static",
+                            color: option.default,
+                        } as SmartColor;
+                    } else {
+                        option.currentCharacteristicValue = option.default;
+                    }
+                });
+            }
+
+            res.send({ options });
+        } else {
+            res.send(404);
+        }
+    });
+
+    lamp.post('/characteristics', (req, res) => {
+        const characteristics: Characteristic[] = req.body;
+        characteristics
+            .forEach(c => {
+                if (c.type === "color") {
+                    if (c.value.type === "static") {
+                        c.value.color = Color.fromObject(c.value.color);
+                    } else if (c.value.type === "gradient") {
+                        c.value.parameters.colorFrom = Color.fromObject(c.value.parameters.colorFrom);
+                        c.value.parameters.colorTo = Color.fromObject(c.value.parameters.colorTo);
+                    }
+                }
+            });
+        currentCharacteristics[currentAnimation] = characteristics;
 
         startLamp();
         res.send("OK");
@@ -96,24 +150,18 @@ export function initLamp() {
         res.send("OK");
     });
 
+    lamp.get('/brightness', (req, res) => {
+        res.send({ brightness: display.brightness });
+    });
+
     lamp.post('/brightness', (req, res) => {
-        // TODO Overall brightness
-        res.send("OK");
-    });
-
-    lamp.post('/set-top-led', (req, res) => {
-        TOP_LED_NB = req.body.topLedNb;
-        res.send("OK");
-    });
-
-    // Getter to avoid trying to read an undefined value
-    function getColor(i): Color {
-        if (i < currentColors.length) {
-            return currentColors[i];
-        } else {
-            return HtmlColors.black;
+        if (!req.body.brightness) {
+            return;
         }
-    }
+
+        display.brightness = req.body.brightness;
+        res.send("OK");
+    });
 
     function startLamp() {
         if (!isLampRunning && state === State.IDLE) {
@@ -126,9 +174,42 @@ export function initLamp() {
             const tickStart = Date.now();
 
             // Get the current animation
-            const animation = animationStore[currentAnimation];
-            const options = [getColor(0), getColor(1), TOP_LED_NB];
-            animation.animate(t, display, options);
+            const animation: LampAnimation = animationStore[currentAnimation];
+            if (!currentCharacteristics[animation.name]) {
+                currentCharacteristics[animation.name] = animation.options.map(o => {
+                    let characteristic: Characteristic;
+                    if (o.type === "color") {
+                        characteristic = { type: "color", value: { type: "static", color: o.default } };
+                    } else if (o.type === "number") {
+                        characteristic = { type: "number", value: o.default };
+                    } else if (o.type === "select") {
+                        characteristic = { type: "select", value: o.default };
+                    }
+
+                    return characteristic;
+                });
+            }
+
+            const characteristics = currentCharacteristics[animation.name];
+
+            const parameters = characteristics.map(c => {
+                switch (c.type) {
+                    case "number":
+                        return c.value;
+                    case "select":
+                        return c.value;
+                    case "color":
+                        if (c.value.type === "static") {
+                            return c.value.color;
+                        } else if (c.value.type === "gradient") {
+                            return computeGradient(c.value.parameters.colorFrom, c.value.parameters.colorTo, t, GRADIENT_DURATION);
+                        } else if (c.value.type === "rainbow") {
+                            return computeRainbow(t, GRADIENT_DURATION);
+                        }
+                }
+            });
+
+            animation.animate(t, display, parameters);
 
             // Loop timing, keep at the end
             if (state === State.IDLE && !lampShouldStop) {
@@ -146,4 +227,19 @@ export function initLamp() {
             }
         }
     }
+}
+
+function computeGradient(colorFrom: Color, colorTo: Color, t: number, duration: number): Color {
+    const tMod = t % duration;
+    if (tMod < duration / 2) {
+        return Color.overlap(colorFrom, colorTo, tMod/duration);
+    } else {
+        return Color.overlap(colorTo, colorFrom, tMod/duration);
+    }
+}
+
+function computeRainbow(t: number, duration: number): Color {
+    const tMod = t % duration;
+    const rgb = convert.hsv.rgb([(tMod / duration) * 360, 100, 100]);
+    return new Color(rgb[0], rgb[1], rgb[2]);
 }

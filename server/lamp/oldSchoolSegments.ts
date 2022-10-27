@@ -5,19 +5,17 @@ import { randomInt } from "../utils";
 import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
 
-export default class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+export default class OldSchoolSegmentsAnimation implements LampAnimation<[ColorOption]> {
     public name = "Old School Segments";
-    public options: [ColorOption, ColorOption, NumberOption] = [
-        { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
-        { name: "Color 2", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
-        { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
+    public options: [ColorOption] = [
+        { name: "Segments' Color", type: "color", default: HtmlColors.gold },
     ];
 
     constructor(public segmentsLife = []) {
     }
 
     public animate(t, display, options): void {
-        const [color, _, topLed] = options;
+        const [color] = options;
         const nbSegments = 8; // TODO set as parameter
         const blockLength = Math.round(NB_LED / nbSegments);
         const separatorsLength = 2;
@@ -41,7 +39,7 @@ export default class OldSchoolSegmentsAnimation implements LampAnimation<[ColorO
 
             if (this.segmentsLife[i] && this.segmentsLife[i] > 0) {
                 const opacity = OldSchoolSegmentsAnimation.computeOpacity(this.segmentsLife[i], maxLife);
-                display.drawLine(new Line(NB_LED, pos, pos + segmentsLength - 1), color.withOpacitiy(opacity));
+                display.drawLine(new Line(NB_LED, pos, pos + segmentsLength - 1), color.withOpacity(opacity));
                 this.segmentsLife[i]--;
             }
 

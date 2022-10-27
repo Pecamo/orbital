@@ -1,12 +1,11 @@
-import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
+import { ColorOption, LampAnimation } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
 
-export default class StrobeAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+export default class StrobeAnimation implements LampAnimation<[ColorOption, ColorOption]> {
     public name = "Strobe";
-    public options: [ColorOption, ColorOption, NumberOption] = [
+    public options: [ColorOption, ColorOption] = [
         { name: "Color 1", type: "color", default: HtmlColors.white },
         { name: "Color 2", type: "color", default: HtmlColors.black },
-        { name: "Color duration", type: "number", default: 2, min: 0, max: 20, step: 1, display: 'input' }
     ];
 
     constructor(public duration: number) {}

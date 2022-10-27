@@ -25,7 +25,7 @@ export class Color {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
 
-    public withOpacitiy(opacity: number): Color {
+    public withOpacity(opacity: number): Color {
         opacity = Math.min(Math.max(opacity, 0), 1);
 
         return new Color(
@@ -65,6 +65,24 @@ export class Color {
             }
             return new Color(255, 0, 255 - phase);
         });
+    }
+
+    public static fromHex(hexString: string): Color {
+        return new Color(
+            parseInt(hexString.substring(1, 3), 16),
+            parseInt(hexString.substring(3, 5), 16),
+            parseInt(hexString.substring(5, 7), 16),
+            0
+        );
+    }
+
+    public static toHex(color: Color): string {
+        return "#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1);
+    }
+
+    public static fromObject(colorObject: { r: number, g: number, b: number, w: number }): Color {
+        const { r, g, b, w } = colorObject;
+        return new Color(r, g, b, w);
     }
 }
 

@@ -44,13 +44,11 @@ function init() {
         });
     }
 
-    app.use('/static', express.static(__dirname + '/../static'));
+    app.use('/', express.static(__dirname + '/../static'));
 
     app.get('/', (req, res, next) => {
         res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
     });
-
-    app.use('/', express.static(__dirname + '/../staticRoot'));
 
     const port: number = parseInt(process.argv[2]) || env.ORBITAL_PORT;
     const httpServer = http.createServer(app).listen(port);
@@ -60,6 +58,12 @@ function init() {
     const expressWs = expressWsWrapper(app, httpServer);
     expressWs.app.ws('/', (ws, req) => {
         handleWs(ws, req);
+    });
+
+    // Catch-all fallback for vue history to be beautiful
+    // It must exists after ws handler or it will crash
+    app.get('*', (req, res, next) => {
+        res.sendFile(path.join(__dirname, '..', 'static', 'index.html'));
     });
 
     const invertOrientation = process.argv.includes('--invert');
@@ -141,6 +145,8 @@ let currentDisplayAnim;
 
 // States of the Art
 function startWaiting() {
+    display.brightness = 100;
+
     startTime = Date.now();
     state = State.WAITING;
     let diffTime: number = WAITING_TIME;
@@ -231,7 +237,7 @@ function startGame() {
 function endGame(winner: Character) {
     state = State.END;
 
-    const winnerPlayer = players.find(c => c.character.id === winner.id);
+    const winnerPlayer = players.find(c => c.character?.id === winner.id);
 
     displayWinnerColor(winner.color);
 
@@ -243,9 +249,18 @@ function endGame(winner: Character) {
     }
 
     sendMsg(winnerPlayer.ws, { cmd: 'won' });
-    spectators.forEach(s => sendMsg(s, { cmd: 'won' })); // TODO Change that for "Blue won".
+    spectators.forEach(s => {
+        if (s.readyState === 1) {
+            sendMsg(s, {
+                cmd: 'spectateEnd',
+                data: {
+                    winner: winnerPlayer.character,
+                },
+            });
+        }
+    })
 
-    players.filter(c => c.character.id !== winner.id).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
+    players.filter(c => c.character?.id !== winner.id).forEach(c => sendMsg(c.ws, { cmd: 'lost' }));
     players = [];
 
     state = State.IDLE;
@@ -293,6 +308,7 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'spectate': {
+            // FIXME this condition won't work with Vue without proper handling
             if (env.SPECTATE_MODE_ENABLED) {
                 spectators.push(ws);
             } else {
@@ -305,8 +321,12 @@ function handleMessage(msg: CSMessage, ws: WebSocket) {
             break;
         }
         case 'writeGameOptions': {
-            // TODO we may want to validate this
-            gameOptions = msg.data;
+            Object.entries(msg.data).forEach(([optionName, optionValue]) => {
+                if (Object.keys(gameOptions).includes(optionName)) {
+                    gameOptions[optionName].value = optionValue.value;
+                }
+            });
+            
             break;
         }
         default: {
@@ -350,10 +370,10 @@ function displayWinnerColor(color: Color) {
     let it = 0;
     currentDisplayAnim = setInterval(() => {
         if (it <= 255) {
-            display.drawAll(color.withOpacitiy(1 - it / 255));
+            display.drawAll(color.withOpacity(1 - it / 255));
             display.render();
         } else {
-            display.drawAll(color.withOpacitiy((it - 255) / 255));
+            display.drawAll(color.withOpacity((it - 255) / 255));
             display.render();
         }
         if (it > 512) {
@@ -361,7 +381,7 @@ function displayWinnerColor(color: Color) {
             nbLoops--;
         }
         if (it === 255 && nbLoops < 0) {
-            display.drawAll(color.withOpacitiy(0));
+            display.drawAll(color.withOpacity(0));
             display.render();
             stopCurrentAnimation();
         }

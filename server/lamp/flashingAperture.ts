@@ -49,7 +49,7 @@ export default class FlashingApertureAnimation implements LampAnimation<[ColorOp
                 const ratio = 1 - (step - this.FLASH_DUR) / this.APERTURE_DUR;
                 const length = ratio * this.SEG_LENGTH;
                 this.lines[i].to = this.lines[i].from + length - 1;
-                display.drawGradient(this.lines[i], color.withOpacitiy(ratio * 2), color.withOpacitiy(ratio));
+                display.drawGradient(this.lines[i], color.withOpacity(ratio * 2), color.withOpacity(ratio));
             }
         } else {
             // Off

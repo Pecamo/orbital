@@ -1,15 +1,13 @@
 import { NB_LED } from '../NB_LED';
 import { normalize, temperatureToRgb } from "../utils";
-import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
-import { HtmlColors } from "../htmlColors";
+import { LampAnimation, NumberOption } from "../types/LampAnimation";
 import { Color } from '../color';
+import { TOP_LED_NB } from '../env';
 
-export default class BlueFireAnimation implements LampAnimation<[ColorOption, ColorOption, NumberOption]> {
+export default class BlueFireAnimation implements LampAnimation<[NumberOption]> {
     public name = "Blue Fire";
-    public options: [ColorOption, ColorOption, NumberOption] = [
-      { name: "Color 1", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
-      { name: "Color 2", type: "color", default: HtmlColors.black }, // Unused but all options need to be the same for now
-      { name: "Top Led Number", type: "number", default: 0, min: 0, max: 100, step: 1, display: 'range' }
+    public options: [NumberOption] = [
+      { name: "Top Led Number", type: "number", default: TOP_LED_NB, min: 0, max: NB_LED, step: 1, display: 'range' }
     ];
 
     private fireIntensityLeft = 0.5;
@@ -33,7 +31,7 @@ export default class BlueFireAnimation implements LampAnimation<[ColorOption, Co
         const meanTemperatureDecrease = 80 * (80 / NB_LED);
         const temperatureDecreaseVariation = NB_LED;
 
-        const topLedNb = options[2];
+        const topLedNb = options[0];
 
         for (let n = 1; n < NB_LED / 2; n++) {
             if (typeof this.previousTemperatures[n - 1] === 'undefined') {

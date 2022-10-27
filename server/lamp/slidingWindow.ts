@@ -6,7 +6,7 @@ import { HtmlColors } from "../htmlColors";
 export default class SlidingWindowAnimation implements LampAnimation<[ColorOption]> {
     public name = "Sliding Window";
     public options: [ColorOption] = [
-        { name: "Color", type: "color", default: HtmlColors.white },
+        { name: "Main Color", type: "color", default: HtmlColors.white },
     ];
 
     public animate(t, display, options) {

@@ -15,8 +15,8 @@ const CCW = false;
 export default class MatrixAnimation implements LampAnimation<[ColorOption, ColorOption]> {
     public name = "Matrix";
     public options: [ColorOption, ColorOption] = [
-        { name: "Color 1", type: "color", default: HtmlColors.cyan },
-        { name: "Color 2", type: "color", default: HtmlColors.magenta },
+        { name: "Tail Color", type: "color", default: HtmlColors.green },
+        { name: "Head Color", type: "color", default: HtmlColors.white },
     ];
 
     public animate(t, display, options) {
@@ -50,7 +50,7 @@ export default class MatrixAnimation implements LampAnimation<[ColorOption, Colo
             if (heads.includes(n)) {
                 display.drawDot(n, color2);
             } else {
-                display.drawDot(n, color1.withOpacitiy(brightness[n] / PIXEL_LIFE));
+                display.drawDot(n, color1.withOpacity(brightness[n] / PIXEL_LIFE));
             }
         }
     }
