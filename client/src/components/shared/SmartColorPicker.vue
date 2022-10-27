@@ -1,28 +1,30 @@
 <template>
-  <div>
-    <select v-model="selectedType" @change="onFormUpdate">
+  <div class="smart-color">
+    <select v-model="selectedType" @change="onFormUpdate" class="select-type">
       <option value="static">Static</option>
       <option value="gradient">Gradient</option>
       <option value="rainbow">Rainbow</option>
     </select>
-    <input
-      v-if="selectedType === 'static'"
-      v-model="selectedColor"
-      @change="onFormUpdate"
-      type="color"
-    />
-    <input
-      v-if="selectedType === 'gradient'"
-      v-model="selectedColorFrom"
-      @change="onFormUpdate"
-      type="color"
-    />
-    <input
-      v-if="selectedType === 'gradient'"
-      v-model="selectedColorTo"
-      @change="onFormUpdate"
-      type="color"
-    />
+    <div class="parameters">
+      <input
+        v-if="selectedType === 'static'"
+        v-model="selectedColor"
+        @change="onFormUpdate"
+        type="color"
+      />
+      <input
+        v-if="selectedType === 'gradient'"
+        v-model="selectedColorFrom"
+        @change="onFormUpdate"
+        type="color"
+      />
+      <input
+        v-if="selectedType === 'gradient'"
+        v-model="selectedColorTo"
+        @change="onFormUpdate"
+        type="color"
+      />
+    </div>
   </div>
 </template>
 
@@ -35,7 +37,7 @@ const props = defineProps<{
   smartColor: SmartColor;
 }>();
 
-const emit = defineEmits(['smartColorUpdate']);
+const emit = defineEmits(["smartColorUpdate"]);
 
 const selectedType = props.smartColor?.type ? ref(props.smartColor.type) : ref("static");
 const selectedColor = props.smartColor?.type === "static" ? ref(Color.toHex(props.smartColor.color)) : ref("#000000");
@@ -66,10 +68,24 @@ function onFormUpdate() {
     throw new Error(`Unhandled option type "${selectedType.value}"`);
   }
 
-  emit('smartColorUpdate', emitSmartColor);
+  emit("smartColorUpdate", emitSmartColor);
 }
-
 </script>
 
 <style scoped>
+.smart-color {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-between;
+}
+
+.parameters {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="color"] {
+  height: 3em;
+  width: 3em;
+}
 </style>

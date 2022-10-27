@@ -1,11 +1,10 @@
 <template>
-  <div class="page-grid">
-    <div class="line">
-      <h1>Lamp</h1>
-    </div>
-    <div class="line">
+  <div class="lamp-page">
+    <h1>Lamp</h1>
+    <div class="settings">
       <label>Animation Mode</label>
       <select
+        class="input"
         v-model="currentConfig.selectedAnimation"
         @change="onNewAnimation"
         name="animation"
@@ -19,16 +18,15 @@
           {{ option }}
         </option>
       </select>
-    </div>
-    <div v-for="(option, i) in options.array" :key="i" class="line">
-      <label>{{ option.name }}</label>
-      <div>
+      <template v-for="(option, i) in options.array" :key="i">
+        <label>{{ option.name }}</label>
         <smart-color-picker
           v-if="option.type === 'color'"
           :smartColor="(characteristics.array[i].value as SmartColor)"
           @smartColorUpdate="smartColor => onSmartColorUpdate(smartColor, i)"
         ></smart-color-picker>
         <input
+          class="input"
           v-if="option.type === 'number'"
           v-model="characteristics.array[i].value"
           @change="onChange"
@@ -38,6 +36,7 @@
           :step="option.step"
         />
         <select
+          class="input"
           v-if="option.type === 'select'"
           v-model="characteristics.array[i].value"
           @change="onChange"
@@ -50,17 +49,18 @@
             {{ opt.label }}
           </option>
         </select>
-      </div>
+      </template>
+      <label>Brightness</label>
+      <vue-slider
+        v-model="brightness"
+        class="input brightness-slider"
+        @change="onBrightnessChange"
+        :min="0"
+        :max="100"
+        :lazy="true"
+        :marks="[0, 50, 100]"
+      />
     </div>
-    <vue-slider
-      v-model="brightness"
-      class="brightness-slider"
-      @change="onBrightnessChange"
-      :min="0"
-      :max="100"
-      :lazy="true"
-      :marks="[0, 50, 100]"
-    />
   </div>
 </template>
 
@@ -134,44 +134,51 @@ function onBrightnessChange(brightness: number) {
 </script>
 
 <style scoped>
-input {
-  height: 100%;
-  width: 100%;
-  text-align: right;
+h1 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-size: calc(7 * var(--unit));
 }
 
-.page-grid {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-flow: column;
-}
-
-.page-grid .line {
-  display: flex;
-  height: 0;
-  flex-grow: 1;
-  width: 100%;
-}
-
-.page-grid .line > * {
-  width: 0;
-  flex-grow: 1;
-  margin: calc(2 * var(--unit));
-}
-
-.page-grid .line > :not(:first-child) {
-  margin-left: 1vw;
-}
-
-.page-grid .line label {
-  display: flex;
+.lamp-page {
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-end;
-  flex-grow: 1;
+  font-size: 20px;
+  color: var(--base-color-fg);
+  overflow: auto;
+  max-height: 100%;
+}
+
+.settings {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  align-items: center;
+  row-gap: 1em;
+  column-gap: 1em;
+  margin: 0 1em;
+  font-size: 20px;
+}
+
+.input {
+  text-align: right;
+  width: 100%;
+  height: 100%;
+}
+
+input[type="text"],
+input[type="number"] {
+  font-size: calc(5 * var(--unit));
+  text-align: right;
+  max-width: max-content;
 }
 
 .brightness-slider {
-  margin: 20px;
+  
+}
+
+label {
+  font-size: calc(5 * var(--unit));
 }
 </style>

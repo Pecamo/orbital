@@ -25,10 +25,6 @@ defineProps<{
 </script>
 
 <style scoped>
-.setting {
-  display: flex;
-}
-
 label {
   font-size: calc(5 * var(--unit));
 }
