@@ -1,0 +1,11 @@
+export declare const LAMP_FPS: number;
+export declare const DISPLAY_API_HOSTNAME: string;
+export declare const DISPLAY_API_PORT: number;
+export declare const WAITING_TIME_SEC: number;
+export declare const GAME_FPS: number;
+export declare const ORBITAL_PORT: number;
+export declare const SSL_ORBITAL_PORT: number;
+export declare const SSL_CERT_PATH: string;
+export declare const TOP_LED_NB: number;
+export declare const SPECTATE_MODE_ENABLED: boolean;
+export declare const LAMP_MODE_ENABLED: boolean;
