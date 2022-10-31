@@ -8,10 +8,13 @@
     >
       Remember your color!
     </p>
+    <how-to-text></how-to-text>
   </div>
 </template>
 
 <script setup lang="ts">
+import HowToText from "../shared/HowToText.vue";
+
 defineProps<{
   startsIn: number;
   color: string;

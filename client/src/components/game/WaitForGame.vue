@@ -4,6 +4,7 @@
     <DynamicButton color="red" variant="normal" @click="cancelClicked">
       Cancel
     </DynamicButton>
+    <how-to-text></how-to-text>
   </div>
 </template>
 
@@ -11,6 +12,7 @@
 import { useRouter } from "vue-router";
 import { WebSocketHandler } from "../../ws";
 import DynamicButton from "../shared/DynamicButton.vue";
+import HowToText from "../shared/HowToText.vue";
 
 const router = useRouter();
 
