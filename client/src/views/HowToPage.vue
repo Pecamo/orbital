@@ -1,23 +1,15 @@
 <template>
   <div id="how">
-    <div class="background"></div>
-    <p>How to play Orbital:</p>
-    <p>
-      You control a colored LED<br />
-      Your goal is to <b>survive</b> the longest<br />
-      Move with the
-      <img class="img" src="@/assets/left-arrow.svg" style="height: 3vw" />
-      and
-      <img class="img" src="@/assets/right-arrow.svg" style="height: 3vw" />
-      arrows<br />
-      Shoot others with the middle
-      <img class="img" src="@/assets/target.svg" style="height: 3vw" /> button
-    </p>
-    <RouterLink class="button retry" to="/"> Back </RouterLink>
+    <how-to-text></how-to-text>
+    <RouterLink class="button retry" to="/">
+      <dynamic-button color="red" variant="normal">Back</dynamic-button>
+    </RouterLink>
   </div>
 </template>
 
 <script setup lang="ts">
+import HowToText from "../components/shared/HowToText.vue";
+import DynamicButton from "../components/shared/DynamicButton.vue";
 </script>
 <style scoped>
 #how {
