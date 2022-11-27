@@ -37,7 +37,7 @@ export function initLamp() {
 
     const animations: LampAnimation[] = [
         new NoneAnimation(),
-        new StarsAnimation(120),
+        new StarsAnimation(),
         new FireAnimation(false),
         new FireAnimation(true),
         new BlueFireAnimation(true),
