@@ -1,8 +1,15 @@
+import * as convert from "color-convert";
+
 export class Color {
     constructor(public r: number, public g: number, public b: number, public w: number = 0) {}
 
     public static getRandom(): Color {
         return new Color(Color.getRandom255(), Color.getRandom255(), Color.getRandom255());
+    }
+
+    public static getRandomHue(): Color {
+        const rgb = convert.hsv.rgb([Math.random() * 360, 100, 100]);
+        return new Color(rgb[0], rgb[1], rgb[2]);
     }
 
     public static getRandom255(): number {

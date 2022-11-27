@@ -69,7 +69,8 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 import SmartColorPicker from "../components/shared/SmartColorPicker.vue";
 import { axiosInstance } from "../axios-common";
-import type { OptionWithCurrentCharacteristic, Characteristic, SmartColor } from "../../../server/types/LampAnimation";
+import type { OptionWithCurrentCharacteristic, Characteristic } from "../../../server/types/LampAnimation";
+import type { SmartColor } from "../../../server/types/SmartColor";
 import { reactive, ref } from "@vue/reactivity";
 import { onMounted } from "vue";
 
