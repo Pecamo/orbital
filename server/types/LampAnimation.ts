@@ -1,5 +1,6 @@
 import { Color } from "../color";
 import { Display } from "../display"
+import { SmartColor } from "./SmartColor";
 
 export type NumberOption = {
     type: 'number',
@@ -58,22 +59,3 @@ export interface LampAnimation<T extends Array<Option> = Array<Option>> {
     options: T;
     animate(t: number, display: Display, parameters: AnimateParameter[]): void;
 }
-
-export type StaticColor = {
-    type: 'static',
-    color: Color,
-};
-
-export type SmartGradientColor = {
-    type: 'gradient',
-    parameters: {
-        colorFrom: Color,
-        colorTo: Color,
-    },
-};
-
-export type SmartRainbowColor = {
-    type: 'rainbow'
-};
-
-export type SmartColor = StaticColor | SmartGradientColor | SmartRainbowColor;

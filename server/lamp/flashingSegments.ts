@@ -5,6 +5,7 @@ import { randomInt } from "../utils";
 import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
 import { HtmlColors } from "../htmlColors";
 import { Display } from "../display";
+import { Color } from "../color";
 
 export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOption]> {
     public name = "Flashing Segments";
@@ -12,10 +13,9 @@ export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOp
         { name: "Flash Color", type: "color", default: HtmlColors.red },
     ];
 
-    constructor(public segmentsLife = []) {}
+    private readonly segments: Array<{ color: Color, life: number }> = [];
 
     public animate(t, display: Display, options): void {
-        const color = options[0];
         const nbSegments = 12;
         const segmentsLength = Math.round(NB_LED / nbSegments);
         const maxLife = LAMP_FPS / 4;
@@ -23,16 +23,20 @@ export default class FlashingSegmentsAnimation implements LampAnimation<[ColorOp
         if (t % Math.floor(LAMP_FPS / 20) === randomInt(0, 10)) {
             const n = randomInt(0, nbSegments - 1);
 
-            if (typeof this.segmentsLife[n] === 'undefined' || this.segmentsLife[n] <= 0) {
-                this.segmentsLife[n] = maxLife + randomInt(-5, 5);
+            if (typeof this.segments[n] === 'undefined' || this.segments[n].life <= 0) {
+                this.segments[n] = {
+                    life: maxLife + randomInt(-5, 5),
+                    color: options[0],
+                }
             }
         }
 
         for (let i = 0; i < nbSegments; i++) {
-            if (this.segmentsLife[i] && this.segmentsLife[i] > 0) {
-                const opacity = this.segmentsLife[i] / maxLife;
-                display.drawLine(new Line(NB_LED, i * segmentsLength, (i + 1) * segmentsLength -1), color.withOpacity(opacity));
-                this.segmentsLife[i]--;
+            if (this.segments[i] && this.segments[i].life && this.segments[i].life > 0) {
+                const opacity = this.segments[i].life / maxLife;
+                const line = new Line(NB_LED, i * segmentsLength, (i + 1) * segmentsLength -1);
+                display.drawLine(line, this.segments[i].color.withOpacity(opacity));
+                this.segments[i].life--;
             }
         }
     }

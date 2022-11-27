@@ -19,6 +19,7 @@ export default class FlashingApertureAnimation implements LampAnimation<[ColorOp
     private SEG_LENGTH = Math.floor(NB_LED / this.NB_OF_SEGMENTS);
     private lines: Line[] = [];
     private shift: number = 0;
+    private currentColor: Color = HtmlColors.black;
 
     constructor() {
         this.lines = [];
@@ -31,25 +32,25 @@ export default class FlashingApertureAnimation implements LampAnimation<[ColorOp
     }
 
     public animate(t, display: Display, options) {
-        const color: Color = options[0];
         const step = t % (this.FLASH_DUR + this.APERTURE_DUR + this.OFF_DUR);
 
         // Randomize segments positions
         if (step === 0) {
+            this.currentColor = options[0];
             this.shift = randomInt(0, this.SEG_LENGTH - 1);
             this.lines.forEach(l => l.from += this.shift);
         }
 
         if (step < this.FLASH_DUR) {
             // Flash
-            display.drawAll(color);
+            display.drawAll(this.currentColor);
         } else if (step < this.FLASH_DUR + this.APERTURE_DUR) {
             // Aperture
             for (let i = 0; i < this.lines.length; i++) {
                 const ratio = 1 - (step - this.FLASH_DUR) / this.APERTURE_DUR;
                 const length = ratio * this.SEG_LENGTH;
                 this.lines[i].to = this.lines[i].from + length - 1;
-                display.drawGradient(this.lines[i], color.withOpacity(ratio * 2), color.withOpacity(ratio));
+                display.drawGradient(this.lines[i], this.currentColor.withOpacity(ratio * 2), this.currentColor.withOpacity(ratio));
             }
         } else {
             // Off
