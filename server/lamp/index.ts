@@ -2,7 +2,8 @@ import * as path from 'path';
 import express from 'express';
 import { State, state, display } from '../server';
 import { Color } from '../color';
-import { Characteristic, SmartColor } from '../types/LampAnimation';
+import { Characteristic } from '../types/LampAnimation';
+import { SmartColor } from '../types/SmartColor';
 import { HtmlColors } from '../htmlColors';
 import * as env from '../env';
 import cors from 'cors';
@@ -205,6 +206,8 @@ export function initLamp() {
                             return computeGradient(c.value.parameters.colorFrom, c.value.parameters.colorTo, t, GRADIENT_DURATION);
                         } else if (c.value.type === "rainbow") {
                             return computeRainbow(t, GRADIENT_DURATION);
+                        } else if (c.value.type === "random") {
+                            return computeRandom();
                         }
                 }
             });
@@ -242,4 +245,8 @@ function computeRainbow(t: number, duration: number): Color {
     const tMod = t % duration;
     const rgb = convert.hsv.rgb([(tMod / duration) * 360, 100, 100]);
     return new Color(rgb[0], rgb[1], rgb[2]);
+}
+
+function computeRandom(): Color {
+    return Color.getRandomHue();
 }

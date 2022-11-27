@@ -4,6 +4,7 @@
       <option value="static">Static</option>
       <option value="gradient">Gradient</option>
       <option value="rainbow">Rainbow</option>
+      <option value="random">Random</option>
     </select>
     <div class="parameters">
       <input
@@ -31,7 +32,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Color } from "../../../../server/color";
-import type { SmartColor } from "../../../../server/types/LampAnimation";
+import type { SmartColor } from "../../../../server/types/SmartColor";
 
 const props = defineProps<{
   smartColor: SmartColor;
@@ -60,7 +61,7 @@ function onFormUpdate() {
         colorTo: Color.fromHex(selectedColorTo.value),
       }
     };
-  } else if (selectedType.value === "rainbow") {
+  } else if (selectedType.value === "rainbow" || selectedType.value === "random") {
     emitSmartColor = {
       type: selectedType.value,
     };
