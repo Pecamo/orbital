@@ -9,7 +9,6 @@ import cors from 'cors';
 import * as convert from "color-convert";
 
 import StarsAnimation from "./stars";
-import FireAnimation from './fire';
 import OldSchoolSegmentsAnimation from './oldSchoolSegments';
 import GameOfLifeAnimation from './gameOfLife';
 import RainbowAnimation from "./rainbow";
@@ -21,7 +20,7 @@ import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
 import RainbowSlidingWindowAnimation from './rainbowSlidingWindow';
 import FlashingApertureAnimation from './flashingAperture';
-import BlueFireAnimation from './blueFire';
+import FireAnimation from './fire';
 import FlashingSegmentsAnimation from './flashingSegments';
 import ParticleWaveAnimation from "./particleWave";
 import { LampAnimation } from '../types/LampAnimation';
@@ -40,7 +39,6 @@ export function initLamp() {
         new StarsAnimation(),
         new FireAnimation(false),
         new FireAnimation(true),
-        new BlueFireAnimation(true),
         new RainbowAnimation(),
         new StrobeAnimation(LAMP_FPS),
         new Strobe2Animation(),
