@@ -57,7 +57,7 @@ function init() {
 
   const expressWs = expressWsWrapper(app, httpServer);
   expressWs.app.ws("/", (ws, req) => {
-    handleWs(ws, req);
+    handleWs(ws);
   });
 
   // Catch-all fallback for vue history to be beautiful
@@ -99,7 +99,7 @@ function createSslServer(app: express.Express) {
 
   const expressWs = expressWsWrapper(app, httpsServer);
   expressWs.app.ws("/", (ws, req) => {
-    handleWs(ws, req);
+    handleWs(ws);
   });
 }
 
