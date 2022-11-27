@@ -39,7 +39,7 @@ export default class FireAnimation implements LampAnimation<[NumberOption, Selec
       case 'green':
         return new Color(color.g, color.r, color.b);
       case 'white':
-        return new Color(color.r, color.r, color.r);
+        return Color.getGray(color);
     }
   }
 
