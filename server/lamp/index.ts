@@ -207,7 +207,7 @@ export function initLamp() {
                         } else if (c.value.type === "rainbow") {
                             return computeRainbow(t, GRADIENT_DURATION);
                         } else if (c.value.type === "random") {
-                            return computeRandom(t);
+                            return computeRandom();
                         }
                 }
             });
@@ -247,7 +247,6 @@ function computeRainbow(t: number, duration: number): Color {
     return new Color(rgb[0], rgb[1], rgb[2]);
 }
 
-function computeRandom(t: number): Color {
-    const rgb = convert.hsv.rgb([Math.random() * 360, 100, 100]);
-    return new Color(rgb[0], rgb[1], rgb[2]);
+function computeRandom(): Color {
+    return Color.getRandomHue();
 }
