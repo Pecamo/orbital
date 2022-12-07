@@ -27,13 +27,25 @@
         ></smart-color-picker>
         <input
           class="input"
-          v-if="option.type === 'number'"
+          v-if="option.type === 'number' && option.display === 'input'"
           v-model="characteristics.array[i].value"
           @change="onChange"
-          type="number"
+          :type="option.display"
           :min="option.min"
           :max="option.max"
           :step="option.step"
+        />
+        <vue-slider
+          class="input"
+          v-if="option.type === 'number' && option.display === 'range'"
+          v-model="characteristics.array[i].value"
+          @change="onChange"
+          :type="option.display"
+          :min="option.min"
+          :max="option.max"
+          :step="option.step"
+          :lazy="true"
+          :marks="[option.min, Math.floor((option.min + option.max) / 2), option.max]"
         />
         <select
           class="input"
@@ -176,7 +188,7 @@ input[type="number"] {
 }
 
 .brightness-slider {
-  
+
 }
 
 label {
