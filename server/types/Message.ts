@@ -2,70 +2,82 @@ import { Character } from "../game";
 import { GameOptions } from "./GameOptions";
 
 export interface BaseMessage {
-    cmd: string;
-    data?: any;
+  cmd: string;
+  data?: any;
 }
 
 // Client -> Server
-export type CSMessage = KeyMessage | JoinMessage | CancelMessage | SpectateMessage | QueryGameOptionsMessage | WriteGameOptionsMessage;
+export type CSMessage =
+  | KeyMessage
+  | JoinMessage
+  | CancelMessage
+  | SpectateMessage
+  | QueryGameOptionsMessage
+  | WriteGameOptionsMessage;
 
 export interface KeyMessage extends BaseMessage {
-    cmd: 'press' | 'release';
-    data: 'left' | 'right' | 'fire';
+  cmd: "press" | "release";
+  data: "left" | "right" | "fire";
 }
 
 export interface JoinMessage extends BaseMessage {
-    cmd: 'join';
+  cmd: "join";
 }
 
 export interface CancelMessage extends BaseMessage {
-    cmd: 'cancel';
+  cmd: "cancel";
 }
 
 export interface SpectateMessage extends BaseMessage {
-    cmd: 'spectate';
+  cmd: "spectate";
 }
 
 export interface QueryGameOptionsMessage {
-    cmd: 'queryGameOptions';
+  cmd: "queryGameOptions";
 }
 
 export interface WriteGameOptionsMessage {
-    cmd: 'writeGameOptions';
-    data: {[key in keyof GameOptions]: { value: any }};
+  cmd: "writeGameOptions";
+  data: { [key in keyof GameOptions]: { value: any } };
 }
 
 // Server -> Client
-export type SCMessage = SimpleStateMessage | PlayMessage | GetReadyMessage | SpectateDataMessage | SpectateEndMessage | ReadGameOptionsMessage;
+export type SCMessage =
+  | SimpleStateMessage
+  | PlayMessage
+  | GetReadyMessage
+  | SpectateDataMessage
+  | SpectateEndMessage
+  | ReadGameOptionsMessage;
 
-export interface SimpleStateMessage  extends BaseMessage {
-    cmd: 'welcome' | 'wait' | 'won' | 'lost' | 'gameInProgress'
+export interface SimpleStateMessage extends BaseMessage {
+  cmd: "welcome" | "wait" | "won" | "lost" | "gameInProgress";
 }
 
 export interface SpectateDataMessage extends BaseMessage {
-    cmd: 'spectateData';
-    data: Object;
+  cmd: "spectateData";
+  data: Record<string, unknown>;
 }
 
 export interface SpectateEndMessage extends BaseMessage {
-    cmd: 'spectateEnd';
-    data: {
-        winner: Character;
-    };
+  cmd: "spectateEnd";
+  data: {
+    winner: Character;
+  };
 }
 
 export interface PlayMessage {
-    cmd: 'play';
-    color: string;
+  cmd: "play";
+  color: string;
 }
 
 export interface GetReadyMessage extends BaseMessage {
-    cmd: 'getReady';
-    data: number;
-    color: string;
+  cmd: "getReady";
+  data: number;
+  color: string;
 }
 
 export interface ReadGameOptionsMessage {
-    cmd: 'readGameOptions';
-    data: GameOptions;
+  cmd: "readGameOptions";
+  data: GameOptions;
 }

@@ -1,8 +1,10 @@
-import { NB_LED } from '../NB_LED';
+import { NB_LED } from "../NB_LED";
 import { HtmlColors } from "../htmlColors";
-import { ColorOption, LampAnimation, NumberOption } from "../types/LampAnimation";
+import { ColorOption, LampAnimation } from "../types/LampAnimation";
 
-export default class AlternatingAnimation implements LampAnimation<[ColorOption, ColorOption]> {
+export default class AlternatingAnimation
+  implements LampAnimation<[ColorOption, ColorOption]>
+{
   public name = "Alternating";
   public options: [ColorOption, ColorOption] = [
     { name: "Color 1", type: "color", default: HtmlColors.cyan },
