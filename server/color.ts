@@ -21,6 +21,11 @@ export class Color {
     return new Color(rgb[0], rgb[1], rgb[2]);
   }
 
+  public static getGray(color: Color): Color {
+    const gray = convert.rgb.gray([color.r, color.g, color.b])[0] * 255 / 100;
+    return new Color(gray, gray, gray);
+  }
+
   public static getRandom255(): number {
     return ~~(Math.random() * 256);
   }

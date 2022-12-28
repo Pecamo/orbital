@@ -10,9 +10,8 @@ import cors from "cors";
 import * as convert from "color-convert";
 
 import StarsAnimation from "./stars";
-import FireAnimation from "./fire";
-import OldSchoolSegmentsAnimation from "./oldSchoolSegments";
-import GameOfLifeAnimation from "./gameOfLife";
+import OldSchoolSegmentsAnimation from './oldSchoolSegments';
+import GameOfLifeAnimation from './gameOfLife';
 import RainbowAnimation from "./rainbow";
 import NoneAnimation from "./none";
 import StrobeAnimation from "./strobe";
@@ -20,10 +19,10 @@ import Strobe2Animation from "./strobe2";
 import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
 import SlidingWindowAnimation from "./slidingWindow";
-import RainbowSlidingWindowAnimation from "./rainbowSlidingWindow";
-import FlashingApertureAnimation from "./flashingAperture";
-import BlueFireAnimation from "./blueFire";
-import FlashingSegmentsAnimation from "./flashingSegments";
+import RainbowSlidingWindowAnimation from './rainbowSlidingWindow';
+import FlashingApertureAnimation from './flashingAperture';
+import FireAnimation from './fire';
+import FlashingSegmentsAnimation from './flashingSegments';
 import ParticleWaveAnimation from "./particleWave";
 import { LampAnimation } from "../types/LampAnimation";
 
@@ -36,12 +35,11 @@ export function initLamp() {
   const LAMP_FPS: number = env.LAMP_FPS;
   const GRADIENT_DURATION = 1000;
 
-  const animations: LampAnimation<any>[] = [
+  const animations: LampAnimation[] = [
     new NoneAnimation(),
     new StarsAnimation(),
     new FireAnimation(false),
     new FireAnimation(true),
-    new BlueFireAnimation(true),
     new RainbowAnimation(),
     new StrobeAnimation(LAMP_FPS),
     new Strobe2Animation(),
