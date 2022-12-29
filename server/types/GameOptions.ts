@@ -1,7 +1,11 @@
-import { GameOptionBoolean, GameOptionEnum, GameOptionNumber } from "./GameOptionTypes";
+import {
+  GameOptionBoolean,
+  GameOptionEnum,
+  GameOptionNumber,
+} from "./GameOptionTypes";
 
 export type GameOptions = {
-    BattleRoyale: GameOptionBoolean,
-    MissileCollision: GameOptionEnum,
-    ShotCooldown: GameOptionNumber,
-}
+  BattleRoyale: GameOptionBoolean;
+  MissileCollision: GameOptionEnum;
+  ShotCooldown: GameOptionNumber;
+};

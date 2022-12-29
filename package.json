@@ -6,9 +6,11 @@
   "scripts": {
     "build": "tsc",
     "start": "cd dist && node server.js",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "watch:build": "tsc --watch",
     "watch:start": "nodemon --exec npm run start",
-    "dev": "concurrently -n build,start -c yellow,green \"npm run watch:build\" \"npm run watch:start\"",
+    "dev": "concurrently -n build,start \"npm run watch:build\" \"npm run watch:start\"",
+    "dev:full": "concurrently -n client,server -c yellow,green \"npm run dev\" \"cd client && npm run dev\"",
     "test": "jest"
   },
   "contributors": [
@@ -19,6 +21,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Pecamo/orbital.git"
+  },
+  "engines": {
+    "node": ">=10.21.0 <11"
   },
   "bugs": {
     "url": "https://github.com/Pecamo/orbital/issues"
@@ -36,10 +41,18 @@
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.171",
     "@types/node": "^12.20.17",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
     "babel-jest": "^27.0.6",
     "concurrently": "^6.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^24.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "jest": "^27.0.6",
     "nodemon": "^2.0.12",
+    "prettier": "^2.8.0",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
   },
@@ -51,7 +64,7 @@
     "cors": "^2.8.5",
     "dgram-as-promised": "^5.0.1",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "express-ws": "^5.0.2",
     "lodash": "^4.17.21"
   }
