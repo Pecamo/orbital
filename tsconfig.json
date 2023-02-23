@@ -3,6 +3,7 @@
     "outDir": "./dist/",
     "target": "es5",
     "moduleResolution": "node",
+    "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "declaration": true,

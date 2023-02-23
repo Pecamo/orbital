@@ -1,10 +1,13 @@
 import { Color } from "./color";
 import { HtmlColors } from "./htmlColors";
-import { DisplayAPI } from "./display-api";
+import { DisplayAPIRpi } from "./display-api-rpi";
 import { Line } from "./types/Line";
+import { DisplayAPIAbstract } from "./display-api-abstract";
+import * as env from "./env";
+import { DisplayAPI_WLED } from "./display-api-wled";
 
 export class Display {
-  public displayApi: DisplayAPI;
+  public displayApi: DisplayAPIAbstract;
   public brightness = 100;
 
   constructor(
@@ -13,7 +16,11 @@ export class Display {
     rootPort: number,
     public invertOrientation: boolean = false
   ) {
-    this.displayApi = new DisplayAPI(size, rootHost, rootPort);
+    if (env.USE_WLED) {
+      this.displayApi = new DisplayAPI_WLED(size, rootHost, rootPort);
+    } else {
+      this.displayApi = new DisplayAPIRpi(size, rootHost, rootPort);
+    }
   }
 
   private previousFrame: Color[] = this.newBlackArray(this.size);

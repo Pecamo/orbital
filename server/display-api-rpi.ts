@@ -1,28 +1,15 @@
 import dgram from "dgram-as-promised";
 import { Color } from "./color";
+import { DisplayAPIAbstract } from "./display-api-abstract";
 
-export class DisplayAPI {
-  constructor(public size: number, public rootHost: string, public rootPort) {}
-
-  private lastFrameRendered = true;
+export class DisplayAPIRpi extends DisplayAPIAbstract {
+  constructor(public size: number, public rootHost: string, public rootPort: number) {
+    super();
+  }
 
   private socket = dgram.createSocket("udp4");
 
-  public set(colors: Color[]): void {
-    if (this.lastFrameRendered) {
-      this.lastFrameRendered = false;
-
-      this.sendColors(colors)
-        .then(() => {
-          this.lastFrameRendered = true;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }
-
-  private sendColors(colors: Color[]): Promise<any> {
+  protected sendColors(colors: Color[]): Promise<any> {
     const sendData = { colors };
 
     const header = 0x04; // 0x03 for RGB, 0x04 for RGBW
