@@ -1,4 +1,3 @@
-import dgram from "dgram-as-promised";
 import { Color } from "./color";
 
 export abstract class DisplayAPIAbstract {
