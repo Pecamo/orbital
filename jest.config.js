@@ -9,7 +9,7 @@ module.exports = {
   // bail: 0,
 
   // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "C:\\Users\\kewin\\AppData\\Local\\Temp\\jest",
+  // cacheDirectory: "C:\\Users\\user\\AppData\\Local\\Temp\\jest",
 
   // Automatically clear mock calls and instances between every test
   // clearMocks: false,
@@ -121,7 +121,7 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: [],
+  setupFiles: ["<rootDir>/.jest/setEnv.js"],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
