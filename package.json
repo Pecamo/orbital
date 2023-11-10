@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@types/color-convert": "^2.0.0",
-    "axios": "^0.24.0",
+    "axios": "^1.6.0",
     "color-convert": "^2.0.1",
     "color-temperature": "^0.2.7",
     "cors": "^2.8.5",
