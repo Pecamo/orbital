@@ -1,0 +1,14 @@
+# docker-compose.yml
+
+version: '3.8'
+services:
+  app:
+    container_name: orbital
+    network_mode: "host"
+    build: .
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/server
