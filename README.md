@@ -44,6 +44,14 @@ Run
 npm start
 ```
 
+Docker
+------
+
+```sh
+docker-compose build
+docker-compose up
+```
+
 ### Invert the LED strip display:
 
 ```sh
