@@ -3,8 +3,6 @@
 # Stage 1: Build the VueJS Client
 FROM node:22 as client-build
 
-ENV VITE_ORBITAL_SERVER_BASE_URL=http://10.0.0.4:3003
-
 WORKDIR /
 COPY package*.json ./
 RUN npm install
