@@ -41,7 +41,6 @@ export function initLamp() {
     new StarsAnimation(),
     new FireAnimation(false),
     new FireAnimation(true),
-    new BlueFireAnimation(true),
     new RainbowAnimation(),
     new StrobeAnimation(LAMP_FPS),
     new Strobe2Animation(),
