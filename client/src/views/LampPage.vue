@@ -48,12 +48,6 @@
           </option>
         </select>
       </template>
-      <DynamicButton color="yellow" variant="normal" @click="refreshAnimationAndCharacteristics">
-        Refresh
-      </DynamicButton>
-      <DynamicButton color="green" variant="normal" @click="applyAnimation">
-        Apply
-      </DynamicButton>
       <label>Brightness</label>
       <vue-slider
         v-model="brightness"
@@ -64,6 +58,12 @@
         :lazy="true"
         :marks="[0, 50, 100]"
       />
+      <DynamicButton color="yellow" variant="normal" @click="refreshABC">
+        Refresh
+      </DynamicButton>
+      <DynamicButton color="green" variant="normal" @click="applyAnimation">
+        Apply
+      </DynamicButton>
     </div>
   </div>
 </template>
@@ -95,14 +95,15 @@ onMounted(() => {
       currentConfig.animationOptions = data.animationNames;
     });
 
+  refreshABC();
+});
+
+// Animations, Brightness, Characteristics
+function refreshABC() {
   axiosInstance.get("/lamp/brightness")
     .then(res => JSON.parse(res.data))
     .then(data => brightness.value = data.brightness);
 
-  refreshAnimationAndCharacteristics();
-});
-
-function refreshAnimationAndCharacteristics() {
   axiosInstance.get(`/lamp/animation`)
     .then(res => {
       return JSON.parse(res.data);
