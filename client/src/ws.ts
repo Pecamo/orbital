@@ -25,7 +25,7 @@ export const WebSocketHandler = {
       }
 
       console.log("Starting connection to WebSocket Server");
-      const wsUrl = new URL(window.location.href);
+      const wsUrl = import.meta.env.DEV ? new URL(import.meta.env.SERVER_URL) : new URL(window.location.href);
 
       // const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
       // export const ws = new WebSocket(wsProtocol + location.host + "/");
