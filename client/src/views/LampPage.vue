@@ -93,7 +93,21 @@ onMounted(() => {
   axiosInstance.get("/lamp/brightness")
     .then(res => JSON.parse(res.data))
     .then(data => brightness.value = data.brightness);
+
+  refreshAnimationAndCharacteristics();
 });
+
+function refreshAnimationAndCharacteristics() {
+  axiosInstance.get(`/lamp/animation`)
+    .then(res => {
+      return JSON.parse(res.data);
+    })
+    .then(data => {
+      console.log(data);
+      currentConfig.selectedAnimation = data.animation.name;
+      onNewAnimation();
+    })
+}
 
 function onSmartColorUpdate(smartColor: SmartColor, i: number) {
   characteristics.array[i].value = smartColor;

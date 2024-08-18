@@ -136,6 +136,10 @@ export function initLamp() {
     res.send("OK");
   });
 
+  lamp.get("/animation", (req, res) => {
+    res.send({ animation: animationStore[currentAnimation] });
+  });
+
   lamp.post("/animation", (req, res) => {
     const animation: string = req.body.animation;
 
