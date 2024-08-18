@@ -2,7 +2,7 @@ import { NB_LED } from '../NB_LED';
 import { HtmlColors } from "../htmlColors";
 import {ColorOption, LampAnimation, NumberOption, SelectOption} from "../types/LampAnimation";
 import {normalize} from "../utils";
-import { TOP_LED_NB } from '../env';
+import {LAMP_FPS, TOP_LED_NB} from '../env';
 import { Color } from '../color';
 
 export default class PulseAnimation implements LampAnimation<[ColorOption, ColorOption, SelectOption, NumberOption, NumberOption, NumberOption, NumberOption]> {
@@ -23,7 +23,7 @@ export default class PulseAnimation implements LampAnimation<[ColorOption, Color
 
     public animate(t, display, options) {
         const [color1, color2, branches, speed, pulses, rotationSpeed, topLedNb] = options;
-        const realSpeed = speed / 10;
+        const realSpeed = speed / 10 * LAMP_FPS / 60;
 
         const isFull = branches === 'rl';
         const maxProgress = Math.ceil(NB_LED / (isFull ? 2 : 1));
