@@ -18,6 +18,7 @@ import StrobeAnimation from "./strobe";
 import Strobe2Animation from "./strobe2";
 import AlternatingAnimation from "./alternating";
 import MatrixAnimation from "./matrix";
+import PulseAnimation from "./pulse";
 import SlidingWindowAnimation from "./slidingWindow";
 import RainbowSlidingWindowAnimation from './rainbowSlidingWindow';
 import FlashingApertureAnimation from './flashingAperture';
@@ -33,7 +34,7 @@ lamp.use(express.json());
 
 export function initLamp() {
   const LAMP_FPS: number = env.LAMP_FPS;
-  const GRADIENT_DURATION = 1000;
+  const GRADIENT_DURATION: number = 1000;
 
   const animations: LampAnimation[] = [
     new NoneAnimation(),
@@ -45,6 +46,7 @@ export function initLamp() {
     new Strobe2Animation(),
     new AlternatingAnimation(20),
     new MatrixAnimation(),
+    new PulseAnimation(),
     new GameOfLifeAnimation(),
     new SlidingWindowAnimation(),
     new RainbowSlidingWindowAnimation(),
