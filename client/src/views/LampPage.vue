@@ -145,11 +145,10 @@ function onNewAnimation() {
 }
 
 function applyAnimation() {
-  axiosInstance.post("/lamp/animation", {
-    animation: currentConfig.selectedAnimation,
+  axiosInstance.post("/lamp/characteristics", {
+    characteristics: characteristics.array,
+    animation: currentConfig.selectedAnimation
   });
-
-  axiosInstance.post("/lamp/characteristics", characteristics.array);
 }
 
 function onBrightnessChange(brightness: number) {
