@@ -137,7 +137,6 @@ function onNewAnimation() {
             characteristics.array.push({ type: o.type, value: o.currentCharacteristicValue });
             break;
           case "color":
-            console.log(i, { type: o.type, value: o.currentCharacteristicValue });
             characteristics.array.push({ type: o.type, value: o.currentCharacteristicValue });
             break;
         }
