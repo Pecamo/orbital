@@ -145,4 +145,4 @@ export const HtmlColors = {
   gainsboro: new Color(220, 220, 220),
   whitesmoke: new Color(245, 245, 245),
   white: new Color(255, 255, 255),
-};
+} as const;
