@@ -29,7 +29,6 @@
           class="input"
           v-if="option.type === 'number'"
           v-model="characteristics.array[i].value"
-          @change="onChange"
           type="number"
           :min="option.min"
           :max="option.max"
@@ -39,7 +38,6 @@
           class="input"
           v-if="option.type === 'select'"
           v-model="characteristics.array[i].value"
-          @change="onChange"
         >
           <option
             v-for="opt in option.options"
@@ -50,6 +48,12 @@
           </option>
         </select>
       </template>
+      <DynamicButton color="yellow" variant="normal" @click="refreshAnimationAndCharacteristics">
+        Refresh
+      </DynamicButton>
+      <DynamicButton color="green" variant="normal" @click="applyAnimation">
+        Apply
+      </DynamicButton>
       <label>Brightness</label>
       <vue-slider
         v-model="brightness"
@@ -65,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import DynamicButton from "../components/shared/DynamicButton.vue";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 import SmartColorPicker from "../components/shared/SmartColorPicker.vue";
@@ -103,7 +108,6 @@ function refreshAnimationAndCharacteristics() {
       return JSON.parse(res.data);
     })
     .then(data => {
-      console.log(data);
       currentConfig.selectedAnimation = data.animation.name;
       onNewAnimation();
     })
@@ -111,11 +115,6 @@ function refreshAnimationAndCharacteristics() {
 
 function onSmartColorUpdate(smartColor: SmartColor, i: number) {
   characteristics.array[i].value = smartColor;
-  onChange();
-}
-
-function onChange() {
-  axiosInstance.post("/lamp/characteristics", characteristics.array);
 }
 
 function onNewAnimation() {
@@ -126,21 +125,31 @@ function onNewAnimation() {
     })
     .then(data => {
       options.array = data.options;
-      characteristics.array = options.array.map(o => {
+      characteristics.array.splice(0, characteristics.array.length);
+      for (let i = 0; i < options.array.length; i++) {
+        const o = options.array[i];
         switch (o.type) {
           case "number":
-            return { type: "number", value: o.currentCharacteristicValue };
+            characteristics.array.push({ type: o.type, value: o.currentCharacteristicValue });
+            break;
           case "select":
-            return { type: "select", value: o.currentCharacteristicValue };
+            characteristics.array.push({ type: o.type, value: o.currentCharacteristicValue });
+            break;
           case "color":
-            return { type: "color", value: o.currentCharacteristicValue };
+            console.log(i, { type: o.type, value: o.currentCharacteristicValue });
+            characteristics.array.push({ type: o.type, value: o.currentCharacteristicValue });
+            break;
         }
-      });
+      }
     });
+}
 
+function applyAnimation() {
   axiosInstance.post("/lamp/animation", {
     animation: currentConfig.selectedAnimation,
   });
+
+  axiosInstance.post("/lamp/characteristics", characteristics.array);
 }
 
 function onBrightnessChange(brightness: number) {
@@ -187,10 +196,6 @@ input[type="number"] {
   font-size: calc(5 * var(--unit));
   text-align: right;
   max-width: max-content;
-}
-
-.brightness-slider {
-  
 }
 
 label {

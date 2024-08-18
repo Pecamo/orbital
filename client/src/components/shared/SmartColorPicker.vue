@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Color } from "../../../../server/color";
 import type { SmartColor } from "../../../../server/types/SmartColor";
 
@@ -71,6 +71,24 @@ function onFormUpdate() {
 
   emit("smartColorUpdate", emitSmartColor);
 }
+
+function onSmartColorChange(newColor: SmartColor) {
+  selectedType.value = newColor.type;
+
+  if (newColor.type === "static") {
+    selectedColor.value = Color.toHex(newColor.color);
+  } else if (newColor.type === "gradient") {
+    selectedColorFrom.value = Color.toHex(newColor.parameters.colorFrom);
+    selectedColorTo.value = Color.toHex(newColor.parameters.colorTo);
+  } else {
+    selectedColor.value = "#000000";
+    selectedColorFrom.value = "#000000";
+    selectedColorTo.value = "#000000";
+  }
+}
+
+watch(() => props.smartColor, onSmartColorChange);
+
 </script>
 
 <style scoped>
