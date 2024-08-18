@@ -92,8 +92,10 @@ export function initLamp() {
       // We set the default value to the current one to sync clients
       if (currentCharacteristics[animationName]) {
         for (let i = 0; i < options.length; i++) {
-          options[i].currentCharacteristicValue =
-            currentCharacteristics[animationName][i].value;
+          if (typeof currentCharacteristics[animationName][i]?.value !== "undefined") {
+            options[i].currentCharacteristicValue =
+              currentCharacteristics[animationName][i].value;
+          }
         }
       } else {
         options.forEach((option) => {
