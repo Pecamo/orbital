@@ -94,8 +94,10 @@ export function initLamp() {
       // We set the default value to the current one to sync clients
       if (currentCharacteristics[animationName]) {
         for (let i = 0; i < options.length; i++) {
-          options[i].currentCharacteristicValue =
-            currentCharacteristics[animationName][i].value;
+          if (typeof currentCharacteristics[animationName][i]?.value !== "undefined") {
+            options[i].currentCharacteristicValue =
+              currentCharacteristics[animationName][i].value;
+          }
         }
       } else {
         options.forEach((option) => {
@@ -117,7 +119,7 @@ export function initLamp() {
   });
 
   lamp.post("/characteristics", (req, res) => {
-    const characteristics: Characteristic[] = req.body;
+    const { characteristics, animation }: { characteristics: Characteristic[], animation: string } = req.body;
     characteristics.forEach((c) => {
       if (c.type === "color") {
         if (c.value.type === "static") {
@@ -132,15 +134,23 @@ export function initLamp() {
         }
       }
     });
-    currentCharacteristics[currentAnimation] = characteristics;
+
+    currentCharacteristics[animation] = characteristics;
 
     startLamp();
-    res.send("OK");
+    changeAnimation(animation, res);
+  });
+
+  lamp.get("/animation", (req, res) => {
+    res.send({ animation: animationStore[currentAnimation] });
   });
 
   lamp.post("/animation", (req, res) => {
     const animation: string = req.body.animation;
+    changeAnimation(animation, res);
+  });
 
+  function changeAnimation(animation: string, res: express.Response) {
     if (animation.toLowerCase() === "off") {
       lampShouldStop = true;
       res.send("OK");
@@ -155,7 +165,7 @@ export function initLamp() {
     currentAnimation = animation;
     startLamp();
     res.send("OK");
-  });
+  }
 
   lamp.get("/brightness", (req, res) => {
     res.send({ brightness: display.brightness });
