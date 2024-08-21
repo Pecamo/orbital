@@ -11,7 +11,8 @@
     "watch:start": "nodemon --exec npm run start",
     "dev": "concurrently -n build,start \"npm run watch:build\" \"npm run watch:start\"",
     "dev:full": "concurrently -n client,server -c yellow,green \"npm run dev\" \"cd client && npm run dev\"",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "contributors": [
     "Protectator",

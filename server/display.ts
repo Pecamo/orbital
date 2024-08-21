@@ -104,12 +104,6 @@ export class Display {
   }
 
   private newBlackArray(length: number): Color[] {
-    const arr: Color[] = [];
-
-    for (let i = 0; i < length; i++) {
-      arr[i] = HtmlColors.black;
-    }
-
-    return arr;
+    return Array(length).fill(HtmlColors.black);
   }
 }

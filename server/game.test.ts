@@ -1,6 +1,7 @@
-import { Game } from "./game";
-import { Display } from "./display";
-import { GameOptions } from "./types/GameOptions";
+import {Game} from "./game";
+import {Display} from "./display";
+import {GameOptions} from "./types/GameOptions";
+import {Color} from "./color";
 
 const gameOptions: GameOptions = {
   BattleRoyale: {
@@ -23,8 +24,51 @@ const gameOptions: GameOptions = {
   },
 };
 
-test("Game is created correctly", () => {
-  const display: Display = new Display(100, "", 13335, false);
+const INITIAL_STATE = {
+  characters: [
+    {
+      alive: true,
+      color: new Color(255, 0, 0, 0),
+      facesRight: true,
+      id: 0,
+      shotCooldown: 0,
+      shotRange: 18,
+      x: 0,
+    },
+    {
+      alive: true,
+      color: new Color(0, 255, 255, 0),
+      facesRight: true,
+      id: 1,
+      shotCooldown: 0,
+      shotRange: 18,
+      x: 50,
+    }
+  ],
+  shots: [],
+  turnNb: 0,
+};
+
+function generateTestDisplayAndGame() {
+  const display = new Display(100, "", 13335, false);
   const game = new Game(20, 2, display, gameOptions);
-  expect(game.newInputs.length).toBe(0);
-});
+  return {display, game};
+}
+
+const FAKE_DATE = new Date('2020-01-01');
+
+describe('Game', () => {
+  beforeEach(() => {
+    jest
+      .useFakeTimers()
+      .setSystemTime(FAKE_DATE);
+  });
+
+  test("is created correctly", () => {
+    const {game} = generateTestDisplayAndGame();
+    expect(game.newInputs.length).toBe(0);
+    expect(game.gameState).toStrictEqual({
+      ...INITIAL_STATE, startDate: FAKE_DATE,
+    });
+  });
+})
